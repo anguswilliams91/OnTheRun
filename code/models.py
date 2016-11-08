@@ -1,41 +1,14 @@
 from __future__ import division, print_function
 
-import numpy as np, pandas as pd , gus_utils as gu, emcee
+import numpy as np, pandas as pd , gus_utils as gu, emcee, warnings, sys
 
-def Ivesic_estimator(g,r,i,feh):
+from scipy.optimize import minimize
 
-    """distance estimator from Ivesic et al. (2008)
-
-    Arguments
-    ---------
-
-    g: array_like
-        SDSS g band de-reddened apparent magnitude
-    r: array_like
-        SDSS r band de-reddened apparent magnitude
-    i: array_like
-        SDSS i band de-reddened apparent magnitude
-    feh: array_like
-        SDSS SSPP [Fe/H] estimate
-
-    Returns
-    -------
-
-    distance: array_like
-        distances assuming the Ivesic estimator
-    """
-
-    delta_Mr = 4.50 - 1.11*feh - 0.18*feh**2.
-    x = g-i
-    Mr0 = -5.06 + 14.32*x - 12.97*x**2. + 6.127*x**3. - 1.267*x**4. + 0.0967*x**5. 
-    Mr = Mr0 + delta_Mr 
-
-    mu = r - Mr 
-    return 10.**(mu/5. - 2.)
 
 def sample_distances(data,n_samples=10000,tracer='main_sequence'):
 
-    """Given a Pandas dataframe, compute distance samples and add new column to the DataFrame.
+    """Given a Pandas dataframe, compute distance samples and return a numpy array with distance samples and 
+    clones of other measurements for convenience.
 
     Arguments
     ---------
@@ -49,8 +22,10 @@ def sample_distances(data,n_samples=10000,tracer='main_sequence'):
     Returns
     -------
 
-    distances: array_like[n_stars,n_samples]
-        an array containing n_samples distances estimates for each star.
+    samples: tuple
+        tuple of arrays (l,b,v,s) each of shape [n_stars,n_samples] 
+        containing n_samples of distances estimates for each star and 
+        copies of (l,b,v) for convenience.
 
     """
 
@@ -67,7 +42,7 @@ def sample_distances(data,n_samples=10000,tracer='main_sequence'):
             r_samples = np.random.normal(loc=data.r[i],scale=data.r_err[i],size=n_samples)
             i_samples = np.random.normal(loc=data.i[i],scale=data.i_err[i],size=n_samples)
             feh_samples = np.random.normal(loc=data.feh[i],scale=data.feh_err[i],size=n_samples)
-            distances[i] = Ivesic_estimator(g_samples,r_samples,i_samples,feh_samples)
+            distances[i] = gu.Ivesic_estimator(g_samples,r_samples,i_samples,feh_samples)
         if tracer=='bhb':
             g_samples = np.random.normal(loc=data.g[i],scale=data.g_err[i],size=n_samples)
             r_samples = np.random.normal(loc=data.r[i],scale=data.r_err[i],size=n_samples)
@@ -95,130 +70,433 @@ def sample_distances(data,n_samples=10000,tracer='main_sequence'):
 
     return (l_oversampled,b_oversampled,v_oversampled,distances)
 
-def sample_distances_multiple_tracers():
+def sample_distances_multiple_tracers(n_samples=1000):
+
+    """
+    Sample from the uncertainties on distance for all three data sets.
+
+    Arguments
+    ---------
+
+    n_samples: int
+        the number of samples to draw from the uncertainties per star.
+
+
+    Returns
+    -------
+
+    data: list 
+        [bhb,kgiant,ms], a list of tuples (l,b,v,s), each tuple contains arrays of shape [n_stars,n_samples] 
+        containing n_samples of distance estimates for each star and copies of the galactic coordinates and 
+        galactocentric line of sight velocities. 
+    """
 
     bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
     kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
     ms = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
 
-    bhb_s = sample_distances(bhb,n_samples=1000,tracer='bhb')
-    kgiant_s = sample_distances(kgiant,n_samples=1000,tracer='kgiant')
-    ms_s = sample_distances(ms,n_samples=1000,tracer='main_sequence')
+    bhb_s = sample_distances(bhb,n_samples=n_samples,tracer='bhb')
+    kgiant_s = sample_distances(kgiant,n_samples=n_samples,tracer='kgiant')
+    ms_s = sample_distances(ms,n_samples=n_samples,tracer='main_sequence')
 
     return [bhb_s, kgiant_s, ms_s]
 
 def Gaussian(v,mu,sigma):
+
+    """Gaussian distribution.
+
+    Arguments
+    ---------
+
+    v: array_like
+        the independent variable.
+
+    mu: float 
+        the mean of the distribution 
+
+    sigma: float 
+        the dispersion of the distribution
+
+    Returns
+    -------
+
+    pdf: array_like
+        the pdf at each value of v
+    """
+
     return (2.*np.pi*sigma**2.)**-.5 * np.exp(-.5 * (v-mu)**2. / sigma**2.)
 
-def likelihood_constant(params,data,vmin):
+def log_likelihood(params, data, vmin, model):
 
-    """Likelihood function for the data given a power-law model where vesc is fixed"""
+    """
+    Likelihood function template for given model. 
 
-    vesc,k,f = params
+    Arguments
+    ---------
 
-    out = np.zeros_like(data.vgsr.values)
-    out[data.vgsr.values<vesc] = f*Gaussian(data.vgsr.values[data.vgsr.values<vesc],0.,1000.) + \
-                                (1.-f)*(vesc - np.abs(data.vgsr.values[data.vgsr.values<vesc]))**(k+1) * (k+2) / (vesc - vmin)**(k+2)
-    out[data.vgsr.values>vesc] = f*Gaussian(data.vgsr.values[data.vgsr.values>vesc],0.,1000.)
+    params: array_like
+        the model parameters
 
-    return np.sum( np.log(out) )
+    data: list
+        the output of sample_distances_multiple_tracers
 
-def likelihood_powerlaw(params,data,vmin):
+    vmin: float 
+        the minimum radial velocity considered 
 
-    """Likelihood function when the escape speed is a power law in radius"""
+    Returns
+    -------
 
-    vesc_8,alpha,k,f = params
+    logL: array_like
+        the sum of the log-likelihoods for this set of parameters.
+    """
 
-    l,b,v,s = data 
-    x,y,z = gu.galactic2cartesian(s,b,l)
-    r = np.sqrt(x**2.+y**2.+z**2.)
+    kbhb,kkgiant,kms,f = params[:4]
+    pot_params = params[4:]
+    tracer_likelihoods = np.zeros(3)
+    k = [kbhb,kkgiant,kms]
 
-    vesc = vesc_8*(r/8.)**(.5*alpha)
+    for i,tracer in enumerate(data):
+        l,b,v,s = tracer
+        x,y,z = gu.galactic2cartesian(s,b,l)
+        vesc = vesc_model(x,y,z,pot_params,model)
+        out = np.zeros_like(v)
+        with warnings.catch_warnings():
+            #deliberately getting NaNs here so stop python from telling us about it
+            warnings.simplefilter("ignore",category=RuntimeWarning)
+            out = (1.-f)*(k[i]+2)*(vesc - np.abs(v))**(k[i]+1.) / (vesc - vmin)**(k[i]+2.) + f*Gaussian(v,0.,1000.)
+            out[np.isnan(out)] = f*Gaussian(v[np.isnan(out)],0.,1000.)
+        tracer_likelihoods[i] = np.sum( np.log(np.mean(out, axis=1) ) )
 
-    out = np.zeros_like(v)
-    out = (1.-f)*(k+2)*(vesc - np.abs(v))**(k+1.) / (vesc - vmin)**(k+2.) + f*Gaussian(v,0.,1000.)
-    out[np.isnan(out)] = f*Gaussian(v[np.isnan(out)],0.,1000.)
-    out = np.mean(out, axis=1)
+    return np.sum(tracer_likelihoods)
 
-    return np.sum( np.log(out) )
 
-def priors_powerlaw(params,vmin):
+def vesc_model(x,y,z,params,model):
 
-    vesc_8,alpha,k,f = params
+    """
+    A set of models for the escape velocity.
 
-    if vesc_8<vmin or vesc_8>1000.:
-        return -np.inf
-    if alpha < -1. or alpha>0.:
-        return -np.inf
-    if k<2.7 or k>4.7:
-        return -np.inf
-    if f<0. or f>1.:
-        return -np.inf
-    else:
-        return -.5*(vesc_8 - 533.)**2. / 50.**2.
+    Arguments
+    ---------
 
-def log_posterior_powerlaw(params,data,vmin):
+    x,y,z: array_like:
+        Galactic cartesian coordinates 
 
-    pr = priors_powerlaw(params,vmin)
+    params: array_like:
+        Model parameters
 
-    if pr == -np.inf:
-        return -np.inf
-    else:
-        return likelihood_powerlaw(params,data,vmin)
+    model: string 
+        name of model being used
 
-def likelihood_powerlaw_multiple_tracers(params,data,vmin):
+    Returns
+    -------
 
-    bhb,kgiant,ms = data
-    vesc_8,alpha,kbhb,kkgiant,kms,f = params 
+    vesc: array_like
+        escape velocity in this model at (x,y,z)
 
-    return likelihood_powerlaw([vesc_8,alpha,kbhb,f],bhb,vmin) +\
-           likelihood_powerlaw([vesc_8,alpha,kkgiant,f],kgiant,vmin) + \
-           likelihood_powerlaw([vesc_8,alpha,kms,f],ms,vmin)
+    """
 
-def priors_powerlaw_multiple_tracers(params,vmin):
+    if model == "spherical_powerlaw":
 
-    vesc_8,alpha,kbhb,kkgiant,kms,f = params
+        r = np.sqrt(x**2.+y**2.+z**2.)
+        vesc_Rsun, alpha = params 
+        return vesc_Rsun * (r/8.5)**(.5*alpha)
 
+    if model == "flattened_powerlaw":
+
+        vesc_Rsun, alpha, q = params 
+        rq = np.sqrt(x**2. + y**2. + (z/q)**2.)
+        return vesc_Rsun * (rq/8.5)**(.5*alpha) 
+
+    else: 
+
+        raise ValueError(model+" not found.")
+
+    return None
+
+def get_numparams(model):
+
+    """Get the number of parameters associated with a model
+
+    Arguments
+    ---------
+
+    model: string
+        the name of the model 
+
+    Returns
+    -------
+
+    n_params: int 
+        the number of parameters in the model
+
+    """
+
+    if model == "spherical_powerlaw":
+
+        return 2
+
+    if model == "flattened_powerlaw":
+
+        return 3
+
+    else: 
+
+        raise ValueError(model+" not found.")
+
+    return None
+
+
+def log_priors_global(params):
+
+    """Priors on parameters common to all models.
+
+    Arguments
+    ---------
+
+    params: array_like:
+        parameters common to all models (k values and outlier fraction)
+
+    Returns
+    -------
+
+    log_prior: float
+        the log of the prior on the parameters
+
+    """
+
+    kbhb,kkgiant,kms,f = params 
     k = np.array([kbhb,kkgiant,kms])
 
-    if vesc_8<vmin or vesc_8>1000.:
-        return -np.inf
-    if alpha < -1. or alpha>0.:
-        return -np.inf
     if any(k<2.7) or any(k>4.7):
+        #cosmological sim priors on K from Smith et al.
         return -np.inf
     if f<0. or f>1.:
         return -np.inf
     else:
-        return -.5*(vesc_8 - 533.)**2. / 50.**2.
+        return 0.    
 
-def log_posterior_powerlaw_multiple_tracers(params,data,vmin):
+def log_priors_model(params,vmin,model):
 
-    pr = priors_powerlaw_multiple_tracers(params,vmin)
+    """
+    Model-specific priors.
 
-    if pr == -np.inf:
-        return -np.inf
+    Arguments
+    ---------
+
+    params: array_like:
+        model parameters
+
+    vmin: float
+        the minimum radial velocity considered
+
+    model: string
+        model name
+
+    Returns
+    -------
+
+    log_prior: float
+        the log of the prior on the parameters.
+    """
+
+    if model == "spherical_powerlaw":
+
+        vesc_Rsun, alpha = params 
+        
+        if vesc_Rsun<vmin or vesc_Rsun>1000.:
+            return -np.inf
+        if alpha>0. or alpha<-1.:
+            return -np.inf
+        else:
+            #prior from Piffl's work
+            return -.5*(vesc_Rsun - 533.)**2./25.**2. 
+
+    if model == "flattened_powerlaw":
+
+        vesc_Rsun, alpha, q = params
+
+        if vesc_Rsun<vmin or vesc_Rsun>1000.:
+            return -np.inf
+        if alpha>0. or alpha<-1.:
+            return -np.inf
+        if q<0. or q>4.:
+            return -np.inf
+        else:
+            #prior from Piffl's work on vesc and Bowden, Evans, Williams on q
+            return -.5*(vesc_Rsun - 533.)**2./25.**2. \
+                    -np.log(1. + q**2.)
+
+    else: 
+
+        raise ValueError(model+" not found.")
+
+    return None
+
+def sample_priors_model(model,n_walkers):
+
+    """
+    Sample from the prior on a model to use as 
+    starting points for optimizations.
+
+    Arguments
+    ---------
+
+    model: string
+        the name of the model 
+
+    n_walkers: int 
+        the number of walkers (draws)
+
+    Returns
+    -------
+
+    samples: array_like
+        samples from the model priors
+
+    """
+
+    if model == "spherical_powerlaw":
+
+        vesc_Rsun_samples = np.random.normal(loc=533.,scale=25.,size=n_walkers)
+        alpha_samples = np.random.uniform(low=-1., high=0., size=n_walkers)
+
+        return np.vstack((vesc_Rsun_samples,alpha_samples)).T
+
+    if model == "flattened_powerlaw":
+
+        vesc_Rsun_samples = np.random.normal(loc=533.,scale=25.,size=n_walkers)
+        alpha_samples = np.random.uniform(low=-1., high=0., size=n_walkers)
+        #sample flattening in variable where prior is uniform then transform to q
+        u_samples = np.random.uniform(low=0., high=(2./np.pi)*np.arctan(4.), size=n_walkers)
+        q_samples = np.tan(np.pi*u_samples/2.)
+
+        return np.vstack((vesc_Rsun_samples,alpha_samples,q_samples)).T
+
+    else: 
+
+        raise ValueError(model+" not found.")
+
+    return None
+
+def sample_priors_global(n_walkers):
+
+    """
+    Sample priors on global parameters
+
+    Arguments
+    ---------
+
+    n_walkers: int
+        the number of walkers (draws)
+
+    Returns
+    -------
+
+    samples: array_like 
+        samples from the prior
+
+    """
+
+    kBHB = np.random.uniform(low=2.7, high=4.7, size=n_walkers)
+    kkgiant = np.random.uniform(low=2.7, high=4.7, size=n_walkers)
+    kms = np.random.uniform(low=2.7, high=4.7, size=n_walkers)
+    f = np.random.uniform(low=0.,high=1.,size=n_walkers)
+
+    return np.vstack((kBHB,kkgiant,kms,f)).T
+
+
+
+def log_posterior(params, data, vmin, model):
+
+    """
+    Likelihood function template for given model. 
+
+    Arguments
+    ---------
+
+    params: array_like
+        the model parameters
+
+    data: list
+        the output of sample_distances_multiple_tracers
+
+    vmin: float 
+        the minimum radial velocity considered 
+
+    Returns
+    -------
+
+    logP: float
+        the log-posterior for this set of parameters.
+    """
+
+    params_global = params[:4]
+    params_model = params[4:]
+    logprior = log_priors_global(params_global)+log_priors_model(params_model,vmin,model)
+
+    if logprior == -np.inf:
+        return logprior
     else:
-        return likelihood_powerlaw_multiple_tracers(params,data,vmin)
+        return log_likelihood(params,data,vmin,model)+logprior
 
-def mcmc_multiple_tracers():
-    data = sample_distances_multiple_tracers()
-    params = [500., -0.25,3.5,3.5,3.5,0.1]
-    std = [10.,0.01,0.1,0.1,0.1,0.01]
-    p0 = emcee.utils.sample_ball(params,std,size=80)
-    sampler = emcee.EnsembleSampler(80,6,log_posterior_powerlaw_multiple_tracers,args=(data,200.),threads=20)
-    gu.write_to_file(sampler,"/data/aamw3/mcmc/escape_chains/ms_powerlaw_pifflprior_multiple_tracers.dat",p0,Nsteps=10000)  
+
+def run_mcmc(model,filename,vmin=200,n_walkers=80,n_steps=3000,n_threads=20,n_samples=200,seed=0):
+
+    """
+    Set up and run an MCMC for a given model. The chain will run and 
+    write the parameters at each step to a file.
+
+    Arguments
+    ---------
+
+    model: string
+        the name of the model being fit
+
+    filename: string
+        path to file where the chain will be written
+
+    vmin: (=200) float
+        the minimum radial velocity considered
+
+    n_walkers: (=80) int
+        the number of emcee walkers to use
+
+    n_steps: (=3000) int 
+        the number of steps each walker will take 
+
+    n_threads: (=20) int 
+        the number of threads over which to parallelise computation
+
+    n_samples: (=200) int
+        the number of samples to draw from the uncertainties on the distances 
+
+    """
+
+    np.random.seed(seed)
+
+    data = sample_distances_multiple_tracers(n_samples=n_samples)
+
+    def minfun(params):
+        return -log_posterior(params, data, vmin, model)
+
+    #run a minimization for each walker to get starting points
+    n_params = 4 + get_numparams(model)
+    p0 = np.zeros((n_walkers,n_params))
+    prior_samples_model = sample_priors_model(model,n_walkers)
+    prior_samples_global = sample_priors_global(n_walkers)
+    p0 = np.hstack((prior_samples_global,prior_samples_model))
+
+    sampler = emcee.EnsembleSampler(n_walkers,n_params,log_posterior,args=(data,vmin,model),threads=n_threads)
+
+    gu.write_to_file(sampler,filename,p0,Nsteps=n_steps)
+
+    return None
 
 def main():
 
-    # data = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
-    # samples = sample_distances(data,n_samples=1000)
-    # params = [500., -0.25,3.5,0.1]
-    # std = [10.,0.01,0.1,0.01]
-    # p0 = emcee.utils.sample_ball(params,std,size=32)
-    # sampler = emcee.EnsembleSampler(32,3,log_posterior_powerlaw,args=(samples,200.),threads=16)
-    # gu.write_to_file(sampler,"/data/aamw3/mcmc/escape_chains/ms_powerlaw_pifflprior_200cut.dat",p0,Nsteps=10000)
-    mcmc_multiple_tracers()
+    model, filename = sys.argv[1:]
+
+    run_mcmc(model,filename)
 
 
 if __name__ == "__main__":
