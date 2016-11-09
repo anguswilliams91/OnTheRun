@@ -3,6 +3,7 @@ from __future__ import division, print_function
 import numpy as np, pandas as pd , gus_utils as gu, emcee, warnings, sys
 
 from scipy.optimize import minimize
+from scipy.special import hyp2f1
 
 
 def sample_distances(data,n_samples=10000,tracer='main_sequence'):
@@ -156,18 +157,54 @@ def log_likelihood(params, data, vmin, model):
     k = [kbhb,kkgiant,kms]
 
     for i,tracer in enumerate(data):
-        l,b,v,s = tracer
-        x,y,z = gu.galactic2cartesian(s,b,l)
-        vesc = vesc_model(x,y,z,pot_params,model)
-        out = np.zeros_like(v)
-        with warnings.catch_warnings():
-            #deliberately getting NaNs here so stop python from telling us about it
-            warnings.simplefilter("ignore",category=RuntimeWarning)
-            out = (1.-f)*(k[i]+2)*(vesc - np.abs(v))**(k[i]+1.) / (vesc - vmin)**(k[i]+2.) + f*Gaussian(v,0.,1000.)
-            out[np.isnan(out)] = f*Gaussian(v[np.isnan(out)],0.,1000.)
-        tracer_likelihoods[i] = np.sum( np.log(np.mean(out, axis=1) ) )
+        try:
+            l,b,v,s = tracer
+            x,y,z = gu.galactic2cartesian(s,b,l)
+            vesc = vesc_model(x,y,z,pot_params,model)
+            out = np.zeros_like(v)
+            with warnings.catch_warnings():
+                #deliberately getting NaNs here so stop python from telling us about it
+                warnings.simplefilter("ignore",category=RuntimeWarning)
+                out = (1.-f)*(k[i]+2)*(vesc - np.abs(v))**(k[i]+1.) / (vesc - vmin)**(k[i]+2.) + f*Gaussian(v,0.,1000.)
+                out[np.isnan(out)] = f*Gaussian(v[np.isnan(out)],0.,1000.)
+            tracer_likelihoods[i] = np.sum( np.log(np.mean(out, axis=1) ) )
+        except:
+            pass
 
     return np.sum(tracer_likelihoods)
+
+
+def TFpotential(r,params):
+
+    """
+    TF model from Gibbons et al. 2014
+
+    Arguments
+    ---------
+
+    r: array_like
+        spherical radius in kpc
+
+    params: array_like
+        model parameters (v0, rs, alpha)
+
+    Returns
+    -------
+
+    Phi: array_like
+        the potential at r
+
+    """
+
+    v0,rs,alpha = params
+
+    prefactor = -(r**-(alpha+2.) * rs**alpha * (r**2. + rs**2.)**(-.5*alpha)\
+                * v0**2.) / (alpha*(2. + alpha))
+    term_1 = r**(2.+alpha) * (2. + alpha)
+    term_2 = alpha * rs**2. * (r**2. + rs**2.)**(.5*alpha) * hyp2f1(.5*(alpha+2),\
+             .5*(alpha+2), .5*(alpha+4), -(rs/r)**2.)
+
+    return prefactor*(term_1 + term_2)
 
 
 def vesc_model(x,y,z,params,model):
@@ -199,13 +236,18 @@ def vesc_model(x,y,z,params,model):
 
         r = np.sqrt(x**2.+y**2.+z**2.)
         vesc_Rsun, alpha = params 
-        return vesc_Rsun * (r/8.5)**(.5*alpha)
+        return vesc_Rsun * (r/8.5)**(-.5*alpha)
 
-    if model == "flattened_powerlaw":
+    elif model == "flattened_powerlaw":
 
         vesc_Rsun, alpha, q = params 
         rq = np.sqrt(x**2. + y**2. + (z/q)**2.)
-        return vesc_Rsun * (rq/8.5)**(.5*alpha) 
+        return vesc_Rsun * (rq/8.5)**(-.5*alpha) 
+
+    elif model == "TF":
+
+        r = np.sqrt(x**2.+y**2.+z**2.)
+        return np.sqrt(-2.*TFpotential(r,params))
 
     else: 
 
@@ -235,7 +277,7 @@ def get_numparams(model):
 
         return 2
 
-    if model == "flattened_powerlaw":
+    elif model == "flattened_powerlaw" or model == "TF":
 
         return 3
 
@@ -267,10 +309,10 @@ def log_priors_global(params):
     kbhb,kkgiant,kms,f = params 
     k = np.array([kbhb,kkgiant,kms])
 
-    if any(k<2.7) or any(k>4.7):
+    if any(k<0.) or any(k>10.):
         #cosmological sim priors on K from Smith et al.
         return -np.inf
-    if f<0. or f>1.:
+    elif f<0. or f>1.:
         return -np.inf
     else:
         return 0.    
@@ -305,26 +347,41 @@ def log_priors_model(params,vmin,model):
         
         if vesc_Rsun<vmin or vesc_Rsun>1000.:
             return -np.inf
-        if alpha>0. or alpha<-1.:
+        elif alpha<0. or alpha>1.:
             return -np.inf
         else:
-            #prior from Piffl's work
-            return -.5*(vesc_Rsun - 533.)**2./25.**2. 
+            return -np.log(vesc_Rsun) 
 
-    if model == "flattened_powerlaw":
+    elif model == "flattened_powerlaw":
 
         vesc_Rsun, alpha, q = params
 
         if vesc_Rsun<vmin or vesc_Rsun>1000.:
             return -np.inf
-        if alpha>0. or alpha<-1.:
+        elif alpha<0. or alpha>1.:
             return -np.inf
-        if q<0. or q>4.:
+        elif q<0. or q>4.:
             return -np.inf
         else:
-            #prior from Piffl's work on vesc and Bowden, Evans, Williams on q
-            return -.5*(vesc_Rsun - 533.)**2./25.**2. \
+            #prior from Bowden, Evans, Williams on q
+            return -np.log(vesc_Rsun) \
                     -np.log(1. + q**2.)
+
+    elif model == "TF":
+
+        v0, rs, alpha = params
+
+        if alpha<0. or alpha>1.:
+            return -np.inf
+        elif v0<150. or v0>400.:
+            return -np.inf
+        elif rs<5. or rs>50.:
+            return -np.inf
+        elif vesc_model(50.,0.,0.,params,"TF")<vmin:
+            return -np.inf 
+        else:
+            return -np.log(v0) \
+                    -np.log(rs)
 
     else: 
 
@@ -357,20 +414,29 @@ def sample_priors_model(model,n_walkers):
 
     if model == "spherical_powerlaw":
 
-        vesc_Rsun_samples = np.random.normal(loc=533.,scale=25.,size=n_walkers)
-        alpha_samples = np.random.uniform(low=-1., high=0., size=n_walkers)
+        #vesc_Rsun_samples = np.random.normal(loc=533.,scale=25.,size=n_walkers)
+        vesc_Rsun_samples = np.random.uniform(low=np.log(200.),high=np.log(1000.),size=n_walkers)
+        alpha_samples = np.random.uniform(low=0., high=1., size=n_walkers)
 
-        return np.vstack((vesc_Rsun_samples,alpha_samples)).T
+        return np.vstack((np.exp(vesc_Rsun_samples),alpha_samples)).T
 
-    if model == "flattened_powerlaw":
+    elif model == "flattened_powerlaw":
 
-        vesc_Rsun_samples = np.random.normal(loc=533.,scale=25.,size=n_walkers)
-        alpha_samples = np.random.uniform(low=-1., high=0., size=n_walkers)
+        vesc_Rsun_samples = np.random.uniform(low=np.log(200.),high=np.log(1000.),size=n_walkers)
+        alpha_samples = np.random.uniform(low=0., high=1., size=n_walkers)
         #sample flattening in variable where prior is uniform then transform to q
         u_samples = np.random.uniform(low=0., high=(2./np.pi)*np.arctan(4.), size=n_walkers)
         q_samples = np.tan(np.pi*u_samples/2.)
 
-        return np.vstack((vesc_Rsun_samples,alpha_samples,q_samples)).T
+        return np.vstack((np.exp(vesc_Rsun_samples),alpha_samples,q_samples)).T
+
+    elif model == "TF":
+
+        v0_samples = np.random.uniform(low=np.log(200.),high=np.log(300.),size=n_walkers)
+        rs_samples = np.random.uniform(low=np.log(10.),high=np.log(50.),size=n_walkers)
+        alpha_samples = np.random.uniform(low=0.,high=1.,size=n_walkers)
+
+        return np.vstack((np.exp(v0_samples),np.exp(rs_samples),alpha_samples)).T
 
     else: 
 
@@ -397,9 +463,9 @@ def sample_priors_global(n_walkers):
 
     """
 
-    kBHB = np.random.uniform(low=2.7, high=4.7, size=n_walkers)
-    kkgiant = np.random.uniform(low=2.7, high=4.7, size=n_walkers)
-    kms = np.random.uniform(low=2.7, high=4.7, size=n_walkers)
+    kBHB = np.random.uniform(low=0., high=10., size=n_walkers)
+    kkgiant = np.random.uniform(low=0., high=10., size=n_walkers)
+    kms = np.random.uniform(low=0., high=10., size=n_walkers)
     f = np.random.uniform(low=0.,high=1.,size=n_walkers)
 
     return np.vstack((kBHB,kkgiant,kms,f)).T
@@ -440,7 +506,7 @@ def log_posterior(params, data, vmin, model):
         return log_likelihood(params,data,vmin,model)+logprior
 
 
-def run_mcmc(model,filename,vmin=200,n_walkers=80,n_steps=3000,n_threads=20,n_samples=200,seed=0):
+def run_mcmc(model,filename,vmin=200,n_walkers=80,n_steps=3000,n_threads=20,n_samples=200,seed=0,tracer=None):
 
     """
     Set up and run an MCMC for a given model. The chain will run and 
@@ -475,6 +541,13 @@ def run_mcmc(model,filename,vmin=200,n_walkers=80,n_steps=3000,n_threads=20,n_sa
     np.random.seed(seed)
 
     data = sample_distances_multiple_tracers(n_samples=n_samples)
+    #sometimes we want to test with a subset of the tracers
+    if tracer == "kgiant_only":
+        data[0] = None 
+        data[2] = None
+    elif tracer == "main_sequence_only":
+        data[0] = None
+        data[1] = None
 
     def minfun(params):
         return -log_posterior(params, data, vmin, model)
@@ -494,19 +567,12 @@ def run_mcmc(model,filename,vmin=200,n_walkers=80,n_steps=3000,n_threads=20,n_sa
 
 def main():
 
-    model, filename = sys.argv[1:]
+    model, filename, tracer, nwalkers, nsteps, nthreads  = sys.argv[1:]
 
-    run_mcmc(model,filename)
+    nwalkers,nsteps,nthreads = int(nwalkers),int(nsteps),int(nthreads)
+
+    run_mcmc(model,filename,tracer=tracer,n_walkers=nwalkers,n_steps=nsteps,n_threads=nthreads)
 
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-

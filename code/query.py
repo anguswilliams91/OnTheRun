@@ -5,6 +5,11 @@ import gus_utils as gu
 
 def main_sequence_query():
 
+    """
+    Retrieve MSTO stars from SDSS DR9 with some quality cuts. Saves the data 
+    as a Pandas DataFrame
+    """
+
     getstr = "select spa.ra, spa.dec, spa.dered_u, spa.psfmagerr_u,spa.dered_g,\
      spa.psfmagerr_g,spa.dered_r, spa.psfmagerr_r,spa.dered_i, spa.psfmagerr_i,\
      spa.dered_z, spa.psfmagerr_z,spp.elodiervfinal,spp.elodiervfinalerr,\
@@ -34,6 +39,11 @@ def main_sequence_query():
 
 def bhb_query():
 
+    """
+    Retrieve BHB stars from SDSS DR9 with some quality cuts. Saves the data 
+    as a Pandas DataFrame
+    """
+
     getstr = "select g.ra,g.dec,g.psfmag_g-g.extinction_g,g.psfmag_r-g.extinction_r,g.psfmagerr_g,g.psfmagerr_r,\
               spp.loggadop,spp.fehadop,spp.teffadop,spp.elodiervfinal,spp.elodiervfinalerr from \
               sdssdr9.sppparams as spp, sdssdr9.specphotoall as g where \
@@ -52,7 +62,7 @@ def bhb_query():
     data.loc[:,'l'] = pd.Series(l,index=data.index)
     data.loc[:,'b'] = pd.Series(b,index=data.index)
     data.loc[:,'vgsr'] = pd.Series(vgsr,index=data.index)
-    data = data[(np.abs(data.b)>np.radians(20.))&(data.vgsr>200.)&(data.feh<-0.9)&(data.vhel_err<20.)].reset_index(drop=True)
+    data = data[(np.abs(data.b)>np.radians(20.))&(np.abs(data.vgsr)>200.)&(data.feh<-0.9)&(data.vhel_err<20.)].reset_index(drop=True)
     data.to_csv("/data/aamw3/SDSS/bhb.csv")
 
     return None
