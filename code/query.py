@@ -31,7 +31,7 @@ def main_sequence_query():
     data.loc[:,'l'] = pd.Series(l,index=data.index)
     data.loc[:,'b'] = pd.Series(b,index=data.index)
     data.loc[:,'vgsr'] = pd.Series(vgsr,index=data.index)
-    data = data[(np.abs(data.b)>np.radians(20.))&(np.abs(data.vgsr)>200.)&(data.feh<-0.9)&(data.vhel_err<20.)].reset_index(drop=True)
+    data = data[(np.abs(data.b)>np.radians(20.))&(data.feh<-0.9)&(data.vhel_err<20.)].reset_index(drop=True)
 
     data.to_csv("/data/aamw3/SDSS/main_sequence.csv")
 
@@ -62,7 +62,12 @@ def bhb_query():
     data.loc[:,'l'] = pd.Series(l,index=data.index)
     data.loc[:,'b'] = pd.Series(b,index=data.index)
     data.loc[:,'vgsr'] = pd.Series(vgsr,index=data.index)
-    data = data[(np.abs(data.b)>np.radians(20.))&(np.abs(data.vgsr)>200.)&(data.feh<-0.9)&(data.vhel_err<20.)].reset_index(drop=True)
+    data = data[(np.abs(data.b)>np.radians(20.))&(data.feh<-0.9)&(data.vhel_err<20.)].reset_index(drop=True)
     data.to_csv("/data/aamw3/SDSS/bhb.csv")
 
     return None
+
+
+"""
+To make the K giant sample, I downloaded the data from Xue et al. and then cut so that [Fe/H]<-0.9 and |b| > 20 degrees. 
+"""

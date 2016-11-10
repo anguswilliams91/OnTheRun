@@ -5,7 +5,6 @@ import numpy as np, pandas as pd , gus_utils as gu, emcee, warnings, sys
 from scipy.optimize import minimize
 from scipy.special import hyp2f1
 
-
 def sample_distances(data,n_samples=10000,tracer='main_sequence'):
 
     """Given a Pandas dataframe, compute distance samples and return a numpy array with distance samples and 
@@ -96,11 +95,68 @@ def sample_distances_multiple_tracers(n_samples=1000):
     kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
     ms = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
 
+    bhb = bhb[np.abs(bhb.vgsr)>200.].reset_index(drop=True)
+    kgiant = kgiant[np.abs(kgiant.vgsr)>200.].reset_index(drop=True)
+    ms = ms[np.abs(ms.vgsr)>200.].reset_index(drop=True)
+
+
     bhb_s = sample_distances(bhb,n_samples=n_samples,tracer='bhb')
     kgiant_s = sample_distances(kgiant,n_samples=n_samples,tracer='kgiant')
     ms_s = sample_distances(ms,n_samples=n_samples,tracer='main_sequence')
 
     return [bhb_s, kgiant_s, ms_s]
+
+def compute_galactocentric_radii(data,tracer,append_dataframe=True):
+
+    """
+    Compute galactocentric radius for a given tracer.
+
+    Arguments
+    ---------
+
+    data: DataFrame
+        pandas dataframe containing the relevant information for this tracer
+
+    tracer: string 
+        tracer type
+
+    append_dataframe: bool 
+        if True, append a column called 'rgc' to the DataFrame, if False then 
+        return the radii explicitly
+
+    Returns
+    -------
+
+    r: array_like
+        list of galactocentric radii (if append_dataframe is False)
+    """
+
+    if tracer == "main_sequence":
+
+        s = gu.Ivesic_estimator(data.g.values,data.r.values,data.i.values,data.feh.values)
+
+    elif tracer == "bhb":
+
+        s = gu.BHB_distance(data.g.values,data.r.values)
+
+    elif tracer == "kgiant":
+
+        print("Radii should be included in K giant DataFrame already.")
+        if append_dataframe is True:
+            return None
+        else: return data.rgc.values
+
+    x,y,z = gu.galactic2cartesian(s,data.b.values,data.l.values)
+    r = np.sqrt(x**2.+y**2.+z**2.)
+
+    if append_dataframe is True: 
+
+        data.loc[:,'rgc'] = pd.Series(r, index=data.index)
+
+    else:
+
+        return r
+
 
 def Gaussian(v,mu,sigma):
 
@@ -375,13 +431,13 @@ def log_priors_model(params,vmin,model):
             return -np.inf
         elif v0<150. or v0>400.:
             return -np.inf
-        elif rs<5. or rs>50.:
+        elif rs<0. or rs>100.:
             return -np.inf
         elif vesc_model(50.,0.,0.,params,"TF")<vmin:
             return -np.inf 
         else:
             return -np.log(v0) \
-                    -np.log(rs)
+                    -.5*(rs-15.)**2./7**2.
 
     else: 
 
@@ -433,10 +489,10 @@ def sample_priors_model(model,n_walkers):
     elif model == "TF":
 
         v0_samples = np.random.uniform(low=np.log(200.),high=np.log(300.),size=n_walkers)
-        rs_samples = np.random.uniform(low=np.log(10.),high=np.log(50.),size=n_walkers)
+        rs_samples = np.clip(np.random.normal(loc=15.,scale=7.,size=n_walkers),0.,np.inf)
         alpha_samples = np.random.uniform(low=0.,high=1.,size=n_walkers)
 
-        return np.vstack((np.exp(v0_samples),np.exp(rs_samples),alpha_samples)).T
+        return np.vstack((np.exp(v0_samples),rs_samples,alpha_samples)).T
 
     else: 
 
