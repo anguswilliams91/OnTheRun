@@ -30,10 +30,11 @@ def construct_interpolator(data,tracer):
 
     """
 
-
-
     r = m.compute_galactocentric_radii(data,tracer,append_dataframe=False)
-    r = r[r<50.]
+    if tracer=="kgiant" or tracer=="bhb":
+        r = r[r<50.]
+    elif tracer=="main_sequence":
+        r = r[r<20.]
     pdf,bins = np.histogram(r,10,normed=True)
     r_nodes = np.array([.5*(bins[i]+bins[i+1]) for i in np.arange(10)])
 
@@ -42,11 +43,50 @@ def construct_interpolator(data,tracer):
 
 def compute_posterior(v,vmin,k,spline,limits,params,model):
 
+    """Calculate the probability desnity at a line of sight velocity given a model 
+    with a particular set of parameters, and a selection function p(r).
+
+    Arguments
+    ---------
+
+    v: float
+        line of sight velocity at which to evaluate the probability
+
+    vmin: float
+        the minimum line of sight velocity in the sample 
+
+    k: float 
+        the power law index of the speed distribution 
+
+    spline: InterpolatedUnivariateSpline
+        a spline object for p(r)
+
+    limits: list 
+        the upper and lower limits of p(r)
+
+    params: array_like
+        model parameters 
+
+    model: string 
+        the name of the model
+
+    Returns
+    -------
+
+    pdf: float
+        the probability density at v
+
+    """
+
     if v<vmin or v>m.vesc_model(limits[1],0.,0.,params,model): return 0.
 
     def numerator_integrand(r):
 
-        return (m.vesc_model(r,0.,0.,params,model) - v)**(k+1.) * spline(r)
+        out = np.zeros_like(r)
+        vesc = m.vesc_model(r,0.,0.,params,model)
+        out[vesc<=v] = 0.
+        out[vesc>v] = (m.vesc_model(r[vesc>v],0.,0.,params,model) - v)**(k+1.) * spline(r[vesc>v])
+        return out
 
     numerator = fixed_quad(numerator_integrand,limits[0],limits[1],n=12)[0]
 
@@ -57,18 +97,6 @@ def compute_posterior(v,vmin,k,spline,limits,params,model):
     denominator = fixed_quad(denominator_integrand,limits[0],limits[1],n=12)[0]
 
     return numerator/denominator
-
-
-def compute_confidence_intervals(v,vmin,chain,model,tracer):
-
-    """
-    Use the above function to compute confidence intervals on the pdf of 
-    the data for a range of v.
-
-    """
-
-    return None
-
 
 
 

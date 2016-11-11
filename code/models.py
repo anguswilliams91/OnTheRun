@@ -95,6 +95,11 @@ def sample_distances_multiple_tracers(n_samples=1000):
     kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
     ms = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
 
+    # #try a different circular speed
+    # bhb.vgsr = gu.helio2galactic(bhb.vhel,bhb.l,bhb.b,vcirc=220.)
+    # kgiant.vgsr = gu.helio2galactic(kgiant.vhel,kgiant.l,kgiant.b,vcirc=220.)
+    # ms.vgsr = gu.helio2galactic(ms.vhel,ms.l,ms.b,vcirc=220.)
+
     bhb = bhb[np.abs(bhb.vgsr)>200.].reset_index(drop=True)
     kgiant = kgiant[np.abs(kgiant.vgsr)>200.].reset_index(drop=True)
     ms = ms[np.abs(ms.vgsr)>200.].reset_index(drop=True)
@@ -141,8 +146,8 @@ def compute_galactocentric_radii(data,tracer,append_dataframe=True):
 
     elif tracer == "kgiant":
 
-        print("Radii should be included in K giant DataFrame already.")
         if append_dataframe is True:
+            print("Radii should be included in K giant DataFrame already.")
             return None
         else: return data.rgc.values
 
@@ -604,9 +609,6 @@ def run_mcmc(model,filename,vmin=200,n_walkers=80,n_steps=3000,n_threads=20,n_sa
     elif tracer == "main_sequence_only":
         data[0] = None
         data[1] = None
-
-    def minfun(params):
-        return -log_posterior(params, data, vmin, model)
 
     #run a minimization for each walker to get starting points
     n_params = 4 + get_numparams(model)
