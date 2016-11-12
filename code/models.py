@@ -3,7 +3,7 @@ from __future__ import division, print_function
 import numpy as np, pandas as pd , gus_utils as gu, emcee, warnings, sys
 
 from scipy.optimize import minimize
-from scipy.special import hyp2f1
+from scipy.special import hyp2f1, erf
 
 def sample_distances(data,n_samples=10000,tracer='main_sequence'):
 
@@ -216,6 +216,7 @@ def log_likelihood(params, data, vmin, model):
     pot_params = params[4:]
     tracer_likelihoods = np.zeros(3)
     k = [kbhb,kkgiant,kms]
+    outlier_normalisation = 2.37676
 
     for i,tracer in enumerate(data):
         try:
@@ -226,8 +227,9 @@ def log_likelihood(params, data, vmin, model):
             with warnings.catch_warnings():
                 #deliberately getting NaNs here so stop python from telling us about it
                 warnings.simplefilter("ignore",category=RuntimeWarning)
-                out = (1.-f)*(k[i]+2)*(vesc - np.abs(v))**(k[i]+1.) / (vesc - vmin)**(k[i]+2.) + f*Gaussian(v,0.,1000.)
-                out[np.isnan(out)] = f*Gaussian(v[np.isnan(out)],0.,1000.)
+                out = (1.-f)*(k[i]+2)*(vesc - np.abs(v))**(k[i]+1.) / (vesc - vmin)**(k[i]+2.) + \
+                        f*outlier_normalisation*Gaussian(np.abs(v),0.,1000.)
+                out[np.isnan(out)] = f*outlier_normalisation*Gaussian(np.abs(v[np.isnan(out)]),0.,1000.)
             tracer_likelihoods[i] = np.sum( np.log(np.mean(out, axis=1) ) )
         except:
             pass
