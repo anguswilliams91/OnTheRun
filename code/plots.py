@@ -176,7 +176,6 @@ def v_distribution_plot(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20
         ax[i,0].errorbar(v_centres,medians,yerr=[medians-lowers,uppers-medians],fmt='o',c='k')
         ax[i,1].errorbar(v_centres,medians,yerr=[medians-lowers,uppers-medians],fmt='o',c='k')
         ax[i,1].set_yscale("log")
-        ax[i,1].set_xscale("log")
 
     fig.text(0.5,0.,"$v_{||}/\\mathrm{kms^{-1}}$")
     fig.text(0.,0.5,"$p(v_{||})/\\mathrm{km^{-1}s}$",rotation=90)
