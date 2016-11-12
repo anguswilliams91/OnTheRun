@@ -86,7 +86,7 @@ def Vesc_posterior(chain,model,burnin=200,pos_cmap="Greys",dat_cmap="Blues"):
     return ax
 
 
-def v_distribution_plot(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20,20,10]):
+def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20,20,10]):
 
     """
     Plot the inferred line of sight velocity distribution for stars, normalised 
@@ -130,6 +130,7 @@ def v_distribution_plot(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20
     msto = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
     msto = msto[msto.vgsr!=np.max(msto.vgsr)].reset_index(drop=True)
     data = (msto,kgiant,bhb)
+    tracer_title = ["MSTO","K-giant","BHB"]
 
     fig,ax = plt.subplots(3,2,figsize=(10.,15.),sharex=True)
     for a in ax.ravel():
@@ -178,8 +179,12 @@ def v_distribution_plot(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20
         ax[i,0].plot(v_centres,medians,'o',c='k',ms=2.)
         ax[i,1].plot(v_centres,medians,'o',c='k',ms=2.)
         ax[i,1].set_yscale("log")
+        ymin,ymax = ax[i,1].get_ylim()
+        ax[i,1].set_ylim((1e-6,ymax))
+        ax[i,0].text(400.,0.75*ax[i,0].get_ylim()[1],tracer_title[i],fontsize=20)
 
     fig.text(0.5,0.,"$v_{||}/\\mathrm{kms^{-1}}$")
     fig.text(0.,0.5,"$p(v_{||})/\\mathrm{km^{-1}s}$",rotation=90)
 
     return ax
+
