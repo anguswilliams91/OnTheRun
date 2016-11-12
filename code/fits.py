@@ -78,7 +78,7 @@ def compute_posterior(v,vmin,k,spline,limits,params,model):
 
     """
 
-    if v<vmin or v>m.vesc_model(limits[1],0.,0.,params,model): return 0.
+    if v<vmin: return 0.
 
     def numerator_integrand(r):
 
