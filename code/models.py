@@ -100,9 +100,9 @@ def sample_distances_multiple_tracers(n_samples=1000):
     # kgiant.vgsr = gu.helio2galactic(kgiant.vhel,kgiant.l,kgiant.b,vcirc=220.)
     # ms.vgsr = gu.helio2galactic(ms.vhel,ms.l,ms.b,vcirc=220.)
 
-    bhb = bhb[np.abs(bhb.vgsr)>250.].reset_index(drop=True)
-    kgiant = kgiant[np.abs(kgiant.vgsr)>250.].reset_index(drop=True)
-    ms = ms[np.abs(ms.vgsr)>250.].reset_index(drop=True)
+    bhb = bhb[np.abs(bhb.vgsr)>200.].reset_index(drop=True)
+    kgiant = kgiant[np.abs(kgiant.vgsr)>200.].reset_index(drop=True)
+    ms = ms[np.abs(ms.vgsr)>200.].reset_index(drop=True)
 
 
     bhb_s = sample_distances(bhb,n_samples=n_samples,tracer='bhb')
@@ -478,7 +478,7 @@ def sample_priors_model(model,n_walkers):
     if model == "spherical_powerlaw":
 
         #vesc_Rsun_samples = np.random.normal(loc=533.,scale=25.,size=n_walkers)
-        vesc_Rsun_samples = np.random.uniform(low=np.log(250.),high=np.log(1000.),size=n_walkers)
+        vesc_Rsun_samples = np.random.uniform(low=np.log(200.),high=np.log(1000.),size=n_walkers)
         alpha_samples = np.random.uniform(low=0., high=1., size=n_walkers)
 
         return np.vstack((np.exp(vesc_Rsun_samples),alpha_samples)).T
@@ -569,7 +569,7 @@ def log_posterior(params, data, vmin, model):
         return log_likelihood(params,data,vmin,model)+logprior
 
 
-def run_mcmc(model,filename,vmin=250,n_walkers=80,n_steps=3000,n_threads=20,n_samples=200,seed=0,tracer=None):
+def run_mcmc(model,filename,vmin=200.,n_walkers=80,n_steps=3000,n_threads=20,n_samples=200,seed=0,tracer=None):
 
     """
     Set up and run an MCMC for a given model. The chain will run and 
