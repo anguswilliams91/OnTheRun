@@ -125,13 +125,13 @@ def v_distribution_plot(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20
     k = [k_ms,k_kgiant,k_bhb]
     tracer_names = ["main_sequence","kgiant","bhb" ]
 
-    bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
-    kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
-    msto = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
+    bhb = pd.read_csv("/Users/Gus/Data/bhb.csv")
+    kgiant = pd.read_csv("/Users/Gus/Data/kgiant.csv")
+    msto = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
     msto = msto[msto.vgsr!=np.max(msto.vgsr)].reset_index(drop=True)
     data = (msto,kgiant,bhb)
 
-    fig,ax = plt.subplots(3,2,figsize=(10.,15.))
+    fig,ax = plt.subplots(3,2,figsize=(10.,15.),sharex=True)
     for a in ax.ravel():
         a.yaxis.set_major_formatter(major_formatter)
     cm = plt.cm.get_cmap(cmap)
@@ -173,8 +173,10 @@ def v_distribution_plot(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20
             medians[j] = gammaincinv(counts[j]+1.,0.5)*nf
             uppers[j] = gammaincinv(counts[j]+1.,0.9)*nf
 
-        ax[i,0].errorbar(v_centres,medians,yerr=[medians-lowers,uppers-medians],fmt='o',c='k')
-        ax[i,1].errorbar(v_centres,medians,yerr=[medians-lowers,uppers-medians],fmt='o',c='k')
+        ax[i,0].errorbar(v_centres,medians,yerr=[medians-lowers,uppers-medians],fmt='none',ecolor='k',ms=2.)
+        ax[i,1].errorbar(v_centres,medians,yerr=[medians-lowers,uppers-medians],fmt='none',ecolor='k',ms=2.)
+        ax[i,0].plot(v_centres,medians,'o',c='k',ms=2.)
+        ax[i,1].plot(v_centres,medians,'o',c='k',ms=2.)
         ax[i,1].set_yscale("log")
 
     fig.text(0.5,0.,"$v_{||}/\\mathrm{kms^{-1}}$")
