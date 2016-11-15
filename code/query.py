@@ -28,6 +28,7 @@ def main_sequence_query():
                                                     'logg_err','teff','teff_err'])
 
     l,b = gu.radec2galactic(data.ra.values,data.dec.values)
+    print len(l)
     vgsr = gu.helio2galactic(data.vhel.values,l,b)
     data.loc[:,'l'] = pd.Series(l,index=data.index)
     data.loc[:,'b'] = pd.Series(b,index=data.index)
