@@ -18,7 +18,7 @@ def main_sequence_query():
      and spp.scienceprimary=1 and spa.class='STAR' and spa.extinction_r<0.3 and spa.dered_g-spa.dered_r between 0.2 and 0.6 \
      and spa.psfmagerr_g<0.04 and spa.psfmagerr_r<0.04 and spa.psfmagerr_i<0.04 and spp.fehadopunc<0.1\
      and spa.dered_r between 14.5 and 20. and spp.fehadop between -4. and 2. and spp.loggadop between 3.5 and 4. \
-     and spp.elodiervfinal between -1000. and 1000. and spp.teffadop between 4000. and 10000. and \
+     and spp.elodiervfinal between -1000. and 1000. and spp.teffadop between 4800. and 8000. and \
      spa.psfmagerr_g>0. and spa.psfmagerr_r>0. and spa.psfmagerr_i>0. and (spp.zwarning=0 or spp.zwarning=16)\
      and (spp.snr > 20.)"
 

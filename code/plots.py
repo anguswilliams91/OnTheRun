@@ -39,9 +39,9 @@ def Vesc_posterior(chain,model,burnin=200,pos_cmap="Greys",dat_cmap="Blues"):
     samples = np.reshape(c, (c.shape[0]*c.shape[1],n)).T
 
     #load the data, extract vgsr and r from it
-    bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
-    kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
-    msto = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
+    bhb = pd.read_csv("/Users/Gus/Data/bhb.csv")
+    kgiant = pd.read_csv("/Users/Gus/Data/kgiant.csv")
+    msto = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
 
     bhb_dist = gu.BHB_distance(bhb.g.values,bhb.r.values,feh=bhb.feh.values)
     bx,by,bz = gu.galactic2cartesian(bhb_dist,bhb.b.values,bhb.l.values)
@@ -124,9 +124,10 @@ def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nb
     k = [k_ms,k_kgiant,k_bhb]
     tracer_names = ["main_sequence","kgiant","bhb" ]
 
-    bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
-    kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
-    msto = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
+    #load the data, extract vgsr and r from it
+    bhb = pd.read_csv("/Users/Gus/Data/bhb.csv")
+    kgiant = pd.read_csv("/Users/Gus/Data/kgiant.csv")
+    msto = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
     msto = msto[msto.vgsr!=np.max(msto.vgsr)].reset_index(drop=True)
     data = (msto,kgiant,bhb)
     tracer_title = ["MSTO","K-giant","BHB"]
@@ -260,19 +261,21 @@ def plot_tracers(**kwargs):
     m.compute_galactocentric_radii(kgiant,"kgiant",append_dataframe=True)
     msto = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
     m.compute_galactocentric_radii(msto,"main_sequence",append_dataframe=True)
-    bhb = bhb[(bhb.rgc<50.)&(np.abs(bhb.vgsr)>200.)].reset_index(drop=True)
-    kgiant = kgiant[(kgiant.rgc<50.)&(np.abs(kgiant.vgsr)>200.)].reset_index(drop=True)
-    msto = msto[(msto.rgc<15.)&(np.abs(msto.vgsr)>200.)].reset_index(drop=True)
+    bhb = bhb[(np.abs(bhb.vgsr)>200.)].reset_index(drop=True)
+    kgiant = kgiant[(np.abs(kgiant.vgsr)>200.)].reset_index(drop=True)
+    msto = msto[(np.abs(msto.vgsr)>200.)].reset_index(drop=True)
     data = (msto,kgiant,bhb)
     tracer_title = ["MSTO","K-giant","BHB"]
     colors = ["k","crimson","royalblue"]
     width,height = plt.rcParams.get('figure.figsize')
-    fig,ax = plt.subplots(1,3,figsize=(3*width,height),sharey=True)
+    fig,ax = plt.subplots(1,3,figsize=(3*width,height),sharey=True,sharex=True)
 
     for i,tracer in enumerate(data):
 
         ax[i].scatter(tracer.rgc.values,np.abs(tracer.vgsr.values),c=colors[i],\
                                                         edgecolors='none',**kwargs)
+        
+        ax[i].set_xlim((0.,50.))
         xmin,xmax = ax[i].get_xlim()
         ymin,ymax = ax[i].get_ylim()
         ax[i].set_ylim((200.,ymax))
@@ -281,7 +284,7 @@ def plot_tracers(**kwargs):
     
     fig.text(0.5,0.,"$r/\\mathrm{kpc}$")
     fig.text(0.,0.5,"$v_{||}/\\mathrm{kms^{-1}}$",rotation=90)
-    fig.subplots_adjust(bottom=0.2,left=0.2)
+    fig.subplots_adjust(bottom=0.3,left=0.2)
 
     return None
         
