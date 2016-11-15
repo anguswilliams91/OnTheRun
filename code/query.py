@@ -32,7 +32,7 @@ def main_sequence_query():
     data.loc[:,'l'] = pd.Series(l,index=data.index)
     data.loc[:,'b'] = pd.Series(b,index=data.index)
     data.loc[:,'vgsr'] = pd.Series(vgsr,index=data.index)
-    s = gu.Ivesic_Estimator(data.g.values,data.r.values,data.i.values,data.feh.values)
+    s = gu.Ivesic_estimator(data.g.values,data.r.values,data.i.values,data.feh.values)
     data = data[(np.abs(data.b)>np.radians(20.))&(data.feh<-0.9)&(data.vhel_err<20.)&(s<15.)].reset_index(drop=True)
 
     data.to_csv("/data/aamw3/SDSS/main_sequence.csv")
