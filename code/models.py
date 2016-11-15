@@ -91,9 +91,9 @@ def sample_distances_multiple_tracers(n_samples=1000):
         galactocentric line of sight velocities. 
     """
 
-    bhb = pd.read_csv("/Users/Gus/Data/bhb.csv")
-    kgiant = pd.read_csv("/Users/Gus/Data/kgiant.csv")
-    ms = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
+    bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
+    kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
+    ms = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
 
     # #try a different circular speed
     # bhb.vgsr = gu.helio2galactic(bhb.vhel,bhb.l,bhb.b,vcirc=220.)
