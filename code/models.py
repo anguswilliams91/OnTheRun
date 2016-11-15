@@ -56,17 +56,17 @@ def sample_distances(data,n_samples=10000,tracer='main_sequence'):
         b_oversampled[i] = data.b[i]*np.ones(n_samples)
         v_oversampled[i] = data.vgsr[i]*np.ones(n_samples)
 
-    median_distances = np.median(distances, axis=1)
-    uncertainty_distances = np.std(distances,axis=1)
-    frac_err = uncertainty_distances/median_distances
-    if tracer=='main_sequence':
-        accept = (frac_err<0.2)&(median_distances<15.)
-    elif tracer=='bhb':
-        accept = (frac_err<0.3)&(median_distances<50.)
-    elif tracer=='kgiant':
-        accept = (frac_err<0.3)&(median_distances<50.)
-    l_oversampled,b_oversampled,v_oversampled,distances = l_oversampled[accept],b_oversampled[accept],\
-                                              v_oversampled[accept],distances[accept]
+    # median_distances = np.median(distances, axis=1)
+    # uncertainty_distances = np.std(distances,axis=1)
+    # frac_err = uncertainty_distances/median_distances
+    # if tracer=='main_sequence':
+    #     accept = (frac_err<0.2)&(median_distances<15.)
+    # elif tracer=='bhb':
+    #     accept = (frac_err<0.3)&(median_distances<50.)
+    # elif tracer=='kgiant':
+    #     accept = (frac_err<0.3)&(median_distances<50.)
+    #l_oversampled,b_oversampled,v_oversampled,distances = l_oversampled[accept],b_oversampled[accept],\
+    #                                          v_oversampled[accept],distances[accept]
 
     return (l_oversampled,b_oversampled,v_oversampled,distances)
 
@@ -91,9 +91,9 @@ def sample_distances_multiple_tracers(n_samples=1000):
         galactocentric line of sight velocities. 
     """
 
-    bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
-    kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
-    ms = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
+    bhb = pd.read_csv("/Users/Gus/Data/bhb.csv")
+    kgiant = pd.read_csv("/Users/Gus/Data/kgiant.csv")
+    ms = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
 
     # #try a different circular speed
     # bhb.vgsr = gu.helio2galactic(bhb.vhel,bhb.l,bhb.b,vcirc=220.)
@@ -101,7 +101,7 @@ def sample_distances_multiple_tracers(n_samples=1000):
     # ms.vgsr = gu.helio2galactic(ms.vhel,ms.l,ms.b,vcirc=220.)
 
     bhb = bhb[np.abs(bhb.vgsr)>200.].reset_index(drop=True)
-    kgiant = kgiant[np.abs(kgiant.vgsr)>200.].reset_index(drop=True)
+    kgiant = kgiant[(np.abs(kgiant.vgsr)>200.)].reset_index(drop=True)
     ms = ms[np.abs(ms.vgsr)>200.].reset_index(drop=True)
 
 

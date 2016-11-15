@@ -2,7 +2,7 @@ from __future__ import division, print_function
 
 import numpy as np, matplotlib.pyplot as plt, pandas as pd
 
-import plotting as pl, gus_utils as gu, models as m, fits as f
+import plotting as pl, gus_utils as gu, models as m, fits as f, corner_plot as  cp 
 
 from scipy.special import gammaincinv
 
@@ -246,6 +246,49 @@ def mass_enclosed(chain,model,burnin=200,cmap="Greys",fontsize=30,tickfontsize=2
     ax[1].set_ylim((0.,400.))
 
     return ax
+
+def plot_tracers(**kwargs):
+
+    """
+    Plot the full distributions of vLOS against galactocentric r for 
+    our three tracer groups.
+    """
+
+    bhb = pd.read_csv("/Users/Gus/Data/bhb.csv")
+    m.compute_galactocentric_radii(bhb,"bhb",append_dataframe=True)
+    kgiant = pd.read_csv("/Users/Gus/Data/kgiant.csv")
+    m.compute_galactocentric_radii(kgiant,"kgiant",append_dataframe=True)
+    msto = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
+    m.compute_galactocentric_radii(msto,"main_sequence",append_dataframe=True)
+    bhb = bhb[(bhb.rgc<50.)&(np.abs(bhb.vgsr)>200.)].reset_index(drop=True)
+    kgiant = kgiant[(kgiant.rgc<50.)&(np.abs(kgiant.vgsr)>200.)].reset_index(drop=True)
+    msto = msto[(msto.rgc<15.)&(np.abs(msto.vgsr)>200.)].reset_index(drop=True)
+    data = (msto,kgiant,bhb)
+    tracer_title = ["MSTO","K-giant","BHB"]
+    colors = ["k","crimson","royalblue"]
+    width,height = plt.rcParams.get('figure.figsize')
+    fig,ax = plt.subplots(1,3,figsize=(3*width,height),sharey=True)
+
+    for i,tracer in enumerate(data):
+
+        ax[i].scatter(tracer.rgc.values,np.abs(tracer.vgsr.values),c=colors[i],\
+                                                        edgecolors='none',**kwargs)
+        xmin,xmax = ax[i].get_xlim()
+        ymin,ymax = ax[i].get_ylim()
+        ax[i].set_ylim((200.,ymax))
+        ax[i].text(xmin+.65*(xmax-xmin),200.+.8*(ymax-200.),tracer_title[i]+"\n $N={}$".format(len(tracer)),fontsize=30)
+
+    
+    fig.text(0.5,0.,"$r/\\mathrm{kpc}$")
+    fig.text(0.,0.5,"$v_{||}/\\mathrm{kms^{-1}}$",rotation=90)
+    fig.subplots_adjust(bottom=0.2,left=0.2)
+
+    return None
+        
+
+
+
+
 
 
 
