@@ -71,16 +71,15 @@ def Vesc_posterior(chain,model,burnin=200,pos_cmap="Greys",dat_cmap="Blues"):
     pl.posterior_1D(samples,r,vesc,cmap=pos_cmap,ax=ax)
     pl.posterior_1D(samples,r,minus_vesc,cmap=pos_cmap,ax=ax)
 
-    # ax.plot(mr,mvgsr,'o',c='k',mec='none',ms=5,alpha=0.8,label="MSTO",rasterized=True)
-    # ax.plot(kr,kvgsr,'o',c='r',mec='none',ms=5,alpha=0.8,label="K giant",rasterized=True)
-    # ax.plot(br,bvgsr,'o',c='b',mec='none',ms=5,alpha=0.8,label="BHB",rasterized=True)
-    pl.kde_smooth(np.hstack((mr,kr,br)),np.hstack((mvgsr,kvgsr,bvgsr)),scatter_outside=True,cmap=dat_cmap,ax=ax,markersize=4,\
-            fill=True)
+    ax.plot(mr,mvgsr,'o',c="k",mec='none',ms=3,alpha=0.8,label="MSTO",rasterized=True)
+    ax.plot(kr,kvgsr,'o',c="crimson",mec='none',ms=3,alpha=0.8,label="K giant",rasterized=True)
+    ax.plot(br,bvgsr,'o',c="royalblue",mec='none',ms=3,alpha=0.8,label="BHB",rasterized=True)
 
     ax.set_xlabel("$r/\\mathrm{kpc}$")
     ax.set_ylabel("$v_\\mathrm{||}/\\mathrm{kms^{-1}}$")
+    ax.legend(loc='upper right',numpoints=1,markerscale=3)
 
-    ax.set_ylim((-700.,700.))
+    ax.set_ylim((-700.,1000.))
     ax.set_xlim(np.min(np.hstack((mr,kr,br))),50.)
 
     return ax
@@ -125,12 +124,13 @@ def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nb
     k = [k_ms,k_kgiant,k_bhb]
     tracer_names = ["main_sequence","kgiant","bhb" ]
 
-    bhb = pd.read_csv("/Users/Gus/Data/bhb.csv")
-    kgiant = pd.read_csv("/Users/Gus/Data/kgiant.csv")
-    msto = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
+    bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
+    kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
+    msto = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
     msto = msto[msto.vgsr!=np.max(msto.vgsr)].reset_index(drop=True)
     data = (msto,kgiant,bhb)
     tracer_title = ["MSTO","K-giant","BHB"]
+    colors = ["k","crimson","royalblue"]
 
     fig,ax = plt.subplots(3,2,figsize=(10.,15.),sharex=True)
     for a in ax.ravel():
@@ -147,19 +147,8 @@ def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nb
                                         ,samples[j],model) for vi in v for j in \
                                         np.arange(n_samples)]).reshape((n_v,n_samples))
 
-        confs = np.zeros((n_v,5))
-        for j in np.arange(n_v):
-            confs[j,0] = np.percentile(function_samples[j],3)
-            confs[j,1] = np.percentile(function_samples[j],16)
-            confs[j,2] = np.percentile(function_samples[j],50)
-            confs[j,3] = np.percentile(function_samples[j],84)
-            confs[j,4] = np.percentile(function_samples[j],97)
-
         for a in ax[i,:]:
-            a.plot(v,confs[:,2],c=cm(1.))
-            a.fill_between(v,confs[:,1],confs[:,3],facecolor=cm(0.25),lw=0)
-            a.fill_between(v,confs[:,3],confs[:,4],facecolor=cm(0.75),lw=0)
-            a.fill_between(v,confs[:,0],confs[:,1],facecolor=cm(0.75),lw=0)
+            a.plot(v,np.mean(function_samples,axis=1),c='slategray',zorder=0,lw=2)
             a.set_xlim(np.min(v),np.max(v))
 
     for i, tracer in enumerate(data):
@@ -174,17 +163,93 @@ def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nb
             medians[j] = gammaincinv(counts[j]+1.,0.5)*nf
             uppers[j] = gammaincinv(counts[j]+1.,0.9)*nf
 
-        ax[i,0].errorbar(v_centres,medians,yerr=[medians-lowers,uppers-medians],fmt='none',ecolor='k',ms=2.)
-        ax[i,1].errorbar(v_centres,medians,yerr=[medians-lowers,uppers-medians],fmt='none',ecolor='k',ms=2.)
-        ax[i,0].plot(v_centres,medians,'o',c='k',ms=2.)
-        ax[i,1].plot(v_centres,medians,'o',c='k',ms=2.)
+        ax[i,0].errorbar(v_centres,medians,yerr=[medians-lowers,uppers-medians],fmt='o',ecolor=colors[i],ms=4.,mfc=colors[i],mec='none',elinewidth=1)
+        ax[i,1].errorbar(v_centres,medians,yerr=[medians-lowers,uppers-medians],fmt='o',ecolor=colors[i],ms=4.,mfc=colors[i],mec='none',elinewidth=1)
         ax[i,1].set_yscale("log")
         ymin,ymax = ax[i,1].get_ylim()
         ax[i,1].set_ylim((1e-6,ymax))
         ax[i,0].text(400.,0.75*ax[i,0].get_ylim()[1],tracer_title[i],fontsize=20)
 
     fig.text(0.5,0.,"$v_{||}/\\mathrm{kms^{-1}}$")
-    fig.text(0.,0.5,"$p(v_{||})/\\mathrm{km^{-1}s}$",rotation=90)
+    fig.text(0.,0.5,"$p(v_{||}\\, | \\, \\mathrm{data})/\\mathrm{km^{-1}s}$",rotation=90)
 
     return ax
+
+def mass_enclosed(chain,model,burnin=200,cmap="Greys",fontsize=30,tickfontsize=20,**kwargs):
+
+    """
+    Plot the mass enclosed implied by a spherically symmetric model given 
+    an MCMC chain of parameter samples and radial limits. Median and 68 percent, 
+    94 percent credible intervals
+
+    Arguments 
+    ---------
+
+    chain: array_like [n_samples,n_parameters]
+        MCMC chain of parameter samples 
+
+    model: string 
+        model name
+
+    Returns
+    -------
+
+    ax: pyplot.axes 
+        matplotlib.pyplot axes object  
+    """
+
+    G = 43010.795338751527 #in km^2 s^-2 kpc (10^10 Msun)^-1
+    n = m.get_numparams(model)
+    c = gu.reshape_chain(chain)[:,burnin:,:]
+    c = np.reshape(c, (c.shape[0]*c.shape[1],c.shape[2]))
+    samples = c[:,-n:].T
+
+    rlims=[0.1,50.]
+
+    if model == "spherical_powerlaw":
+
+        model_name = "SPL"
+
+        def mass_enclosed(r,params):
+
+            vesc_Rsun, alpha = params
+            v0 = np.sqrt(.5*alpha)*vesc_Rsun
+            return v0**2.*r*(r/8.5)**(-alpha) / G 
+
+    elif model == "TF":
+
+        model_name = "TF"
+
+        def mass_enclosed(r,params):
+
+            v0, rs, alpha = params
+
+            return r * v0**2. * rs**alpha / (G * (rs**2.+r**2.)**(.5*alpha) )
+
+    def rotation_curve(r,params):
+
+        return np.sqrt(mass_enclosed(r,params)*G/r)
+
+    r1 = np.linspace(rlims[0],rlims[1],200)
+    r2 = np.linspace(8.5,rlims[1],200)
+    width,height = plt.rcParams.get('figure.figsize')
+    fig,ax = plt.subplots(1,2,figsize=(2*width,height))
+
+    pl.posterior_1D(samples,r1,mass_enclosed,cmap=cmap,ax=ax[0],fontsize=fontsize,tickfontsize=tickfontsize,**kwargs)
+    pl.posterior_1D(samples,r2,rotation_curve,cmap=cmap,ax=ax[1],fontsize=fontsize,tickfontsize=tickfontsize,**kwargs)
+    ymin,ymax = ax[0].get_ylim()
+    ax[0].text(rlims[0]+.1*(rlims[1]-rlims[0]),ymin+.75*(ymax-ymin),model_name,fontsize=1.5*fontsize)
+    ax[0].set_ylabel("$M(r)/\\mathrm{10^{11}M_\\odot}$",fontsize=fontsize)
+    ax[0].set_xlabel("$r/\\mathrm{kpc}$",fontsize=fontsize)
+    ax[1].set_xlabel("$r/\\mathrm{kpc}$",fontsize=fontsize)
+    ax[1].set_ylabel("$v_c(r)/\\mathrm{kms^{-1}}$",fontsize=fontsize)
+    ax[1].set_ylim((0.,400.))
+
+    return ax
+
+
+
+
+
+
 

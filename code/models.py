@@ -495,7 +495,7 @@ def sample_priors_model(model,n_walkers):
 
     elif model == "TF":
 
-        v0_samples = np.random.uniform(low=np.log(200.),high=np.log(300.),size=n_walkers)
+        v0_samples = np.random.uniform(low=np.log(150.),high=np.log(300.),size=n_walkers)
         rs_samples = np.clip(np.random.normal(loc=15.,scale=7.,size=n_walkers),0.,np.inf)
         alpha_samples = np.random.uniform(low=0.,high=1.,size=n_walkers)
 
