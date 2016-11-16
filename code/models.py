@@ -3,7 +3,7 @@ from __future__ import division, print_function
 import numpy as np, pandas as pd , gus_utils as gu, emcee, warnings, sys
 
 from scipy.optimize import minimize
-from scipy.special import hyp2f1, erf
+from scipy.special import hyp2f1, erfc
 
 def sample_distances(data,n_samples=10000,tracer='main_sequence'):
 
@@ -56,21 +56,9 @@ def sample_distances(data,n_samples=10000,tracer='main_sequence'):
         b_oversampled[i] = data.b[i]*np.ones(n_samples)
         v_oversampled[i] = data.vgsr[i]*np.ones(n_samples)
 
-    # median_distances = np.median(distances, axis=1)
-    # uncertainty_distances = np.std(distances,axis=1)
-    # frac_err = uncertainty_distances/median_distances
-    # if tracer=='main_sequence':
-    #     accept = (frac_err<0.2)&(median_distances<15.)
-    # elif tracer=='bhb':
-    #     accept = (frac_err<0.3)&(median_distances<50.)
-    # elif tracer=='kgiant':
-    #     accept = (frac_err<0.3)&(median_distances<50.)
-    #l_oversampled,b_oversampled,v_oversampled,distances = l_oversampled[accept],b_oversampled[accept],\
-    #                                          v_oversampled[accept],distances[accept]
-
     return (l_oversampled,b_oversampled,v_oversampled,distances)
 
-def sample_distances_multiple_tracers(n_samples=1000):
+def sample_distances_multiple_tracers(n_samples=200,vmin=200.):
 
     """
     Sample from the uncertainties on distance for all three data sets.
@@ -100,9 +88,9 @@ def sample_distances_multiple_tracers(n_samples=1000):
     # kgiant.vgsr = gu.helio2galactic(kgiant.vhel,kgiant.l,kgiant.b,vcirc=220.)
     # ms.vgsr = gu.helio2galactic(ms.vhel,ms.l,ms.b,vcirc=220.)
 
-    bhb = bhb[np.abs(bhb.vgsr)>200.].reset_index(drop=True)
-    kgiant = kgiant[(np.abs(kgiant.vgsr)>200.)].reset_index(drop=True)
-    ms = ms[np.abs(ms.vgsr)>200.].reset_index(drop=True)
+    bhb = bhb[np.abs(bhb.vgsr)>vmin].reset_index(drop=True)
+    kgiant = kgiant[(np.abs(kgiant.vgsr)>vmin)].reset_index(drop=True)
+    ms = ms[np.abs(ms.vgsr)>vmin].reset_index(drop=True)
 
 
     bhb_s = sample_distances(bhb,n_samples=n_samples,tracer='bhb')
@@ -216,7 +204,7 @@ def log_likelihood(params, data, vmin, model):
     pot_params = params[4:]
     tracer_likelihoods = np.zeros(3)
     k = [kbhb,kkgiant,kms]
-    outlier_normalisation = 2.37676
+    outlier_normalisation = ( .5*erfc( vmin / (np.sqrt(2.)*1000.) ) )**-1.
 
     for i,tracer in enumerate(data):
         try:
@@ -452,7 +440,7 @@ def log_priors_model(params,vmin,model):
 
     return None
 
-def sample_priors_model(model,n_walkers):
+def sample_priors_model(model,vmin,n_walkers):
 
     """
     Sample from the prior on a model to use as 
@@ -478,14 +466,14 @@ def sample_priors_model(model,n_walkers):
     if model == "spherical_powerlaw":
 
         #vesc_Rsun_samples = np.random.normal(loc=533.,scale=25.,size=n_walkers)
-        vesc_Rsun_samples = np.random.uniform(low=np.log(200.),high=np.log(1000.),size=n_walkers)
+        vesc_Rsun_samples = np.random.uniform(low=np.log(vmin),high=np.log(1000.),size=n_walkers)
         alpha_samples = np.random.uniform(low=0., high=1., size=n_walkers)
 
         return np.vstack((np.exp(vesc_Rsun_samples),alpha_samples)).T
 
     elif model == "flattened_powerlaw":
 
-        vesc_Rsun_samples = np.random.uniform(low=np.log(200.),high=np.log(1000.),size=n_walkers)
+        vesc_Rsun_samples = np.random.uniform(low=np.log(vmin),high=np.log(1000.),size=n_walkers)
         alpha_samples = np.random.uniform(low=0., high=1., size=n_walkers)
         #sample flattening in variable where prior is uniform then transform to q
         u_samples = np.random.uniform(low=0., high=(2./np.pi)*np.arctan(4.), size=n_walkers)
@@ -603,7 +591,7 @@ def run_mcmc(model,filename,vmin=200.,n_walkers=80,n_steps=3000,n_threads=20,n_s
 
     np.random.seed(seed)
 
-    data = sample_distances_multiple_tracers(n_samples=n_samples)
+    data = sample_distances_multiple_tracers(n_samples=n_samples,vmin=vmin)
     #sometimes we want to test with a subset of the tracers
     if tracer == "kgiant_only":
         data[0] = None 
@@ -615,7 +603,7 @@ def run_mcmc(model,filename,vmin=200.,n_walkers=80,n_steps=3000,n_threads=20,n_s
     #run a minimization for each walker to get starting points
     n_params = 4 + get_numparams(model)
     p0 = np.zeros((n_walkers,n_params))
-    prior_samples_model = sample_priors_model(model,n_walkers)
+    prior_samples_model = sample_priors_model(model,vmin,n_walkers)
     prior_samples_global = sample_priors_global(n_walkers)
     p0 = np.hstack((prior_samples_global,prior_samples_model))
 
@@ -627,11 +615,11 @@ def run_mcmc(model,filename,vmin=200.,n_walkers=80,n_steps=3000,n_threads=20,n_s
 
 def main():
 
-    model, filename, tracer, nwalkers, nsteps, nthreads  = sys.argv[1:]
+    model, filename, tracer, vmin, nwalkers, nsteps, nthreads  = sys.argv[1:]
 
-    nwalkers,nsteps,nthreads = int(nwalkers),int(nsteps),int(nthreads)
+    vmin,nwalkers,nsteps,nthreads = np.float64(vmin),int(nwalkers),int(nsteps),int(nthreads)
 
-    run_mcmc(model,filename,tracer=tracer,n_walkers=nwalkers,n_steps=nsteps,n_threads=nthreads)
+    run_mcmc(model,filename,tracer=tracer,vmin=vmin,n_walkers=nwalkers,n_steps=nsteps,n_threads=nthreads)
 
 
 if __name__ == "__main__":
