@@ -39,9 +39,9 @@ def Vesc_posterior(chain,model,burnin=200,pos_cmap="Greys",dat_cmap="Blues"):
     samples = np.reshape(c, (c.shape[0]*c.shape[1],n)).T
 
     #load the data, extract vgsr and r from it
-    bhb = pd.read_csv("/Users/Gus/Data/bhb.csv")
-    kgiant = pd.read_csv("/Users/Gus/Data/kgiant.csv")
-    msto = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
+    bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
+    kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
+    msto = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
 
     bhb_dist = gu.BHB_distance(bhb.g.values,bhb.r.values,feh=bhb.feh.values)
     bx,by,bz = gu.galactic2cartesian(bhb_dist,bhb.b.values,bhb.l.values)
@@ -125,9 +125,9 @@ def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nb
     tracer_names = ["main_sequence","kgiant","bhb" ]
 
     #load the data, extract vgsr and r from it
-    bhb = pd.read_csv("/Users/Gus/Data/bhb.csv")
-    kgiant = pd.read_csv("/Users/Gus/Data/kgiant.csv")
-    msto = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
+    bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
+    kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
+    msto = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
     msto = msto[msto.vgsr!=np.max(msto.vgsr)].reset_index(drop=True)
     data = (msto,kgiant,bhb)
     tracer_title = ["MSTO","K-giant","BHB"]
@@ -255,11 +255,11 @@ def plot_tracers(**kwargs):
     our three tracer groups.
     """
 
-    bhb = pd.read_csv("/Users/Gus/Data/bhb.csv")
+    bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
     m.compute_galactocentric_radii(bhb,"bhb",append_dataframe=True)
-    kgiant = pd.read_csv("/Users/Gus/Data/kgiant.csv")
+    kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
     m.compute_galactocentric_radii(kgiant,"kgiant",append_dataframe=True)
-    msto = pd.read_csv("/Users/Gus/Data/main_sequence.csv")
+    msto = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
     m.compute_galactocentric_radii(msto,"main_sequence",append_dataframe=True)
     bhb = bhb[(np.abs(bhb.vgsr)>200.)].reset_index(drop=True)
     kgiant = kgiant[(np.abs(kgiant.vgsr)>200.)].reset_index(drop=True)
@@ -287,10 +287,75 @@ def plot_tracers(**kwargs):
     fig.subplots_adjust(bottom=0.3,left=0.2)
 
     return None
-        
 
+def median_vT_plot(fehcut=2.,s_cut=2.,tgas_bins=20,sdss_bins=10):
 
+    #first tgas-rave
+    data = pd.read_csv("/data/aamw3/gaia_dr1/tgas_raveon_nodups.csv")
+    data = data[data.feh<fehcut]
 
+    l,b = gu.radec2galactic(data.ra.values,data.dec.values)
+    vgsr = gu.helio2galactic(data.vhel.values,l,b)
+
+    x,y,z,vx,vy,vz = gu.obs2cartesian(data.pmra.values,data.pmdec.values,data.ra.values,data.dec.values,\
+                                                    1./data.parallax.values,data.vhel.values,radec_pms=True)
+    vT = np.sqrt(vx**2.+vy**2.+vz**2.-vgsr**2.)
+
+    counts,bin_edges = np.histogram(np.abs(vgsr),tgas_bins)
+    bin_centres = np.array([.5*(bin_edges[i] + bin_edges[i+1]) for i in np.arange(tgas_bins)])
+    median_vTs = np.zeros(tgas_bins)
+    plus_vTs = np.zeros(tgas_bins)
+    minus_vTs = np.zeros(tgas_bins)
+    for i in np.arange(tgas_bins):
+        idx  = (np.abs(vgsr)>bin_edges[i])&(np.abs(vgsr)<bin_edges[i+1])
+        if counts[i]>10.:
+            median_vTs[i] = np.median(vT[idx])
+            plus_vTs[i] = np.percentile(vT[idx],84.) - np.median(vT[idx]) 
+            minus_vTs[i] = np.median(vT[idx]) - np.percentile(vT[idx],16.) 
+
+    i1 = counts>10
+
+    #fig,ax = plt.subplots(1,2,figsize=(14.,7.),sharey=True)
+    fig,ax = plt.subplots()
+    ax.errorbar(bin_centres[i1],median_vTs[i1],yerr=[minus_vTs[i1],plus_vTs[i1]],fmt='-o',label="$v_T$")
+    ax.plot(bin_centres[i1],np.sqrt(median_vTs[i1]**2.+bin_centres[i1]**2.),label="$v_\\mathrm{total}$")
+    ax.set_ylabel("$v_i/\\mathrm{kms^{-1}}$")
+    ax.set_xlabel("$v_{||}/\\mathrm{kms^{-1}}$")
+    ax.text(50.,50.,"TGAS-RAVE",fontsize=25)
+    ax.legend(loc='best')
+    ax.axvline(200.,c='0.5',ls='--',zorder=0.)
+
+    # #now do sdss-gaia
+    # ms = f.gaia_crossmatch()
+    # ms = ms[(ms.pmra==ms.pmra)&(ms.pmdec==ms.pmdec)]
+    # ms.loc[:,'s'] = pd.Series(gu.Ivesic_estimator(ms.g.values,ms.r.values,ms.i.values,ms.feh.values),\
+    #                             index=ms.index)
+    # if s_cut is not None:
+    #     ms = ms[ms.s<s_cut]
+    # x,y,z,vx,vy,vz = gu.obs2cartesian(ms.pmra.values,ms.pmdec.values,ms.ra.values,ms.dec.values,\
+    #                                     ms.s.values,ms.vhel.values,radec_pms=True)
+    # vT = np.sqrt(vx**2.+vy**2.+vz**2.-ms.vgsr.values**2.)
+    # counts,bin_edges = np.histogram(np.abs(ms.vgsr.values),sdss_bins)
+    # bin_centres = np.array([.5*(bin_edges[i] + bin_edges[i+1]) for i in np.arange(sdss_bins)])
+    # median_vTs = np.zeros(sdss_bins)
+    # plus_vTs = np.zeros(sdss_bins)
+    # minus_vTs = np.zeros(sdss_bins)
+    # for i in np.arange(sdss_bins):
+    #     idx  = (np.abs(ms.vgsr.values)>bin_edges[i])&(np.abs(ms.vgsr.values)<bin_edges[i+1])
+    #     if counts[i]>10.:
+    #         median_vTs[i] = np.median(vT[idx])
+    #         plus_vTs[i] = np.percentile(vT[idx],84.) - np.median(vT[idx]) 
+    #         minus_vTs[i] = np.median(vT[idx]) - np.percentile(vT[idx],16.)    
+
+    # i1 = counts>10
+
+    # ax[1].errorbar(bin_centres[i1],median_vTs[i1],yerr=[minus_vTs[i1],plus_vTs[i1]],fmt='-o')
+    # ax[1].set_xlim((0.,300.))
+    # ax[1].text(50.,310.,"SDSS-{\\it Gaia}",fontsize=25)
+    # ax[1].set_xlabel("$v_{||}/\\mathrm{kms^{-1}}$")
+    # fig.subplots_adjust(bottom=0.3)
+
+    return fig,ax
 
 
 

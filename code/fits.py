@@ -1,6 +1,6 @@
 from __future__ import division, print_function
 
-import numpy as np, models as m
+import numpy as np, models as m, sql_utils as sql, pandas as pd
 
 from scipy.interpolate import InterpolatedUnivariateSpline
 from scipy.integrate import fixed_quad
@@ -97,6 +97,28 @@ def compute_posterior(v,vmin,k,spline,limits,params,model):
     denominator = fixed_quad(denominator_integrand,limits[0],limits[1],n=12)[0]
 
     return numerator/denominator
+
+
+def gaia_crossmatch():
+    """
+    Cross-match our MS targets to TGAS and check that they have small tangential motions
+    """
+
+    ms = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
+
+    query_str = "select ss.pmra_new,ss.pmdec_new from mytable as t\
+                left join lateral (select g.pmra_new,g.pmdec_new \
+                from gaia_dr1_aux.gaia_source_sdssdr9_xm_new as g \
+                where g.objid=t.objid order by g.dist \
+                asc limit 1) as ss on true"
+
+    pmra,pmdec = sql.local_join(query_str,'mytable',(ms.objid.values,),('objid',))
+
+    ms.loc[:,'pmra'] = pd.Series(pmra,index=ms.index)
+    ms.loc[:,'pmdec'] = pd.Series(pmdec,index=ms.index)
+
+    return ms
+
 
 
 

@@ -83,7 +83,7 @@ def sample_distances_multiple_tracers(n_samples=200,vmin=200.):
     kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
     ms = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
 
-    # #try a different circular speed
+    #try a different circular speed
     # bhb.vgsr = gu.helio2galactic(bhb.vhel,bhb.l,bhb.b,vcirc=220.)
     # kgiant.vgsr = gu.helio2galactic(kgiant.vhel,kgiant.l,kgiant.b,vcirc=220.)
     # ms.vgsr = gu.helio2galactic(ms.vhel,ms.l,ms.b,vcirc=220.)
@@ -426,13 +426,14 @@ def log_priors_model(params,vmin,model):
             return -np.inf
         elif v0<150. or v0>400.:
             return -np.inf
-        elif rs<0. or rs>100.:
+        elif rs<3. or rs>100.:
             return -np.inf
         elif vesc_model(50.,0.,0.,params,"TF")<vmin:
             return -np.inf 
         else:
             return -np.log(v0) \
-                    -.5*(rs-15.)**2./7**2.
+                    -np.log(rs)
+                    #-.5*(rs-15.)**2./7**2.
 
     else: 
 
@@ -484,10 +485,11 @@ def sample_priors_model(model,vmin,n_walkers):
     elif model == "TF":
 
         v0_samples = np.random.uniform(low=np.log(150.),high=np.log(300.),size=n_walkers)
-        rs_samples = np.clip(np.random.normal(loc=15.,scale=7.,size=n_walkers),0.,np.inf)
+        #rs_samples = np.clip(np.random.normal(loc=15.,scale=7.,size=n_walkers),0.,np.inf)
+        rs_samples = np.random.uniform(low=np.log(3.),high=np.log(100.),size=n_walkers)
         alpha_samples = np.random.uniform(low=0.,high=1.,size=n_walkers)
 
-        return np.vstack((np.exp(v0_samples),rs_samples,alpha_samples)).T
+        return np.vstack((np.exp(v0_samples),np.exp(rs_samples),alpha_samples)).T
 
     else: 
 
