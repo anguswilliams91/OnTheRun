@@ -2,7 +2,8 @@ from __future__ import division, print_function
 
 import numpy as np, matplotlib.pyplot as plt, pandas as pd
 
-import plotting as pl, gus_utils as gu, models as m, fits as f, corner_plot as  cp 
+import plotting as pl, gus_utils as gu, models as m, fits as f, corner_plot as  cp,\
+        matplotlib as mpl
 
 from scipy.special import gammaincinv
 
@@ -176,7 +177,7 @@ def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nb
 
     return ax
 
-def mass_enclosed(chain,model,burnin=200,cmap="Greys",fontsize=30,tickfontsize=20,**kwargs):
+def mass_enclosed(chain,model,burnin=200,cmap="Blues",fontsize=30,tickfontsize=20,**kwargs):
 
     """
     Plot the mass enclosed implied by a spherically symmetric model given 
@@ -236,14 +237,14 @@ def mass_enclosed(chain,model,burnin=200,cmap="Greys",fontsize=30,tickfontsize=2
     width,height = plt.rcParams.get('figure.figsize')
     fig,ax = plt.subplots(1,2,figsize=(2*width,height))
 
-    pl.posterior_1D(samples,r1,mass_enclosed,cmap=cmap,ax=ax[0],fontsize=fontsize,tickfontsize=tickfontsize,**kwargs)
-    pl.posterior_1D(samples,r2,rotation_curve,cmap=cmap,ax=ax[1],fontsize=fontsize,tickfontsize=tickfontsize,**kwargs)
+    pl.posterior_1D(samples,r1,mass_enclosed,cmap=cmap,ax=ax[0],tickfontsize="small",fontsize=mpl.rcParams['font.size'],**kwargs)
+    pl.posterior_1D(samples,r2,rotation_curve,cmap=cmap,ax=ax[1],tickfontsize="small",fontsize=mpl.rcParams['font.size'],**kwargs)
     ymin,ymax = ax[0].get_ylim()
-    ax[0].text(rlims[0]+.1*(rlims[1]-rlims[0]),ymin+.75*(ymax-ymin),model_name,fontsize=1.5*fontsize)
-    ax[0].set_ylabel("$M(r)/\\mathrm{10^{11}M_\\odot}$",fontsize=fontsize)
-    ax[0].set_xlabel("$r/\\mathrm{kpc}$",fontsize=fontsize)
-    ax[1].set_xlabel("$r/\\mathrm{kpc}$",fontsize=fontsize)
-    ax[1].set_ylabel("$v_c(r)/\\mathrm{kms^{-1}}$",fontsize=fontsize)
+    ax[0].text(rlims[0]+.1*(rlims[1]-rlims[0]),ymin+.75*(ymax-ymin),model_name,fontsize=30)
+    ax[0].set_ylabel("$M(r)/\\mathrm{10^{11}M_\\odot}$")
+    ax[0].set_xlabel("$r/\\mathrm{kpc}$")
+    ax[1].set_xlabel("$r/\\mathrm{kpc}$")
+    ax[1].set_ylabel("$v_c(r)/\\mathrm{kms^{-1}}$")
     ax[1].set_ylim((0.,400.))
 
     return ax
@@ -280,10 +281,11 @@ def plot_tracers(**kwargs):
         ymin,ymax = ax[i].get_ylim()
         ax[i].set_ylim((200.,ymax))
         ax[i].text(xmin+.65*(xmax-xmin),200.+.8*(ymax-200.),tracer_title[i]+"\n $N={}$".format(len(tracer)),fontsize=30)
+        ax[i].tick_params(labelsize=20)
 
     
-    fig.text(0.5,0.,"$r/\\mathrm{kpc}$")
-    fig.text(0.,0.5,"$v_{||}/\\mathrm{kms^{-1}}$",rotation=90)
+    ax[1].set_xlabel("$r/\\mathrm{kpc}$",fontsize=25)
+    ax[0].set_ylabel("$v_{||}/\\mathrm{kms^{-1}}$",fontsize=25)
     fig.subplots_adjust(bottom=0.3,left=0.2)
 
     return None
@@ -325,37 +327,33 @@ def median_vT_plot(fehcut=2.,s_cut=2.,tgas_bins=20,sdss_bins=10):
     ax.legend(loc='best')
     ax.axvline(200.,c='0.5',ls='--',zorder=0.)
 
-    # #now do sdss-gaia
-    # ms = f.gaia_crossmatch()
-    # ms = ms[(ms.pmra==ms.pmra)&(ms.pmdec==ms.pmdec)]
-    # ms.loc[:,'s'] = pd.Series(gu.Ivesic_estimator(ms.g.values,ms.r.values,ms.i.values,ms.feh.values),\
-    #                             index=ms.index)
-    # if s_cut is not None:
-    #     ms = ms[ms.s<s_cut]
-    # x,y,z,vx,vy,vz = gu.obs2cartesian(ms.pmra.values,ms.pmdec.values,ms.ra.values,ms.dec.values,\
-    #                                     ms.s.values,ms.vhel.values,radec_pms=True)
-    # vT = np.sqrt(vx**2.+vy**2.+vz**2.-ms.vgsr.values**2.)
-    # counts,bin_edges = np.histogram(np.abs(ms.vgsr.values),sdss_bins)
-    # bin_centres = np.array([.5*(bin_edges[i] + bin_edges[i+1]) for i in np.arange(sdss_bins)])
-    # median_vTs = np.zeros(sdss_bins)
-    # plus_vTs = np.zeros(sdss_bins)
-    # minus_vTs = np.zeros(sdss_bins)
-    # for i in np.arange(sdss_bins):
-    #     idx  = (np.abs(ms.vgsr.values)>bin_edges[i])&(np.abs(ms.vgsr.values)<bin_edges[i+1])
-    #     if counts[i]>10.:
-    #         median_vTs[i] = np.median(vT[idx])
-    #         plus_vTs[i] = np.percentile(vT[idx],84.) - np.median(vT[idx]) 
-    #         minus_vTs[i] = np.median(vT[idx]) - np.percentile(vT[idx],16.)    
+    return fig,ax
 
-    # i1 = counts>10
+def Vesc_posterior(burnin=200):
 
-    # ax[1].errorbar(bin_centres[i1],median_vTs[i1],yerr=[minus_vTs[i1],plus_vTs[i1]],fmt='-o')
-    # ax[1].set_xlim((0.,300.))
-    # ax[1].text(50.,310.,"SDSS-{\\it Gaia}",fontsize=25)
-    # ax[1].set_xlabel("$v_{||}/\\mathrm{kms^{-1}}$")
-    # fig.subplots_adjust(bottom=0.3)
+    chain = np.genfromtxt("/data/aamw3/mcmc/escape_chains/spherical_powerlaw.dat")
+
+    fig,ax = plt.subplots()
+    r = np.linspace(4.,50.,200)
+
+    n = m.get_numparams("spherical_powerlaw")
+    c = gu.reshape_chain(chain)[:,burnin:,:]
+    c = np.reshape(c, (c.shape[0]*c.shape[1],c.shape[2]))
+    samples = c[:,-n:].T
+
+    def vesc(r,params):
+        return m.vesc_model(r,0.,0.,params,"spherical_powerlaw")
+
+    pl.posterior_1D(samples,r,vesc,cmap="Blues",ax=ax,tickfontsize="small",fontsize=mpl.rcParams['font.size'])
+
+    ax.set_xlabel("$r/\\mathrm{kpc}$")
+    ax.set_ylabel("$v_\\mathrm{esc}(r)/\\mathrm{kms^{-1}}$")
+
+    ax.errorbar(8.5,533.,yerr=[[41.],[54.]],fmt='o',c='k',markersize=10.,zorder=100000)
+    ax.text(8.9,600.,"RAVE",fontsize=25)
 
     return fig,ax
+
 
 
 
