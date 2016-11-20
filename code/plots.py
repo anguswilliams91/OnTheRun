@@ -350,7 +350,7 @@ def Vesc_posterior(burnin=200):
     ax.set_ylabel("$v_\\mathrm{esc}(r)/\\mathrm{kms^{-1}}$")
 
     ax.errorbar(8.5,533.,yerr=[[41.],[54.]],fmt='o',c='k',markersize=10.,zorder=100000)
-    ax.text(8.9,600.,"RAVE",fontsize=25)
+    ax.text(8.9,600.,"P14",fontsize=25)
 
     return fig,ax
 
