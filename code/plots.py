@@ -8,85 +8,6 @@ import plotting as pl, gus_utils as gu, models as m, fits as f, corner_plot as  
 from scipy.special import gammaincinv
 from palettable.colorbrewer.qualitative import Set1_6
 
-def Vesc_posterior(chain,model,burnin=200,pos_cmap="Greys",dat_cmap="Blues"):
-
-    """
-    Plot the posterior of Vesc(r) as a function of r using 
-    Monte Carlo samples of the parameters.
-
-    Arguments
-    ---------
-
-    chain: array_like
-        MCMC chain of parameters 
-
-    model: string 
-        name of model to be plotted 
-
-    burnin: (=200) int 
-        number of steps to discard as burn-in
-
-
-    Returns
-    -------
-
-    ax: matplotlib axes 
-        axes object with plot 
-
-    """
-
-    #reshape the chain according to which model we're looking it
-    n = m.get_numparams(model)
-    c = gu.reshape_chain(chain)[:,burnin:,-n:]
-    samples = np.reshape(c, (c.shape[0]*c.shape[1],n)).T
-
-    #load the data, extract vgsr and r from it
-    bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
-    kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
-    msto = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
-
-    bhb_dist = gu.BHB_distance(bhb.g.values,bhb.r.values,feh=bhb.feh.values)
-    bx,by,bz = gu.galactic2cartesian(bhb_dist,bhb.b.values,bhb.l.values)
-    br = np.sqrt(bx**2.+by**2.+bz**2.)
-    bvgsr = bhb.vgsr.values[(br<50.)&np.isfinite(br)]
-    br = br[(br<50.)&np.isfinite(br)]
-
-
-    msto_dist = gu.Ivesic_estimator(msto.g.values,msto.r.values,msto.i.values,msto.feh.values)
-    mx,my,mz = gu.galactic2cartesian(msto_dist,msto.b.values,msto.l.values)
-    mr = np.sqrt(mx**2.+my**2.+mz**2.)
-    mvgsr = msto.vgsr.values[(mr<50.)&np.isfinite(mr)]
-    mr = mr[(mr<50.)&np.isfinite(mr)]
-
-    kr = kgiant.rgc.values 
-    kvgsr = kgiant.vgsr.values
-
-    #plot the data and the posterior
-    def vesc(r,params):
-        return m.vesc_model(r,0.,0.,params,model)
-
-    def minus_vesc(r,params):
-        return -m.vesc_model(r,0.,0.,params,model)
-
-    fig,ax = plt.subplots()
-    r = np.linspace(4.,50.,1000)
-    pl.posterior_1D(samples,r,vesc,cmap=pos_cmap,ax=ax)
-    pl.posterior_1D(samples,r,minus_vesc,cmap=pos_cmap,ax=ax)
-
-    ax.plot(mr,mvgsr,'o',c="k",mec='none',ms=3,alpha=0.8,label="MSTO",rasterized=True)
-    ax.plot(kr,kvgsr,'o',c="crimson",mec='none',ms=3,alpha=0.8,label="K giant",rasterized=True)
-    ax.plot(br,bvgsr,'o',c="royalblue",mec='none',ms=3,alpha=0.8,label="BHB",rasterized=True)
-
-    ax.set_xlabel("$r/\\mathrm{kpc}$")
-    ax.set_ylabel("$v_\\mathrm{||}/\\mathrm{kms^{-1}}$")
-    ax.legend(loc='upper right',numpoints=1,markerscale=3)
-
-    ax.set_ylim((-700.,1000.))
-    ax.set_xlim(np.min(np.hstack((mr,kr,br))),50.)
-
-    return ax
-
-
 def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20,20,10],pool_size=8):
 
     """
@@ -308,9 +229,21 @@ def plot_tracers(**kwargs):
 
     return None
 
-def Vesc_posterior(burnin=200):
+def Vesc_posterior(chain,burnin=200):
 
-    chain = np.genfromtxt("/data/aamw3/mcmc/escape_chains/spherical_powerlaw.dat")
+    """
+    Plot the posterior distribution on the escape speed as a function of radius.
+
+    Arguments
+    ---------
+
+    chain: array_like[nsamples,ndims]
+        mcmc output from a spherical_powerlaw chain
+
+    burnin: int(=200)
+        number of steps from the default chain to disregard
+
+    """
 
     fig,ax = plt.subplots()
     r = np.linspace(4.,50.,200)
