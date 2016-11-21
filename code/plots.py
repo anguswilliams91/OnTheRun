@@ -6,6 +6,7 @@ import plotting as pl, gus_utils as gu, models as m, fits as f, corner_plot as  
         matplotlib as mpl
 
 from scipy.special import gammaincinv
+from palettable.colorbrewer.qualitative import Set1_6
 
 def Vesc_posterior(chain,model,burnin=200,pos_cmap="Greys",dat_cmap="Blues"):
 
@@ -86,7 +87,7 @@ def Vesc_posterior(chain,model,burnin=200,pos_cmap="Greys",dat_cmap="Blues"):
     return ax
 
 
-def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20,20,10]):
+def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20,20,10],pool_size=8):
 
     """
     Plot the inferred line of sight velocity distribution for stars, normalised 
@@ -139,18 +140,12 @@ def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nb
         a.yaxis.set_major_formatter(major_formatter)
     cm = plt.cm.get_cmap(cmap)
 
-    v = np.linspace(200.,550.,200)
-    n_samples = len(samples)
-    n_v = len(v)
-
+    v = np.linspace(200.,550.,100)
     for i in np.arange(len(data)):
-        lims,spline = f.construct_interpolator(data[i],tracer_names[i])
-        function_samples = np.array([f.compute_posterior(vi,200.,k[i][j],spline,lims\
-                                        ,samples[j],model) for vi in v for j in \
-                                        np.arange(n_samples)]).reshape((n_v,n_samples))
+        ppd = f.posterior_predictive_grid(v,200.,chain,model,tracer_names[i],burnin=200,pool_size=pool_size)
 
         for a in ax[i,:]:
-            a.plot(v,np.mean(function_samples,axis=1),c='slategray',zorder=0,lw=2)
+            a.plot(v,ppd,c='slategray',zorder=0,lw=2)
             a.set_xlim(np.min(v),np.max(v))
 
     for i, tracer in enumerate(data):
@@ -175,9 +170,9 @@ def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nb
     fig.text(0.5,0.,"$v_{||}/\\mathrm{kms^{-1}}$")
     fig.text(0.,0.5,"$p(v_{||}\\, | \\, \\mathrm{data})/\\mathrm{km^{-1}s}$",rotation=90)
 
-    return ax
+    return fig,ax
 
-def mass_enclosed(chain,model,burnin=200,cmap="Blues",fontsize=30,tickfontsize=20,**kwargs):
+def mass_enclosed(chain,model,burnin=200,cmap="Blues",fontsize=30,tickfontsize=20,thin_by=1,**kwargs):
 
     """
     Plot the mass enclosed implied by a spherically symmetric model given 
@@ -202,11 +197,11 @@ def mass_enclosed(chain,model,burnin=200,cmap="Blues",fontsize=30,tickfontsize=2
 
     G = 43010.795338751527 #in km^2 s^-2 kpc (10^10 Msun)^-1
     n = m.get_numparams(model)
-    c = gu.reshape_chain(chain)[:,burnin:,:]
+    c = gu.reshape_chain(chain)[:,burnin::thin_by,:]
     c = np.reshape(c, (c.shape[0]*c.shape[1],c.shape[2]))
     samples = c[:,-n:].T
 
-    rlims=[0.1,50.]
+    rlims=[0.1,70.]
 
     if model == "spherical_powerlaw":
 
@@ -240,12 +235,35 @@ def mass_enclosed(chain,model,burnin=200,cmap="Blues",fontsize=30,tickfontsize=2
     pl.posterior_1D(samples,r1,mass_enclosed,cmap=cmap,ax=ax[0],tickfontsize="small",fontsize=mpl.rcParams['font.size'],**kwargs)
     pl.posterior_1D(samples,r2,rotation_curve,cmap=cmap,ax=ax[1],tickfontsize="small",fontsize=mpl.rcParams['font.size'],**kwargs)
     ymin,ymax = ax[0].get_ylim()
-    ax[0].text(rlims[0]+.1*(rlims[1]-rlims[0]),ymin+.75*(ymax-ymin),model_name,fontsize=30)
     ax[0].set_ylabel("$M(r)/\\mathrm{10^{11}M_\\odot}$")
     ax[0].set_xlabel("$r/\\mathrm{kpc}$")
     ax[1].set_xlabel("$r/\\mathrm{kpc}$")
     ax[1].set_ylabel("$v_c(r)/\\mathrm{kms^{-1}}$")
-    ax[1].set_ylim((0.,400.))
+    ax[1].set_ylim((100.,350.))
+
+    colors = (Set1_6.mpl_colors[0],Set1_6.mpl_colors[2],Set1_6.mpl_colors[3],Set1_6.mpl_colors[4],'k')
+
+    #now plot other people's masses...
+    ax[0].errorbar( 60.0, 40.0, yerr = 7.0, fmt='o', label = "X08", c=colors[0], ms=9, mec='none', zorder=100,elinewidth=2) #Xue 2008
+    ax[0].errorbar( 50.0 + 1, 54.0, yerr = [[36.0],[2.0]], fmt='^', label = "W99", c=colors[1], ms=9, mec='none', zorder=100,elinewidth=2) #Wilkinson 1999
+    ax[0].errorbar( 50.0 - 1, 42.0, yerr = 4.0, fmt='v', label = "D12", c=colors[2] ,ms=9, mec='none', zorder=100,elinewidth=2) #Deason Broken Degneracies
+    ax[0].errorbar(50.0, 44.8, yerr=[[1.4],[1.5]], fmt='d', label = "WE15", c=colors[3], ms=9, mec='none', zorder=100,elinewidth=2) #me and wyn 2015
+    ax[0].errorbar(50.0, 29., yerr=[[5.],[5.]], fmt='s', label = "G14", c=colors[4], ms=9, mec='none', zorder=100,elinewidth=2) #simon 2014
+    ax[0].legend(loc='best',numpoints=1)
+
+    #...and circular speeds
+    circspeed = lambda mass,radius: np.sqrt(mass*G/radius)
+    ax[1].errorbar( 60.0, circspeed(40.,60.), yerr = [[circspeed(40.,60.)-circspeed(40.-7.,60.)],[circspeed(40.+7.,60.)-circspeed(40.,60.)]],\
+                             fmt='o', label = "X08", c=colors[0], ms=9, mec='none', zorder=100,elinewidth=2) #Xue 2008
+    ax[1].errorbar( 50.0 + 1, circspeed(54.,50.), yerr = [[circspeed(54.,50.)-circspeed(53.-36.,50.)],[circspeed(54+2.,50.)-circspeed(54.,50.)]],\
+                             fmt='^', label = "W99", c=colors[1], ms=9, mec='none', zorder=100,elinewidth=2) #Wilkinson 1999
+    ax[1].errorbar( 50.0 - 1, circspeed(42.,50.), yerr = [[circspeed(42.,50.)-circspeed(42.-4.,50.)],[circspeed(42+4.,50.)-circspeed(42.,50.)]]\
+                            , fmt='v', label = "D12", c=colors[2], ms=9, mec='none', zorder=100,elinewidth=2) #Deason Broken Degneracies
+    ax[1].errorbar(50.0, 198.2, yerr=[[3.2],[3.4]]\
+                            , fmt='d', label = "WE15", c=colors[3], ms=9, mec='none', zorder=100,elinewidth=2) #me and wyn 2015
+    ax[1].errorbar(50.0, circspeed(29.,50.), yerr=[[circspeed(29.,50.)-circspeed(29.-5.,50.)],[circspeed(29+5.,50.)-circspeed(29.,50.)]]\
+                            , fmt='s', label = "G14", c=colors[4], ms=9, mec='none', zorder=100,elinewidth=2) #simon 2014
+
 
     return ax
 
@@ -290,45 +308,6 @@ def plot_tracers(**kwargs):
 
     return None
 
-def median_vT_plot(fehcut=2.,s_cut=2.,tgas_bins=20,sdss_bins=10):
-
-    #first tgas-rave
-    data = pd.read_csv("/data/aamw3/gaia_dr1/tgas_raveon_nodups.csv")
-    data = data[data.feh<fehcut]
-
-    l,b = gu.radec2galactic(data.ra.values,data.dec.values)
-    vgsr = gu.helio2galactic(data.vhel.values,l,b)
-
-    x,y,z,vx,vy,vz = gu.obs2cartesian(data.pmra.values,data.pmdec.values,data.ra.values,data.dec.values,\
-                                                    1./data.parallax.values,data.vhel.values,radec_pms=True)
-    vT = np.sqrt(vx**2.+vy**2.+vz**2.-vgsr**2.)
-
-    counts,bin_edges = np.histogram(np.abs(vgsr),tgas_bins)
-    bin_centres = np.array([.5*(bin_edges[i] + bin_edges[i+1]) for i in np.arange(tgas_bins)])
-    median_vTs = np.zeros(tgas_bins)
-    plus_vTs = np.zeros(tgas_bins)
-    minus_vTs = np.zeros(tgas_bins)
-    for i in np.arange(tgas_bins):
-        idx  = (np.abs(vgsr)>bin_edges[i])&(np.abs(vgsr)<bin_edges[i+1])
-        if counts[i]>10.:
-            median_vTs[i] = np.median(vT[idx])
-            plus_vTs[i] = np.percentile(vT[idx],84.) - np.median(vT[idx]) 
-            minus_vTs[i] = np.median(vT[idx]) - np.percentile(vT[idx],16.) 
-
-    i1 = counts>10
-
-    #fig,ax = plt.subplots(1,2,figsize=(14.,7.),sharey=True)
-    fig,ax = plt.subplots()
-    ax.errorbar(bin_centres[i1],median_vTs[i1],yerr=[minus_vTs[i1],plus_vTs[i1]],fmt='-o',label="$v_T$")
-    ax.plot(bin_centres[i1],np.sqrt(median_vTs[i1]**2.+bin_centres[i1]**2.),label="$v_\\mathrm{total}$")
-    ax.set_ylabel("$v_i/\\mathrm{kms^{-1}}$")
-    ax.set_xlabel("$v_{||}/\\mathrm{kms^{-1}}$")
-    ax.text(50.,50.,"TGAS-RAVE",fontsize=25)
-    ax.legend(loc='best')
-    ax.axvline(200.,c='0.5',ls='--',zorder=0.)
-
-    return fig,ax
-
 def Vesc_posterior(burnin=200):
 
     chain = np.genfromtxt("/data/aamw3/mcmc/escape_chains/spherical_powerlaw.dat")
@@ -353,6 +332,18 @@ def Vesc_posterior(burnin=200):
     ax.text(8.9,600.,"P14",fontsize=25)
 
     return fig,ax
+
+def main():
+
+    filename, model, pool_size  = m.sys.argv[1:]
+    pool_size = np.int(pool_size)
+    chain = np.genfromtxt(filename)
+    fig,ax = posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20,20,10],pool_size=pool_size)
+    fig.savefig("/data/aamw3/OnTheRunWriteup/plots/ppc.pdf")
+
+if __name__ == "__main__":
+    main()
+
 
 
 

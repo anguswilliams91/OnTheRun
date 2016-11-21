@@ -1,9 +1,11 @@
 from __future__ import division, print_function
 
-import numpy as np, models as m, sql_utils as sql, pandas as pd
+import numpy as np, models as m, sql_utils as sql, pandas as pd,\
+        multiprocessing as mp, gus_utils as gu
 
 from scipy.interpolate import InterpolatedUnivariateSpline
 from scipy.integrate import fixed_quad
+from functools import partial
 
 def construct_interpolator(data,tracer):
 
@@ -41,7 +43,7 @@ def construct_interpolator(data,tracer):
     return ([np.min(r_nodes), np.max(r_nodes)],InterpolatedUnivariateSpline(r_nodes,pdf))
 
 
-def compute_posterior(v,vmin,k,spline,limits,params,model):
+def vLOS_probability(v,vmin,k,spline,limits,params,model):
 
     """Calculate the probability desnity at a line of sight velocity given a model 
     with a particular set of parameters, and a selection function p(r).
@@ -98,6 +100,73 @@ def compute_posterior(v,vmin,k,spline,limits,params,model):
 
     return numerator/denominator
 
+def posterior_predictive(v,vmin,k_samples,spline,limits,param_samples,model):
+
+    """
+    Compute the posterior predictive distribution at v given samples from the posterior 
+    from an MCMC.
+
+    Arguments
+    ---------
+
+    v: float
+        the line-of-sight velocity at which to compute the posterior predictive distribution 
+
+    vmin: float
+        cut off speed 
+
+    k_samples: array_like 
+        MCMC samples of the slope of the speed distribution 
+
+    spline: InterpolatedUnivariateSpline 
+        a spline object for p(r)
+
+    limits: list
+        [rmin,rmax] for the spline 
+
+    param_samples: array_like [n_params, n_samples]
+        samples of the potential parameters
+
+    model: string 
+        name of model 
+
+    """
+
+
+    return np.mean(np.array([ vLOS_probability(v,vmin,k_samples[i],spline,limits,param_samples[i],model) \
+                for i in np.arange(len(k_samples))]))
+
+def posterior_predictive_grid(v_grid,vmin,chain,model,tracer,burnin=200,pool_size=8):
+
+    """
+    Compute the posterior predictive distribution given an MCMC chain and a model.
+    """
+    #reshape the chain according to which model we're looking it
+    n = m.get_numparams(model)
+    c = gu.reshape_chain(chain)[:,burnin:,:]
+    c = np.reshape(c, (c.shape[0]*c.shape[1],c.shape[2]))
+    samples = c[:,-n:]
+
+    if tracer == "main_sequence":
+        k = c[:,2]
+        data = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
+        lims,spline = construct_interpolator(data,"main_sequence")
+    elif tracer == "kgiant":
+        k = c[:,1]
+        data = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
+        lims,spline = construct_interpolator(data,"kgiant")
+    elif tracer == "bhb":
+        k = c[:,0]
+        data = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
+        lims,spline = construct_interpolator(data,"bhb")
+
+
+    parfun = partial(posterior_predictive,vmin=vmin,k_samples=k,spline=spline,limits=lims\
+                    ,param_samples=samples,model=model)
+    pool = mp.Pool(pool_size)
+    output = pool.map(parfun,v_grid)
+    pool.close()
+    return output
 
 def gaia_crossmatch():
     """
