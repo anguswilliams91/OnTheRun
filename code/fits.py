@@ -45,7 +45,7 @@ def construct_interpolator(data,tracer):
 
 def vLOS_probability(v,vmin,k,spline,limits,params,model):
 
-    """Calculate the probability desnity at a line of sight velocity given a model 
+    """Calculate the probability density at a line of sight velocity given a model 
     with a particular set of parameters, and a selection function p(r).
 
     Arguments
@@ -139,7 +139,39 @@ def posterior_predictive(v,vmin,k_samples,spline,limits,param_samples,model):
 def posterior_predictive_grid(v_grid,vmin,chain,model,tracer,burnin=200,pool_size=8):
 
     """
-    Compute the posterior predictive distribution given an MCMC chain and a model.
+    Compute the posterior predictive distribution given an MCMC chain and a model. Parallelise 
+    over a given number of threads to speed up computation.
+
+    Arguments
+    ---------
+
+    v_grid: array_like
+        an array of speeds at which to evaluate the posterior predictive distribution
+
+    vmin: float 
+        the minimum speed considered
+
+    chain: array_like [nsamples,ndim]
+        an MCMC chain of model parameters 
+
+    model: string 
+        the name of the model 
+
+    tracer: string 
+        the type of tracer 
+
+    burnin: int (=200)
+        the number of steps per walker to disregard as burn-in 
+
+    pool_size: int (=8)
+        the size of the multiprocessing pool over which to distribute computation
+
+    Returns
+    -------
+
+    ppd: array_like
+        array of the same shape as v_grid, containing the posterior predictive probabilities 
+        at each speed in v_grid
     """
     #reshape the chain according to which model we're looking it
     n = m.get_numparams(model)
@@ -167,6 +199,65 @@ def posterior_predictive_grid(v_grid,vmin,chain,model,tracer,burnin=200,pool_siz
     output = pool.map(parfun,v_grid)
     pool.close()
     return output
+
+def outlier_probabilities(params, data, vmin, model):
+
+    """
+    Likelihood function template for given model. 
+
+    Arguments
+    ---------
+
+    params: array_like
+        the model parameters
+
+    data: list
+        the output of sample_distances_multiple_tracers
+
+    vmin: float 
+        the minimum radial velocity considered 
+
+    Returns
+    -------
+
+    logL: array_like
+        the sum of the log-likelihoods for this set of parameters.
+    """
+
+    kbhb,kkgiant,kms,f = params[:4]
+    pot_params = params[4:]
+    outlier_probabilities = [None,None,None]
+    k = [kbhb,kkgiant,kms]
+    outlier_normalisation = ( .5*m.erfc( vmin / (np.sqrt(2.)*1000.) ) )**-1.
+
+    for i,tracer in enumerate(data):
+        l,b,v,s = tracer
+        x,y,z = gu.galactic2cartesian(s,b,l)
+        vesc = m.vesc_model(x,y,z,pot_params,model)
+        out = np.zeros_like(v)
+        with m.warnings.catch_warnings():
+            #deliberately getting NaNs here so stop python from telling us about it
+            m.warnings.simplefilter("ignore",category=RuntimeWarning)
+            out = (1.-f)*(k[i]+2)*(vesc - np.abs(v))**(k[i]+1.) / (vesc - vmin)**(k[i]+2.) + \
+                        f*outlier_normalisation*m.Gaussian(np.abs(v),0.,1000.)
+            out[np.isnan(out)] = f*outlier_normalisation*m.Gaussian(np.abs(v[np.isnan(out)]),0.,1000.)
+            outlier = f*outlier_normalisation*m.Gaussian(np.abs(v),0.,1000.)
+        outlier_probabilities[i] = np.mean(outlier,axis=1) / np.mean(out, axis=1)
+
+    return outlier_probabilities
+
+def check_outliers(chain,vmin,model,burnin=200):
+
+    """
+    Compute the probabilities that stars are outliers using our MCMC chains. We are 
+    being lazy and not marginalising over the posterior because this is a quick check.
+    """
+
+    res = gu.ChainResults(chain,burnin=200)[:,0]
+    n = m.get_numparams(model)
+    data = m.sample_distances_multiple_tracers(n_samples=200,vmin=vmin)
+    return outlier_probabilities(res,data,vmin,model)
+
 
 def gaia_crossmatch():
     """

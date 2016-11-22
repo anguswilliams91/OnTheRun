@@ -156,7 +156,7 @@ def mass_enclosed(chain,model,burnin=200,cmap="Blues",fontsize=30,tickfontsize=2
     pl.posterior_1D(samples,r1,mass_enclosed,cmap=cmap,ax=ax[0],tickfontsize="small",fontsize=mpl.rcParams['font.size'],**kwargs)
     pl.posterior_1D(samples,r2,rotation_curve,cmap=cmap,ax=ax[1],tickfontsize="small",fontsize=mpl.rcParams['font.size'],**kwargs)
     ymin,ymax = ax[0].get_ylim()
-    ax[0].set_ylabel("$M(r)/\\mathrm{10^{11}M_\\odot}$")
+    ax[0].set_ylabel("$M(r)/\\mathrm{10^{10}M_\\odot}$")
     ax[0].set_xlabel("$r/\\mathrm{kpc}$")
     ax[1].set_xlabel("$r/\\mathrm{kpc}$")
     ax[1].set_ylabel("$v_c(r)/\\mathrm{kms^{-1}}$")
@@ -229,7 +229,7 @@ def plot_tracers(**kwargs):
 
     return None
 
-def Vesc_posterior(chain,burnin=200):
+def Vesc_posterior(chain,model,burnin=200):
 
     """
     Plot the posterior distribution on the escape speed as a function of radius.
@@ -248,13 +248,13 @@ def Vesc_posterior(chain,burnin=200):
     fig,ax = plt.subplots()
     r = np.linspace(4.,50.,200)
 
-    n = m.get_numparams("spherical_powerlaw")
+    n = m.get_numparams(model)
     c = gu.reshape_chain(chain)[:,burnin:,:]
     c = np.reshape(c, (c.shape[0]*c.shape[1],c.shape[2]))
     samples = c[:,-n:].T
 
     def vesc(r,params):
-        return m.vesc_model(r,0.,0.,params,"spherical_powerlaw")
+        return m.vesc_model(r,0.,0.,params,model)
 
     pl.posterior_1D(samples,r,vesc,cmap="Blues",ax=ax,tickfontsize="small",fontsize=mpl.rcParams['font.size'])
 
@@ -265,6 +265,44 @@ def Vesc_posterior(chain,burnin=200):
     ax.text(8.9,600.,"P14",fontsize=25)
 
     return fig,ax
+
+
+def dwarf_galaxies(chain,model,burnin=200):
+
+    fig,ax = plt.subplots()
+    dwarf_data = pd.read_csv("/data/aamw3/satellites/r_vgsr_dwarfs.csv")
+    r = np.linspace(np.min(dwarf_data['r']),np.max(dwarf_data['r']),300)
+
+    n = m.get_numparams(model)
+    c = gu.reshape_chain(chain)[:,burnin:,:]
+    c = np.reshape(c, (c.shape[0]*c.shape[1],c.shape[2]))
+    samples = c[:,-n:].T
+
+    def vesc(r,params):
+        return m.vesc_model(r,0.,0.,params,model)
+    def m_vesc(r,params):
+        return -m.vesc_model(r,0.,0.,params,model)
+
+    pl.posterior_1D(samples,r,vesc,cmap="Blues",ax=ax,tickfontsize="small",fontsize=mpl.rcParams['font.size'])
+    pl.posterior_1D(samples,r,m_vesc,cmap="Blues",ax=ax,tickfontsize="small",fontsize=mpl.rcParams['font.size'])
+
+    ax.plot(dwarf_data['r'],np.sqrt(3.)*dwarf_data['vgsr'],'o',mec='none',ms=10,c='0.5')
+    ax.plot(53,-np.sqrt(3.)*211.,'o',ms=10,c='k')
+    ax.plot(116.,-np.sqrt(3.)*189,'o',ms=10,c='k')
+    ax.plot(46.,np.sqrt(3.)*244,'o',ms=10,c='k')
+    ax.plot(37.,-np.sqrt(3.)*247,'o',ms=10,c='k')
+    ax.annotate("Tuc 2", xy=(53,-np.sqrt(3.)*211.),xytext=(75.,-485.),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #tuc2
+    ax.annotate("Gru 1", xy=(116.,-np.sqrt(3.)*189),xytext=(130,-465.),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #gru1
+    ax.annotate("Boo III", xy=(46.,np.sqrt(3.)*244),xytext=(70,480.),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #booIII
+    ax.annotate("Tri II", xy=(37.,-np.sqrt(3.)*247),xytext=(55.,-564),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #triII
+
+    ax.set_ylabel("$\sqrt{3}\,v_{||}/\\mathrm{kms^{-1}}$")
+    ax.set_xlabel("$r/\\mathrm{kpc}$")
+
+
+    return fig,ax
+
+
 
 def main():
 
