@@ -6,6 +6,7 @@ import numpy as np, models as m, sql_utils as sql, pandas as pd,\
 from scipy.interpolate import InterpolatedUnivariateSpline
 from scipy.integrate import fixed_quad
 from functools import partial
+from scipy.special import gamma
 
 def construct_interpolator(data,tracer):
 
@@ -278,7 +279,5 @@ def gaia_crossmatch():
     ms.loc[:,'pmdec'] = pd.Series(pmdec,index=ms.index)
 
     return ms
-
-
 
 

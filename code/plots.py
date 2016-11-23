@@ -3,7 +3,7 @@ from __future__ import division, print_function
 import numpy as np, matplotlib.pyplot as plt, pandas as pd
 
 import plotting as pl, gus_utils as gu, models as m, fits as f, corner_plot as  cp,\
-        matplotlib as mpl
+        matplotlib as mpl, dwarf as d
 
 from scipy.special import gammaincinv
 from palettable.colorbrewer.qualitative import Set1_6
@@ -291,10 +291,12 @@ def dwarf_galaxies(chain,model,burnin=200):
     ax.plot(116.,-np.sqrt(3.)*189,'o',ms=10,c='k')
     ax.plot(46.,np.sqrt(3.)*244,'o',ms=10,c='k')
     ax.plot(37.,-np.sqrt(3.)*247,'o',ms=10,c='k')
+    ax.plot(126.,np.sqrt(3.)*154.3,'o',ms=10,c='k')
     ax.annotate("Tuc 2", xy=(53,-np.sqrt(3.)*211.),xytext=(75.,-485.),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #tuc2
     ax.annotate("Gru 1", xy=(116.,-np.sqrt(3.)*189),xytext=(130,-465.),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #gru1
     ax.annotate("Boo III", xy=(46.,np.sqrt(3.)*244),xytext=(70,480.),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #booIII
     ax.annotate("Tri II", xy=(37.,-np.sqrt(3.)*247),xytext=(55.,-564),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #triII
+    ax.annotate("Herc", xy=(126.,np.sqrt(3.)*154.3),xytext=(140.,440.),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #herc
 
     ax.set_ylabel("$\sqrt{3}\,v_{||}/\\mathrm{kms^{-1}}$")
     ax.set_xlabel("$r/\\mathrm{kpc}$")
@@ -302,6 +304,24 @@ def dwarf_galaxies(chain,model,burnin=200):
 
     return fig,ax
 
+
+def dwarf_posteriors(chain,burnin=200):
+
+    """
+    Plot posteriors on rp,ra,e for BooIII, TriII and Herc
+    """
+
+    data = pd.read_csv("/data/aamw3/satellites/r_vgsr_dwarfs.csv")
+    names = ["BootesIII","TriangulumII","Hercules"]
+    fig,ax = plt.subplots(3,3,figsize=(15,15))
+
+    for i,name in enumerate(names):
+        r = data.r[data.name==name].values[0]
+        vgsr = np.abs(data.vgsr[data.name==name].values[0])
+        rp,ra,e = d.sample_rp_ra_e_distributions(r,vgsr,chain,thin_by=100,burnin=burnin)
+        ax[i,0].hist(rp,100,histtype="step")
+        ax[i,1].hist(ra,100,histtype="step",range=(np.min(ra),800.))
+        ax[i,2].hist(e,100,histtype="step",range=(0.5,1.))
 
 
 def main():
