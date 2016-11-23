@@ -266,12 +266,48 @@ def Vesc_posterior(chain,model,burnin=200):
 
     return fig,ax
 
+def halo_distribution(chain,model,burnin=200):
+
+    fig,ax = plt.subplots()
+    msto_data = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
+    kgiant_data = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
+    bhb_data = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
+    s_MSTO = gu.Ivesic_estimator(msto_data.g.values,msto_data.r.values\
+                                    ,msto_data.i.values,msto_data.feh.values)
+    x_MSTO,y_MSTO,z_MSTO = gu.galactic2cartesian(s_MSTO,msto_data.b.values,msto_data.l.values)
+    r_MSTO = np.sqrt(x_MSTO**2.+y_MSTO**2.+z_MSTO**2.)
+    s_BHB = gu.BHB_distance(bhb_data.g.values,bhb_data.r.values)
+    x_BHB,y_BHB,z_BHB = gu.galactic2cartesian(s_BHB,bhb_data.b.values,bhb_data.l.values)
+    r_BHB = np.sqrt(x_BHB**2.+y_BHB**2.+z_BHB**2.)
+    r_halo = np.hstack((r_BHB,kgiant_data.rgc.values,r_MSTO))
+    v_halo = np.hstack((bhb_data.vgsr.values,kgiant_data.vgsr.values,msto_data.vgsr.values))
+    r = np.linspace(1.,50.,100)
+
+    n = m.get_numparams(model)
+    c = gu.reshape_chain(chain)[:,burnin:,:]
+    c = np.reshape(c, (c.shape[0]*c.shape[1],c.shape[2]))
+    samples = c[:,-n:].T
+
+    def vesc(r,params):
+        return m.vesc_model(r,0.,0.,params,model)
+    def m_vesc(r,params):
+        return -m.vesc_model(r,0.,0.,params,model)
+
+    pl.posterior_1D(samples,r,vesc,cmap="Blues",ax=ax,tickfontsize="small",fontsize=mpl.rcParams['font.size'])
+    pl.posterior_1D(samples,r,m_vesc,cmap="Blues",ax=ax,tickfontsize="small",fontsize=mpl.rcParams['font.size'])
+    ax.plot(r_halo,v_halo,'o',ms=5,c='0.3',mec='none')
+    ax.set_ylabel("$v_{||}/\\mathrm{kms^{-1}}$")
+    ax.set_xlabel("$r/\\mathrm{kpc}$")
+    ax.set_ylim((-600.,600.))
+
+
+    return fig,ax
 
 def dwarf_galaxies(chain,model,burnin=200):
 
     fig,ax = plt.subplots()
     dwarf_data = pd.read_csv("/data/aamw3/satellites/r_vgsr_dwarfs.csv")
-    r = np.linspace(np.min(dwarf_data['r']),np.max(dwarf_data['r']),300)
+    r = np.linspace(np.min(dwarf_data['r']),np.max(dwarf_data['r'])+10,300)
 
     n = m.get_numparams(model)
     c = gu.reshape_chain(chain)[:,burnin:,:]
@@ -287,11 +323,11 @@ def dwarf_galaxies(chain,model,burnin=200):
     pl.posterior_1D(samples,r,m_vesc,cmap="Blues",ax=ax,tickfontsize="small",fontsize=mpl.rcParams['font.size'])
 
     ax.plot(dwarf_data['r'],np.sqrt(3.)*dwarf_data['vgsr'],'o',mec='none',ms=10,c='0.5')
-    ax.plot(53,-np.sqrt(3.)*211.,'o',ms=10,c='k')
-    ax.plot(116.,-np.sqrt(3.)*189,'o',ms=10,c='k')
-    ax.plot(46.,np.sqrt(3.)*244,'o',ms=10,c='k')
-    ax.plot(37.,-np.sqrt(3.)*247,'o',ms=10,c='k')
-    ax.plot(126.,np.sqrt(3.)*154.3,'o',ms=10,c='k')
+    ax.plot(53,-np.sqrt(3.)*211.,'o',ms=10,c='y',mec='none')
+    ax.plot(116.,-np.sqrt(3.)*189,'o',ms=10,c='y',mec='none')
+    ax.plot(46.,np.sqrt(3.)*244,'o',ms=10,c='r',mec='none')
+    ax.plot(37.,-np.sqrt(3.)*247,'o',ms=10,c='r',mec='none')
+    ax.plot(126.,np.sqrt(3.)*154.3,'o',ms=10,c='r',mec='none')
     ax.annotate("Tuc 2", xy=(53,-np.sqrt(3.)*211.),xytext=(75.,-485.),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #tuc2
     ax.annotate("Gru 1", xy=(116.,-np.sqrt(3.)*189),xytext=(130,-465.),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #gru1
     ax.annotate("Boo III", xy=(46.,np.sqrt(3.)*244),xytext=(70,480.),arrowprops=dict(facecolor='black',width=1,shrink=0.15)) #booIII
@@ -313,15 +349,47 @@ def dwarf_posteriors(chain,burnin=200):
 
     data = pd.read_csv("/data/aamw3/satellites/r_vgsr_dwarfs.csv")
     names = ["BootesIII","TriangulumII","Hercules"]
-    fig,ax = plt.subplots(3,3,figsize=(15,15))
+    plot_names = ["Bootes III", "Triangulum II", "Hercules"]
+    fig,ax = plt.subplots(3,3,figsize=(15,15),gridspec_kw=dict(hspace=0.,wspace=0.))
+
+    for a in ax.ravel():
+        a.yaxis.set_visible(False)
 
     for i,name in enumerate(names):
         r = data.r[data.name==name].values[0]
         vgsr = np.abs(data.vgsr[data.name==name].values[0])
-        rp,ra,e = d.sample_rp_ra_e_distributions(r,vgsr,chain,thin_by=100,burnin=burnin)
-        ax[i,0].hist(rp,100,histtype="step")
-        ax[i,1].hist(ra,100,histtype="step",range=(np.min(ra),800.))
-        ax[i,2].hist(e,100,histtype="step",range=(0.5,1.))
+        rp,ra,e = d.sample_rp_ra_e_distributions(r,vgsr,chain,thin_by=1,burnin=burnin)
+        rp_med = np.median(rp)
+        ra_med = np.median(ra)
+        e_med = np.median(e)
+        ax[i,0].hist(rp,100,histtype="step",range=(0.,100.),color=Set1_6.mpl_colors[i])
+        ax[i,0].set_xlim((0.,100.))
+        ax[i,1].hist(ra,100,histtype="step",range=(0.,800.),color=Set1_6.mpl_colors[i])
+        ax[i,1].set_xlim((0.,800.))
+        ax[i,2].hist(e,100,histtype="step",range=(0.5,1.),color=Set1_6.mpl_colors[i])
+        ax[i,2].set_xlim((0.5,1.))
+        ymin,ymax = ax[i,0].get_ylim()
+        ax[i,0].text(50.,ymin+0.8*(ymax-ymin),plot_names[i]+"\n $r_\\mathrm{{peri}} = {0:d}\\,\\mathrm{{kpc}}$".\
+                        format(np.int(rp_med)),fontsize=25)
+        ymin,ymax = ax[i,1].get_ylim()
+        ax[i,1].text(450.,ymin+0.8*(ymax-ymin),"$r_\\mathrm{{apo}} = {0:d}\\,\\mathrm{{kpc}}$".format(np.int(ra_med)),fontsize=25)
+        ymin,ymax = ax[i,2].get_ylim()
+        ax[i,2].text(.55,ymin+0.8*(ymax-ymin),"$\\epsilon = {0:.2f}$".format(e_med),fontsize=25)
+        if i!=2: 
+            for a in ax[i]: a.xaxis.set_visible(False)
+        if i==2:
+            ax[i,0].set_xlabel("$r_\\mathrm{peri}/\\mathrm{kpc}$")
+            ax[i,1].set_xlabel("$r_\\mathrm{apo}/\\mathrm{kpc}$")
+            ax[i,2].set_xlabel("$\\epsilon$")
+            for j in np.arange(3):
+                xticks = ax[i,j].xaxis.get_major_ticks()
+                if j==0 or j==1: xticks[-1].set_visible(False)
+                if j==1: xticks[0].set_visible(False)
+                if j==2: xticks[1].set_visible(False) 
+
+    return fig,ax
+
+
 
 
 def main():
