@@ -350,7 +350,7 @@ def dwarf_posteriors(chain,burnin=200):
     data = pd.read_csv("/data/aamw3/satellites/r_vgsr_dwarfs.csv")
     names = ["BootesIII","TriangulumII","Hercules"]
     plot_names = ["Bootes III", "Triangulum II", "Hercules"]
-    fig,ax = plt.subplots(3,3,figsize=(15,15),gridspec_kw=dict(hspace=0.,wspace=0.))
+    fig,ax = plt.subplots(1,3,figsize=(15,5))
 
     for a in ax.ravel():
         a.yaxis.set_visible(False)
@@ -359,33 +359,17 @@ def dwarf_posteriors(chain,burnin=200):
         r = data.r[data.name==name].values[0]
         vgsr = np.abs(data.vgsr[data.name==name].values[0])
         rp,ra,e = d.sample_rp_ra_e_distributions(r,vgsr,chain,thin_by=1,burnin=burnin)
-        rp_med = np.median(rp)
-        ra_med = np.median(ra)
-        e_med = np.median(e)
-        ax[i,0].hist(rp,100,histtype="step",range=(0.,100.),color=Set1_6.mpl_colors[i])
-        ax[i,0].set_xlim((0.,100.))
-        ax[i,1].hist(ra,100,histtype="step",range=(0.,800.),color=Set1_6.mpl_colors[i])
-        ax[i,1].set_xlim((0.,800.))
-        ax[i,2].hist(e,100,histtype="step",range=(0.5,1.),color=Set1_6.mpl_colors[i])
-        ax[i,2].set_xlim((0.5,1.))
-        ymin,ymax = ax[i,0].get_ylim()
-        ax[i,0].text(50.,ymin+0.8*(ymax-ymin),plot_names[i]+"\n $r_\\mathrm{{peri}} = {0:d}\\,\\mathrm{{kpc}}$".\
-                        format(np.int(rp_med)),fontsize=25)
-        ymin,ymax = ax[i,1].get_ylim()
-        ax[i,1].text(450.,ymin+0.8*(ymax-ymin),"$r_\\mathrm{{apo}} = {0:d}\\,\\mathrm{{kpc}}$".format(np.int(ra_med)),fontsize=25)
-        ymin,ymax = ax[i,2].get_ylim()
-        ax[i,2].text(.55,ymin+0.8*(ymax-ymin),"$\\epsilon = {0:.2f}$".format(e_med),fontsize=25)
-        if i!=2: 
-            for a in ax[i]: a.xaxis.set_visible(False)
-        if i==2:
-            ax[i,0].set_xlabel("$r_\\mathrm{peri}/\\mathrm{kpc}$")
-            ax[i,1].set_xlabel("$r_\\mathrm{apo}/\\mathrm{kpc}$")
-            ax[i,2].set_xlabel("$\\epsilon$")
-            for j in np.arange(3):
-                xticks = ax[i,j].xaxis.get_major_ticks()
-                if j==0 or j==1: xticks[-1].set_visible(False)
-                if j==1: xticks[0].set_visible(False)
-                if j==2: xticks[1].set_visible(False) 
+        ax[0].hist(rp,100,histtype="step",range=(0.,100.),color=Set1_6.mpl_colors[i],normed=True,label=plot_names[i])
+        ax[1].hist(ra,100,histtype="step",range=(0.,800.),color=Set1_6.mpl_colors[i],normed=True,label=plot_names[i])
+        ax[2].hist(e,100,histtype="step",range=(0.5,1.),color=Set1_6.mpl_colors[i],normed=True,label=plot_names[i])
+
+    ax[0].set_xlim((0.,100.))
+    ax[1].set_xlim((0.,800.))
+    ax[2].set_xlim((0.5,1.))
+    ax[0].set_xlabel("$r_\\mathrm{peri}/\\mathrm{kpc}$",fontsize=20)
+    ax[1].set_xlabel("$r_\\mathrm{apo}/\\mathrm{kpc}$",fontsize=20)
+    ax[2].set_xlabel("$\\epsilon$",fontsize=20)
+    ax[2].legend(loc='upper left',fontsize=25)
 
     return fig,ax
 

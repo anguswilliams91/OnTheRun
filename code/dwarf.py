@@ -12,18 +12,6 @@ def Phi(r,params):
     vesc_Rsun,alpha = params
     return -.5*vesc_Rsun**2.*(r/8.5)**-alpha
 
-def q_gaussian(v,vesc,sigma):
-
-    """
-    qGaussian function to represent the velocity distribution of 
-    the dwarfs
-    """
-
-    beta = np.sqrt( 0.5/sigma**2. - 1.5/vesc**2.)
-    q = 1. - (beta*vesc)**-2.
-    Cq = np.sqrt((1.-q)/np.pi)*gamma((5.-3*q)/(2.*(1.-q)))/gamma((2.-q)/(1.-q))
-    return beta*Cq*(1. - (1-q)*(beta*v)**2.)**(1./(1.-q))
-
 def rperi_rapo_eq(r,E,L,params):
 
     """equation for finding rp, ra"""
