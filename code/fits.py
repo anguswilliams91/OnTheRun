@@ -101,6 +101,167 @@ def vLOS_probability(v,vmin,k,spline,limits,params,model):
 
     return numerator/denominator
 
+def draw_samples(N,vmin,k,spline,limits,params,model):
+
+    """
+    Given a model, draw a sample of size N from p(vLOS).
+
+    Arguments
+    ---------
+
+    N: int 
+        the number of points to draw 
+
+    vmin: float 
+        the minimum speed considered 
+
+    k: float 
+        the power law index of the speed distribution
+
+    spline: InterpolatedUnivariateSpline 
+        spline of p(r) for this tracer 
+
+    limits: list
+        the upper and lower limits of the spline 
+
+    params: array_like
+        model parameters 
+
+    model: string 
+        name of model
+
+    Returns
+    -------
+
+    v: array_like
+        list of velocities sampled from p(vLOS)
+    """
+
+    v = np.linspace(vmin,600.,100)
+    pdf = np.array([vLOS_probability(vi,vmin,k,spline,limits,params,model) for vi in v])
+    v_spline = InterpolatedUnivariateSpline(v,pdf)
+    cdf = np.array([fixed_quad(v_spline,vmin,vi)[0] for vi in v])
+    try:
+        idx = np.where(np.diff(cdf)<0.)[0][0]+1
+    except:
+        idx = None
+    v,cdf = v[:idx],cdf[:idx]
+    inv_cdf = InterpolatedUnivariateSpline(cdf,v)
+    u = np.random.uniform(size=N)
+    return inv_cdf(u)
+
+def posterior_predictive_check(chain,tracer,model,vmin,nbins=20,thin_by=1,burnin=200):
+    
+    """
+    For every set of parameters in an MCMC chain, generate a mock data set of the same 
+    size as the data.
+
+    Arguments
+    ---------
+
+    chain: array_like [nsamples,ndim]
+        mcmc chain 
+
+    tracer: string 
+        type of tracer
+
+    model: string 
+        the name of the model 
+
+    vmin: float
+        the minimum speed considered 
+
+    nbins: int (=20)
+        the number of bins in vLOS to use 
+
+    thin_by: int(=1)
+        thin the chains by this factor 
+
+    burnin: int(=200)
+        number of steps per walker to burn in 
+
+    Returns
+    -------
+
+    bin_centres: array_like
+        centres of bins in vLOS 
+
+    counts: array_like
+        the number counts of the data in each of the above bins 
+
+    model_counts: array_like[nsamples,nstars]
+        the counts generated in each of the above bins in each mock sample
+    """
+
+    n = m.get_numparams(model)
+    c = gu.reshape_chain(chain)[:,burnin::thin_by,:]
+    c = np.reshape(c, (c.shape[0]*c.shape[1],c.shape[2]))
+    samples = c[:,-n:]
+
+    if tracer == "main_sequence":
+        k = c[:,2]
+        data = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
+        data = data[data.vgsr!=np.max(data.vgsr)].reset_index(drop=True) #remove the one outlier
+    elif tracer == "kgiant":
+        k = c[:,1]
+        data = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
+    else:
+        k = c[:,0]        
+        data = pd.read_csv("/data/aamw3/SDSS/bhb.csv")       
+    lims,spline = construct_interpolator(data,tracer)
+    data = data[np.abs(data.vgsr)>vmin].reset_index(drop=True)
+    N = len(data)
+
+    counts,bin_edges = np.histogram(np.abs(data.vgsr.values),nbins)
+    bin_centres = np.array([.5*(bin_edges[i] + bin_edges[i+1]) for i in np.arange(nbins)])
+    model_counts = np.zeros((len(k), nbins))
+    for i,theta in enumerate(samples):
+        v = draw_samples(N,vmin,k[i],spline,lims,theta,model)
+        model_counts[i,:],_ = np.histogram(v,bin_edges)
+    return bin_centres,counts,model_counts
+
+def ppc_alltracers(fname,chain,model,vmin,nbins=[20,20,10],thin_by=1,burnin=200):
+
+    """
+    generate mock samples for all of our tracer groups. Save all of the information 
+    to file.
+
+    Arguments
+    ---------
+
+    fname: string 
+        name of file to write dictionaries to 
+
+    chain: array_like [nsamples,ndim]
+        mcmc chain 
+
+    model: string 
+        the name of the model 
+
+    vmin: float
+        the minimum speed considered 
+
+    nbins: list(=[20,20,10])
+        the number of bins to use for each of the three tracers 
+
+    thin_by: int(=1)
+        thin the chains by this factor 
+
+    burnin: int(=200)
+        number of steps per walker to burn in 
+
+    """
+    
+    tracers = ["main_sequence","kgiant","bhb"]
+
+    for i,tracer in enumerate(tracers):
+        bin_centres,data_counts,model_counts = posterior_predictive_check(chain,tracer,\
+                                                        model,vmin,nbins=nbins[i],thin_by=thin_by,burnin=burnin)
+        summary = {'bin_centres': bin_centres, 'data_counts': data_counts, 'model_counts': model_counts}
+        np.save(fname+"_"+tracer,summary)
+
+    return None
+
 def posterior_predictive(v,vmin,k_samples,spline,limits,param_samples,model):
 
     """
@@ -281,3 +442,11 @@ def gaia_crossmatch():
     return ms
 
 
+def main():
+
+    fname = "/data/aamw3/SDSS/model_comparison"
+    chain = np.genfromtxt("/data/aamw3/mcmc/escape_chains/spherical_powerlaw.dat")
+    ppc_alltracers(fname,chain,"spherical_powerlaw",200.,nbins=[20,20,10],thin_by=1,burnin=200)
+
+if __name__ == "__main__":
+    main()
