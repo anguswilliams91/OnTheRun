@@ -8,7 +8,7 @@ import plotting as pl, gus_utils as gu, models as m, fits as f, corner_plot as  
 from scipy.special import gammaincinv
 from palettable.colorbrewer.qualitative import Set1_6
 
-def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20,20,10],pool_size=8):
+def posterior_predictive_distribution(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20,20,10],pool_size=8):
 
     """
     Plot the inferred line of sight velocity distribution for stars, normalised 
@@ -92,6 +92,25 @@ def posterior_predictive_check(chain,model,burnin=200,cmap="Greys",thin_by=10,nb
     fig.text(0.,0.5,"$p(v_{||}\\, | \\, \\mathrm{data})/\\mathrm{km^{-1}s}$",rotation=90)
 
     return fig,ax
+
+def posterior_predictive_checks():
+
+    data = np.load("/data/aamw3/SDSS/model_comparison_main_sequence.npy").item()
+    plt.boxplot(data['model_counts'],showfliers=False,boxprops=dict(c='k',linewidth=2),\
+        whiskerprops=dict(c='k',linewidth=2,linestyle='-'),medianprops=dict(c='k',linewidth=2),\
+        capprops=dict(c='k',linewidth=2),positions=data['bin_centres'],whis=[0.,100.],widths=.5*binwidth)
+    plt.plot(data['bin_centres'],data['data_counts'],'o',mfc='y',mec='none',label="Data")
+    plt.plot(0.,0.,lw=2,c='k',label="Mock samples")
+    plt.xlim((190.,420.))
+    ax = plt.gca()
+    preferred_ticks = np.array([200,250.,300.,350.,400.])
+    ax.xaxis.set_ticks(preferred_ticks)
+    ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%0.0f'))
+    plt.ylabel("$N$")
+    plt.xlabel("$v_{||}/\\mathrm{kms^{-1}}$")
+    plt.legend(loc='upper right', numpoints=1, markerscale=2)
+    return None
+
 
 def mass_enclosed(chain,model,burnin=200,cmap="Blues",fontsize=30,tickfontsize=20,thin_by=1,**kwargs):
 
