@@ -95,6 +95,10 @@ def posterior_predictive_distribution(chain,model,burnin=200,cmap="Greys",thin_b
 
 def posterior_predictive_checks():
 
+    """
+    placeholder, need to add a bunch of stuff and update docstring
+    """
+
     data = np.load("/data/aamw3/SDSS/model_comparison_main_sequence.npy").item()
     plt.boxplot(data['model_counts'],showfliers=False,boxprops=dict(c='k',linewidth=2),\
         whiskerprops=dict(c='k',linewidth=2,linestyle='-'),medianprops=dict(c='k',linewidth=2),\

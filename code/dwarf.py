@@ -36,7 +36,7 @@ def rp_ra_getstart(r,E,L,params,apo=False):
     return rtry
 
 def get_rp_ra(r,vr,vT,params):
-    """Find the limits for the radial action integral"""
+    """Find the limiting radii of the orbit"""
     E = .5*(vr**2. + vT**2.) + Phi(r,params)
     L = vT*r
     eps=1e-8
@@ -68,7 +68,7 @@ def get_rp_ra(r,vr,vT,params):
 def sample_rp_ra_e_distributions(r,vr,chain,thin_by=100,burnin=200):
 
     """
-    sample vr distribution given chain and measurement
+    sample rp,ra,epsilon distribution given chain and measurement
     """
 
     c = gu.reshape_chain(chain)[:,burnin::thin_by,:]
