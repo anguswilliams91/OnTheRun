@@ -10,10 +10,14 @@ FIGURES := $(shell find plots/* -type f)
 
 all:    $(MAIN).pdf
 
+.refresh:
+	touch .refresh
+
 $(MAIN).pdf: $(MAIN).tex .refresh $(SOURCES) $(FIGURES)
 		$(LATEXMK) $(LATEXMKOPT) $(MAIN)
 
 force:
+		touch .refresh
 		rm $(MAIN).pdf
 		$(LATEXMK) $(LATEXMKOPT) $(MAIN)
 

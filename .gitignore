@@ -6,6 +6,7 @@
 *.log
 *.blg
 *.sh
+article/.refresh
 
 
 
