@@ -8,7 +8,7 @@ plots/*
 *.sh
 *.fdb_latexmk
 article/.refresh
-article/.pdf
+article/*.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
