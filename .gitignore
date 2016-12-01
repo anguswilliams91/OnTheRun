@@ -1,6 +1,12 @@
 # other stuff
 *.pdf
 *.png
+*.aux
+*.bbl
+*.log
+*.blg
+*.sh
+
 
 
 # Byte-compiled / optimized / DLL files
