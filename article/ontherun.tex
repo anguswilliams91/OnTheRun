@@ -833,10 +833,23 @@ data over $\sim 2$ orders of magnitude in the number of counts.}
 \end{figure*}
 
 We now seek to assess how well our model fits the data. We do this by 
-calculating the posterior predictive distribution, which is the 
-probability density of new observations (i.e. the radial velocities 
-of stars yet to be observed), conditioned on the data we have used 
-to constrain the model:
+performing posterior predictive checks \citet{Ge13}. There is a subtlety in how we must compare our model 
+to the data, however. The velocity distribution  of high-speed stars is position dependent in the model, 
+owing to the spatial variation of the escape speed. The fastest star at a given radius is likely to be 
+travelling slower than its counterparts at smaller radii, where the escape speed is larger. This effect 
+means that we must take into account the number of stars that have been observed at each radius in the 
+Galaxy for our comparison between model and data to be meaningful. We therefore write  
+%
+\begin{eqnarray}
+p(\vlos | \Theta) &=& \dfrac{\int p(\vlos | r, \Theta)\,p(r)\,\intd r}{\int p(\vlos | r, \Theta)\,p(r)\,\intd r\,\intd v} \nonumber \\
+                  &=& \dfrac{\int p(\vlos | r, \Theta)\,p(r)\,\intd r}{\int (k+2)^{-1}(\vesc(r) - \vmin)^{k+2}\,p(r)\,\intd r\,},
+\label{eq:ppc}
+\end{eqnarray}
+%
+where $p(r)$ is the probability of observing a star at radius $r$. We approximate 
+$p(r)$ by constructing a histogram of the mother sample of each tracer, and then 
+evaluating $p(r)$ as a cubic spline between the bin centres. The two integrals in 
+Equation (\ref{eq:ppc}) are then computed using 12 point Gauss-Legendre quadrature. 
 %
 \begin{equation}
 p(\vlos\,|\,\mathrm{data}) = \int p(\vlos\,|\,\Theta)\,p(\Theta\,|\,\mathrm{data})\,\intd \Theta.
@@ -855,23 +868,8 @@ the posterior distribution during our MCMC sampling, so that
 \end{equation}
 %
 We want to compare the distribution in $\vlos$ of each tracer sample to our model using this technique. 
-There is a subtlety in how we must compare our model to the data, however. The velocity distribution  
-of high-speed stars is position dependent in our model, owing to the spatial variation of the escape 
-speed. The fastest star at a given radius is likely to be travelling slower than its counterparts at smaller 
-radii, where the escape speed is larger. This effect means that we must take into account the number of 
-stars that have been observed at each radius in the Galaxy for our comparison between model and data to be 
-meaningful. We therefore write  
-%
-\begin{eqnarray}
-p(\vlos | \Theta) &=& \dfrac{\int p(\vlos | r, \Theta)\,p(r)\,\intd r}{\int p(\vlos | r, \Theta)\,p(r)\,\intd r\,\intd v} \nonumber \\
-                  &=& \dfrac{\int p(\vlos | r)\,p(r)\,\intd r}{\int (k+2)^{-1}(\vesc(r) - \vmin)^{k+2}\,p(r)\,\intd r\,},
-\label{eq:ppc}
-\end{eqnarray}
-%
-where $p(r)$ is the probability of observing a star at radius $r$. We approximate 
-$p(r)$ by constructing a histogram of the mother sample of each tracer, and then 
-evaluating $p(r)$ as a cubic spline between the bin centres. The two integrals in 
-Equation (\ref{eq:ppc}) are then computed using 12 point Gauss-Legendre quadrature. 
+
+
 Our posterior predictive distribution is then calculated using Equations (\ref{eq:mcmc}) 
 and (\ref{eq:ppc}).
 

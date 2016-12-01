@@ -3,7 +3,7 @@ from __future__ import division, print_function
 import numpy as np, matplotlib.pyplot as plt, pandas as pd
 
 import plotting as pl, gus_utils as gu, models as m, fits as f, corner_plot as  cp,\
-        matplotlib as mpl, dwarf as d
+        matplotlib as mpl, dwarf as d, matplotlib.ticker as ticker
 
 from scipy.special import gammaincinv
 from palettable.colorbrewer.qualitative import Set1_6
@@ -93,26 +93,61 @@ def posterior_predictive_distribution(chain,model,burnin=200,cmap="Greys",thin_b
 
     return fig,ax
 
-def posterior_predictive_checks():
+def posterior_predictive_checks(cmap="Greys"):
 
     """
     placeholder, need to add a bunch of stuff and update docstring
     """
 
-    data = np.load("/data/aamw3/SDSS/model_comparison_main_sequence.npy").item()
-    plt.boxplot(data['model_counts'],showfliers=False,boxprops=dict(c='k',linewidth=2),\
-        whiskerprops=dict(c='k',linewidth=2,linestyle='-'),medianprops=dict(c='k',linewidth=2),\
-        capprops=dict(c='k',linewidth=2),positions=data['bin_centres'],whis=[0.,100.],widths=.5*binwidth)
-    plt.plot(data['bin_centres'],data['data_counts'],'o',mfc='y',mec='none',label="Data")
-    plt.plot(0.,0.,lw=2,c='k',label="Mock samples")
-    plt.xlim((190.,420.))
-    ax = plt.gca()
-    preferred_ticks = np.array([200,250.,300.,350.,400.])
-    ax.xaxis.set_ticks(preferred_ticks)
-    ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%0.0f'))
-    plt.ylabel("$N$")
-    plt.xlabel("$v_{||}/\\mathrm{kms^{-1}}$")
-    plt.legend(loc='upper right', numpoints=1, markerscale=2)
+    main_sequence = np.load("/data/aamw3/SDSS/model_comparison_main_sequence.npy").item()
+    kgiant = np.load("/data/aamw3/SDSS/model_comparison_kgiant.npy").item()
+    bhb = np.load("/data/aamw3/SDSS/model_comparison_bhb.npy").item()
+
+    tracers = (main_sequence,kgiant,bhb)
+    tracer_title = ["MSTO","K-giant","BHB"]
+    cmaps = ["YlOrBr","Reds","Blues"]
+
+    fig,ax = plt.subplots(3,2,figsize=(10.,15.))
+
+    for i,data in enumerate(tracers):
+        binwidth = np.diff(data['bin_centres'])[0]
+        for axi in ax[i]:
+            # axi.boxplot(data['model_counts'],showfliers=False,boxprops=dict(c='0.5',linewidth=2),\
+            #     whiskerprops=dict(c='0.5',linewidth=2,linestyle='-'),medianprops=dict(c='0.5',linewidth=2),\
+            #     capprops=dict(c='0.5',linewidth=2),positions=data['bin_centres'],whis=[0.,100.],widths=.5*binwidth)
+            cm = plt.cm.get_cmap(cmaps[i])
+            p0 = np.percentile(data['model_counts'],0,axis=0)
+            p2p5 = np.percentile(data['model_counts'],2.5,axis=0)
+            p16 = np.percentile(data['model_counts'],16,axis=0)
+            p50 = np.median(data['model_counts'],axis=0)
+            p84 = np.percentile(data['model_counts'],84,axis=0)
+            p97p5 = np.percentile(data['model_counts'],97.5,axis=0)
+            p100 = np.percentile(data['model_counts'],100,axis=0)
+            axi.plot(data['bin_centres'],p50,c=cm(1.))
+            axi.fill_between(data['bin_centres'],p16,p84,facecolor=cm(0.7),lw=.1)
+            axi.fill_between(data['bin_centres'],p2p5,p16,facecolor=cm(0.45),lw=.1)
+            axi.fill_between(data['bin_centres'],p84,p97p5,facecolor=cm(0.45),lw=.1)
+            axi.fill_between(data['bin_centres'],p0,p2p5,facecolor=cm(0.2),lw=.1)
+            axi.fill_between(data['bin_centres'],p97p5,p100,facecolor=cm(0.2),lw=.1)
+            axi.plot(data['bin_centres'],data['data_counts'],'o',mfc='k',mec='none',label="Data")
+            axi.set_xlim((data['bin_centres'][0]-2.,data['bin_centres'][-1]+2.))
+            axi.xaxis.set_major_locator(ticker.MaxNLocator(5))
+
+    for i,axi in enumerate(ax[:,0]):
+        ymin,ymax = axi.get_ylim()
+        xmin,xmax = axi.get_xlim()
+        axi.text(xmin+0.6*(xmax-xmin),ymin+0.7*(ymax-ymin),tracer_title[i],fontsize=30)
+
+    for i, axi in enumerate(ax[:,1]):
+        ymin,ymax = axi.get_ylim()
+        axi.set_yscale("log")
+        axi.set_ylim((10.**-1.,ymax))
+
+
+    fig.text(0.5,0.,"$v_{||}/\\mathrm{kms^{-1}}$",fontsize=20)
+    fig.text(0.,0.5,"$N$",fontsize=20)
+    fig.subplots_adjust(bottom=0.3,left=0.3)
+
     return None
 
 
@@ -229,7 +264,7 @@ def plot_tracers(**kwargs):
     msto = msto[(np.abs(msto.vgsr)>200.)].reset_index(drop=True)
     data = (msto,kgiant,bhb)
     tracer_title = ["MSTO","K-giant","BHB"]
-    colors = ["k","crimson","royalblue"]
+    colors = ["orange","crimson","royalblue"]
     width,height = plt.rcParams.get('figure.figsize')
     fig,ax = plt.subplots(1,3,figsize=(3*width,height),sharey=True,sharex=True)
 
