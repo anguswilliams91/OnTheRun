@@ -264,7 +264,7 @@ def plot_tracers(**kwargs):
     msto = msto[(np.abs(msto.vgsr)>200.)].reset_index(drop=True)
     data = (msto,kgiant,bhb)
     tracer_title = ["MSTO","K-giant","BHB"]
-    colors = ["orange","crimson","royalblue"]
+    colors = ["darkorange","crimson","royalblue"]
     width,height = plt.rcParams.get('figure.figsize')
     fig,ax = plt.subplots(1,3,figsize=(3*width,height),sharey=True,sharex=True)
 

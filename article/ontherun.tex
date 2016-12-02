@@ -824,11 +824,11 @@ very eccentric orbits.}
 
 \begin{figure*}
 \includegraphics[width=1.5\columnwidth]{plots/ppc}\\
-\caption{Posterior predictive checks of the SPL model. The coloured circles 
-and uncertainties are the binned radial velocities of our three tracer 
-groups, with 90\% credible intervals computed using the Poisson distribution. The black line is the 
-posterior predictive distribution of the SPL model. Our model well reproduces the 
-data over $\sim 2$ orders of magnitude in the number of counts.}
+\caption{Posterior predictive checks of the SPL model. The black points are the number of 
+stars observed in bins of $\vlos$. The solid lines are the median counts from our replicated 
+data sets. The coloured bands around the median line are the 68\%, 95\% intervals and full 
+range of the counts in the replicated data sets. Our model produces replicated data that 
+resemble the SDSS sample.}
 \label{fig:ppc}
 \end{figure*}
 
@@ -848,10 +848,9 @@ p(\vlos \,|\, \Theta) &=& \dfrac{\int p(\vlos \,|\, r, \Theta)\,p(r)\,\intd r}{\
 \label{eq:ppc}
 \end{eqnarray}
 %
-where $p(r)$ is the probability of observing a star at radius $r$. We approximate 
-$p(r)$ by constructing a histogram of the mother sample of each tracer, and then 
-evaluating $p(r)$ as a cubic spline between the bin centres. The two integrals in 
-Equation (\ref{eq:ppc}) are then computed using 12 point Gauss-Legendre quadrature. 
+where $p(r)$ is the probability of observing a star at radius $r$. We approximate $p(r)$ by binning 
+the mother sample of each tracer in radius and fitting a cubic spline to the resulting histogram. 
+The two integrals in Equation (\ref{eq:ppc}) are then computed using 12 point Gauss-Legendre quadrature. 
 We then draw samples from the posterior predictive distribution
 %
 \begin{equation}
