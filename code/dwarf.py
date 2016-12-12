@@ -90,9 +90,3 @@ def sample_rp_ra_e_distributions(r,vr,chain,thin_by=100,burnin=200):
 
     return rp[~np.isnan(rp)],ra[~np.isnan(rp)],e[~np.isnan(rp)]
 
-
-
-
-
-
-

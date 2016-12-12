@@ -431,7 +431,28 @@ def dwarf_posteriors(chain,burnin=200):
 
     return fig,ax
 
+def corner_plots():
 
+    chain = np.genfromtxt("/data/aamw3/mcmc/escape_chains/spherical_powerlaw.dat")
+    chain = chain[80*200:,[3,2,1,4,5,6]]
+    chain[:,-3] *= 1960.
+    axis_labels = ["$k_\\mathrm{MSTO}$","$k_\\mathrm{K-giant}$","$k_\\mathrm{BHB}$","$N_*f$","$v_\\mathrm{esc}(R_\\odot)/\\mathrm{kms^{-1}}$","$\\alpha$"]
+    cp.corner_plot(chain,axis_labels=axis_labels,fontsize=15,tickfontsize=12,figsize=(10.,10.))
+    plt.gcf().text(0.75,0.75,"SPL",fontsize=30)
+
+    chain = np.genfromtxt("/data/aamw3/mcmc/escape_chains/flattened_powerlaw.dat")
+    chain = chain[80*200:,-3:]
+    axis_labels = ["$v_\\mathrm{esc}(R_\\odot)/\\mathrm{kms^{-1}}$","$\\beta$","$q$"]
+    cp.corner_plot(chain,axis_labels=axis_labels)
+    plt.gcf().text(0.75,0.75,"EPL",fontsize=30)
+
+    chain = np.genfromtxt("/data/aamw3/mcmc/escape_chains/TF.dat")
+    chain = chain[80*200:,-3:]
+    axis_labels = ["$v_0/\\mathrm{kms^{-1}}$","$r_s/\\mathrm{kpc}$","$\\gamma$"]
+    cp.corner_plot(chain,axis_labels=axis_labels)
+    plt.gcf().text(0.75,0.75,"TF",fontsize=30)
+
+    return None
 
 
 def main():
