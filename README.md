@@ -9,3 +9,5 @@ Fast stars in SDSS
 - [ ] Write Introduction
 - [ ] Write Conclusions
 - [ ] Process changes from other authors
+- [ ] Add bit to conclusion about accretion history being encoded in k (we are doing this)
+- [ ] Add bit to justify the transformation of vesc(r) - > M(r), cite Piffl 
