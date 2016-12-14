@@ -10,17 +10,29 @@ def main_sequence_query():
     as a Pandas DataFrame
     """
 
-    getstr = "select spa.ra, spa.dec, spa.dered_u, spa.psfmagerr_u,spa.dered_g,\
-     spa.psfmagerr_g,spa.dered_r, spa.psfmagerr_r,spa.dered_i, spa.psfmagerr_i,\
-     spa.dered_z, spa.psfmagerr_z,spp.elodiervfinal,spp.elodiervfinalerr,\
-     spp.fehadop,spp.fehadopunc,spp.loggadop,spp.loggadopunc,spp.teffadop,spp.teffadopunc, spa.objid \
-     from sdssdr9.specphotoall as spa, sdssdr9.sppparams as spp where spp.specobjid=spa.specobjid \
-     and spp.scienceprimary=1 and spa.class='STAR' and spa.extinction_r<0.3 and spa.dered_g-spa.dered_r between 0.2 and 0.6 \
-     and spa.psfmagerr_g<0.04 and spa.psfmagerr_r<0.04 and spa.psfmagerr_i<0.04 and spp.fehadopunc<0.1\
-     and spa.dered_r between 14.5 and 20. and spp.fehadop between -4. and 2. and spp.loggadop between 3.5 and 4. \
-     and spp.elodiervfinal between -1000. and 1000. and spp.teffadop between 4800. and 8000. and \
-     spa.psfmagerr_g>0. and spa.psfmagerr_r>0. and spa.psfmagerr_i>0. and (spp.zwarning=0 or spp.zwarning=16)\
-     and (spp.snr > 20.)"
+    getstr = "SELECT spa.ra, spa.dec, spa.dered_u, spa.psfmagerr_u,spa.dered_g,\
+    spa.psfmagerr_g,spa.dered_r, spa.psfmagerr_r,spa.dered_i, spa.psfmagerr_i,\
+    spa.dered_z, spa.psfmagerr_z,spp.elodiervfinal,spp.elodiervfinalerr,\
+    spp.fehadop,spp.fehadopunc,spp.loggadop,spp.loggadopunc,spp.teffadop,spp.teffadopunc, spa.objid \
+    \
+    FROM sdssdr9.specphotoall AS spa,\
+         sdssdr9.sppparams AS spp \
+    \
+    WHERE spp.specobjid=spa.specobjid \
+    AND spp.scienceprimary=1 \
+    AND spa.class='STAR' \
+    AND spa.extinction_r<0.3\
+    AND spa.dered_g-spa.dered_r BETWEEN 0.2 AND 0.6 \
+    AND spa.dered_r BETWEEN 14.5 AND 20. \
+    AND spp.fehadop BETWEEN -4. AND -0.9 \
+    AND spp.loggadop BETWEEN 3.5 AND 4. \
+    AND spp.teffadop BETWEEN 4500. AND 8000.\
+    AND spa.psfmagerr_g BETWEEN 0. AND 0.04 \
+    AND spa.psfmagerr_r BETWEEN 0. AND 0.04 \
+    AND spa.psfmagerr_i BETWEEN 0. AND 0.04 \
+    AND spp.fehadopunc < 0.1 \
+    AND (spp.zwarning=0 OR spp.zwarning=16) \
+    AND spp.snr > 20."
 
     res = sql.get(getstr) 
     data = pd.DataFrame(np.array(res).T,columns=['ra','dec','u','u_err','g','g_err','r','r_err','i','i_err',\
@@ -35,9 +47,9 @@ def main_sequence_query():
     s = gu.Ivesic_estimator(data.g.values,data.r.values,data.i.values,data.feh.values)
     data = data[(np.abs(data.b)>np.radians(20.))&(data.feh<-0.9)&(s<15.)].reset_index(drop=True)
 
-    data.to_csv("/data/aamw3/SDSS/main_sequence.csv")
+    #data.to_csv("/data/aamw3/SDSS/main_sequence.csv")
 
-    return None
+    return data
 
 def bhb_query():
 
@@ -46,15 +58,24 @@ def bhb_query():
     as a Pandas DataFrame
     """
 
-    getstr = "select g.ra,g.dec,g.psfmag_g-g.extinction_g,g.psfmag_r-g.extinction_r,g.psfmagerr_g,g.psfmagerr_r,\
-              spp.loggadop,spp.fehadop,spp.teffadop,spp.elodiervfinal,spp.elodiervfinalerr from \
-              sdssdr9.sppparams as spp, sdssdr9.specphotoall as g where \
-              (spp.loggadop between 3. and 3.5) and (spp.teffadop between 8300. and 9300.) and \
-              (spp.fehadop between -2. and -1.) and \
-              (g.psfmag_g-g.extinction_g-g.psfmag_r+g.extinction_r between -0.25 and 0.) and \
-              (g.psfmag_u-g.extinction_u-g.psfmag_g+g.extinction_g between 0.9 and 1.4) and \
-              spp.specobjid=g.specobjid and spp.scienceprimary=1 and spp.snr>20. and \
-              (spp.zwarning=0 or spp.zwarning=16)"
+    getstr = "SELECT spa.ra,spa.dec,spa.psfmag_g-spa.extinction_g,spa.psfmag_r-spa.extinction_r,spa.psfmagerr_g,spa.psfmagerr_r, \
+    spp.loggadop,spp.fehadop,spp.teffadop,spp.elodiervfinal,spp.elodiervfinalerr \
+    \
+    FROM sdssdr9.specphotoall AS spa, \
+    sdssdr9.sppparams AS spp \
+    \
+    WHERE spp.specobjid=spa.specobjid \
+    AND spp.scienceprimary=1 \
+    AND spa.class='STAR' \
+    AND spa.psfmag_g-spa.extinction_g-spa.psfmag_r \
+        +spa.extinction_r BETWEEN -0.25 AND 0. \
+    AND spa.psfmag_u-spa.extinction_u-spa.psfmag_g \
+        +spa.extinction_g BETWEEN 0.9 AND 1.4 \
+    AND spp.fehadop BETWEEN -2. AND -1. \
+    AND spp.loggadop BETWEEN 3. AND 3.5 \
+    AND spp.teffadop BETWEEN 8300. AND 9300. \
+    AND (spp.zwarning=0 OR spp.zwarning=16) \
+    AND spp.snr>20."
 
     res = sql.get(getstr)
     data = pd.DataFrame(np.array(res).T, columns=['ra','dec','g','r','g_err','r_err','logg','feh','teff','vhel',\

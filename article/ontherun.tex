@@ -43,10 +43,10 @@
 
 \begin{abstract}
 We measure the variation of the escape speed of the Galaxy across a range of $\sim 40\kpc$ in Galactocentric radius. 
-The local escape speed is found to be $\sim 530\kms$, in good agreement with other studies. 
-We find that this has already fallen to $\sim 380\kms$ at a radius of $50\kpc$. 
+The local escape speed is found to be $521^{+46}_{-30}\kms$, in good agreement with other studies. 
+We find that this has already fallen to $379^{+34}_{-28}\kms$ at a radius of $50\kpc$. 
 Through measuring the escape speed and its variation, we obtain constraints on the Galactic potential as a whole. 
-In particular, the gradient in the escape speed with radius suggests that the total mass contained within $50\kpc$ is $\sim 3\times10^{11}\Msun$, implying a relatively light dark halo for the Milky Way. 
+In particular, the gradient in the escape speed with radius suggests that the total mass contained within $50\kpc$ is $29^{+7}_{-5}\times10^{10}\Msun$, implying a relatively light dark halo for the Milky Way. 
 Our method represents a novel way of estimating the mass of the Galaxy, and has very different systematics to more commonly used models of tracers, which are more sensitive to the central parts of the halo velocity distributions. 
 Using our inference on the escape speed, we then investigate the orbits of high--speed Milky Way dwarf galaxies. 
 For each dwarf we consider, we predict small pericenter radii and large orbital eccentricities. 
@@ -91,8 +91,8 @@ And, third, future prospects are bright, with huge new datasets of radial veloci
 
 All previous work has focussed on measuring the escape speed locally. 
 This is because samples of high velocity stars have been small (sometimes minute, for example S07 used just 16 stars, whilst P14 relied on 86 stars) and concentrated in the solar neighbourhood.
-In this paper, we present the first measurements of the escape speed throughout the Galaxy using a variety of tracers -- main-sequence turn-off stars (MSTOs), blue horizontal branch stars (BHBs) and K--giants -- extracted from the Sloan Digital Sky Survey.
-Although the MSTOs are located at heliocentric distances within $\sim 3$ kpc, the BHBs and K giants in our samples extend out to Galactoctocentric radii of $\sim 50$ kpc and provide a much greater reach.
+In this paper, we present the first measurements of the escape speed throughout the Galaxy using a variety of tracers -- main-sequence turn-off stars (MSTOs), blue horizontal branch stars (BHBs) and K-giants -- extracted from the Sloan Digital Sky Survey.
+Although the MSTOs are located at heliocentric distances within $\sim 3$ kpc, the BHBs and K-giants in our sample extend out to Galactoctocentric radii of $\sim 50$ kpc, providing much greater reach.
 
 Section~\ref{sec:method} describes the likelihood function and models for the tail of the velocity distribution, primarily following the formalism established by \citet{Le90}. 
 We discuss our tracers and distance estimators in Section~\ref{sec:samples}. 
@@ -228,7 +228,7 @@ where the r-band extinction $A_r<0.3$. We then make cuts on spectroscopic parame
 \end{gather}
 % 
 This gives us a sample of metal-poor MSTO stars. 
-We also make quality cuts to ensure high-quality photometry and radial velocity measurements for the sample, resulting in a mother sample of 22070 MSTO stars. 
+We also make cuts to ensure high-quality photometry and radial velocity measurements for the sample, resulting in a mother sample of 22070 MSTO stars. 
 To compute distances to these stars, we estimate the absolute magnitude in the $r$-band using the prescription derived by \cite{Iv08}. 
 With $x=(g-i)_0$, we have
 %
@@ -312,11 +312,10 @@ Given our three mother samples, we now seek to select members of the high-speed 
 In order to do this, we must make a decision for the value of $v_\mathrm{min}$ in Equation (\ref{eq:model}). 
 S07 did not have access to measurements of stellar parameters for their sample, and adopted a very high threshold of $v_\mathrm{min} = 300\kms$ in order to avoid contamination from the Galactic disc. 
 P14 used proper motion measurements to remove stars with disc-like signatures of rotation (although in practice this cut operates very similarly to a metallicity threshold, see their Figure 9), and then introduced a cut of $v_\mathrm{min}=200\kms$. 
-Our cuts in latitude and metallicity serve to remove disc contaminants, which is much less of a concern in when using more distant SDSS tracers than it is for samples of RAVE stars. 
+Our cuts in latitude and metallicity serve to remove disc contaminants, which is much less of a concern when using more distant SDSS tracers than it is for samples of RAVE stars. 
 Since we expect very little disc contamination, our choice of $v_\mathrm{min}$ now depends only on the range of velocities for which we believe the power law model in Equation (\ref{eq:model}) is valid.
 
-P14 performed a detailed analysis of the simulation suite of \citet{Sc09} in order to make an educated choice for $v_\mathrm{min}$, and found that the distribution function of $\vlos$ in the simulations does not significantly deviate from a power-law when
-$\vlos>150\kms$. However, this analysis only considered a RAVE--like volume in the simulations, where $\vesc\sim500\kms$. 
+P14 performed a detailed analysis of the simulation suite of \citet{Sc09} in order to make an educated choice for $v_\mathrm{min}$, and found that the distribution function of $\vlos$ in the simulations does not significantly deviate from a power-law when $\vlos>150\kms$. 
 In our work, we must consider the fact that our cut must be appropriate across a range of locations. 
 Since the vast majority of our sample are further from the Galactic center than the Sun, and physical reasoning suggests that the escape speed cannot increase as a function of radius, then a cut of $200\kms$ should guarantee that the power-law model of Equation (\ref{eq:model}) is appropriate at the locations of all the stars in our study. 
 Consequently, we set $v_\mathrm{min}=200\kms$.  
@@ -391,7 +390,7 @@ On the other hand, the MSTO sample spans a different radial range to the BHB and
 S07 and P14 both used cosmological simulations in order to place informative priors on the value of $k$. 
 S07 used a flat prior over the range $2.7 < k < 4.7$ and P14 adjusted this range to $2.3 < k < 3.7$. 
 These priors were necessary for both analyses because of the limited number of stars in both the S07 and P14 samples. 
-Given our much larger sample of stars, we opt for a much less informative prior on each $k$, so that our prior is flat in the range $0 < k < 10$. 
+Given our much larger sample of stars, we opt for a much less informative prior on each $k$, which is flat in the range $0 < k < 10$. 
 This loose prior will allow us to critically assess the similarity between cosmological simulations and the Galaxy. 
 Our prior on $f$ is flat in the permissible range $0 \leq f \leq 1$.
 
@@ -399,7 +398,7 @@ Our prior on $f$ is flat in the permissible range $0 \leq f \leq 1$.
 
 We now detail the priors used on the parameters on each of the three forms for $\vesc(\pos)$.
 The SPL model has two parameters: $\theta = (\vesc(R_\odot),\alpha)$. 
-If the Galaxy is to possess a declining rotation curve, as we would expect from physical reasoning, then
+If the Galaxy is to possess a flat or declining rotation curve, as we would expect from physical reasoning, then
 %
 \begin{equation}
 0 \leq \alpha \leq 1.
@@ -826,11 +825,9 @@ This was done using a variety of tracer populations -- main sequence turn-off st
 We find that the local escape speed is $521^{+46}_{-30}\kms$ in good agreement with the studies by \cite{Sm07} and \cite{Pi14} using data from the RAVE survey.
 
 Our sample extends out to Galactocentric radii $\sim 50$ kpc, so we can track the gradient in the escape speed with radius for the first time. 
-The escape speed falls rapidly and declines to $\sim 380\kms$ at a radius of $50\kpc$. 
-This suggests that the total mass contained within $50\kpc$ is $\sim 3\times10^{11}\Msun$, implying a relatively light dark halo for the Milky Way. 
-In particular, this is similar to, though slightly smaller than, the results reported by \citet{De12} and \citet{Wi15} using BHBs, who found $4.5\times10^{11}\mathrm{M}_\odot$.
-Both though are consistent with the 94\% credible interval of our inference. 
-Our mass is pleasingly consistent with the work of \citet{Gi14}, who modelled the disruption of the Sagittarius galaxy, and therefore made very different assumptions in the analysis.
+At $50\kpc$, the escape speed has fallen to a value of $379^{+34}_{-28}\kms$, indicative of a rapid power law decline ($\alpha = 0.37\pm0.09$).
+This suggests that the total mass contained within $50\kpc$ is $29^{+7}_{-5}\times10^{10}\Msun$, implying a relatively light dark halo for the Milky Way. 
+Our mass is pleasingly consistent with the work of \citet{Gi14}, who modelled the disruption of the Sagittarius dwarf galaxy, and therefore made very different assumptions in the analysis.
 
 Perhaps the most striking thing about this method is its simplicity. 
 We have demonstrated that modelling the tail of the velocity distribution can recover results in excellent agreement with other, much more elaborate, methods. 
@@ -847,13 +844,13 @@ Triangulum II is moving inwards, and so must be on first infall, which is consis
 
 The advent of the second Gaia release in 2017 and the first results from the WEAVE spectroscopic survey in 2018 will provide proper motions and radial velocities for massive samples of halo stars. 
 The computational challenges of modelling such datasets are severe. 
-We suggest that analysis of the high velocity tails may be the optimum method to extract information on the potential of the Galaxy and the velocity anisotropy quickly.  
+We suggest that analysis of the high velocity tails may be the optimum method to quickly extract information on the potential of the Galaxy.  
 Current datasets preclude a stringent measurement on the shape of the halo using the variation in escape speed with position, but we reckon that this too will become possible in the very near future.
 
 \section*{Acknowledgements}
 
 AAW acknowledges the support of STFC. 
-We thank Sergey Koposov for plenty of helpful advice, and Prashin Jethwa, Jason Sanders, Kathryn Johnston and Gabriel Torrealba for useful conversations. 
+We thank Sergey Koposov for plenty of helpful advice, and Prashin Jethwa, Jason Sanders, Kathryn Johnston, Jorge Penarrubia and Gabriel Torrealba for useful conversations. 
 This project was developed in part at the 2016 NYC Gaia Sprint, hosted by the Center for Computational Astrophysics at the Simons Foundation in New York City.
 
 \bibliography{ontherun}
@@ -884,10 +881,10 @@ AND spa.dered_r BETWEEN 14.5 AND 20.
 AND spp.fehadop BETWEEN -4. AND -0.9 
 AND spp.loggadop BETWEEN 3.5 AND 4. 
 AND spp.teffadop BETWEEN 4500. AND 8000.
-AND spa.psfmagerr_g between 0. and 0.04
-AND spa.psfmagerr_r between 0. and 0.04
-AND spa.psfmagerr_i between 0. and 0.04
-AND spa.loggadopunc < 0.1 
+AND spa.psfmagerr_g BETWEEN 0. AND 0.04
+AND spa.psfmagerr_r BETWEEN 0. AND 0.04
+AND spa.psfmagerr_i BETWEEN 0. AND 0.04
+AND spa.fehadopunc < 0.1 
 AND (spp.zwarning=0 OR spp.zwarning=16)
 AND spp.snr > 20.
 \end{verbatim}
