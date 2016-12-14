@@ -215,8 +215,9 @@ def test_rpra_solver(params):
         the differences between the true and solver apocentres
     """
 
-    rp = np.random.uniform(1.,30.,100)
-    ra = np.random.uniform(30.,1000.,100)
+    ra = np.random.uniform(1.,1000.,size=100)
+    rp_frac = np.random.uniform(size=100)
+    rp = rp_frac*ra
     E = -(rp**2.*Phi(rp,params) - ra**2.*Phi(ra,params))/(ra**2. - rp**2.)
     L = np.sqrt(2.*(Phi(ra,params) - Phi(rp,params))/(rp**-2. - ra**-2.))
     dr = ra-rp 
