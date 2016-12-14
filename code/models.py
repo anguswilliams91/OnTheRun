@@ -7,7 +7,8 @@ from scipy.special import hyp2f1, erfc
 
 def sample_distances(data,n_samples=10000,tracer='main_sequence'):
 
-    """Given a Pandas dataframe, compute distance samples and return a numpy array with distance samples and 
+    """
+    Given a Pandas dataframe, compute distance samples and return a numpy array with distance samples and 
     clones of other measurements for convenience.
 
     Arguments
@@ -153,7 +154,8 @@ def compute_galactocentric_radii(data,tracer,append_dataframe=True):
 
 def Gaussian(v,mu,sigma):
 
-    """Gaussian distribution.
+    """
+    Gaussian distribution.
 
     Arguments
     ---------
@@ -179,7 +181,7 @@ def Gaussian(v,mu,sigma):
 def log_likelihood(params, data, vmin, model):
 
     """
-    Likelihood function template for given model. 
+    Log likelihood function template for given model. 
 
     Arguments
     ---------
@@ -308,7 +310,8 @@ def vesc_model(x,y,z,params,model):
 
 def get_numparams(model):
 
-    """Get the number of parameters associated with a model
+    """
+    Get the number of parameters associated with a model
 
     Arguments
     ---------
@@ -334,14 +337,15 @@ def get_numparams(model):
 
     else: 
 
-        raise ValueError(model+" not found.")
+        raise Exception(model+" not found.")
 
     return None
 
 
 def log_priors_global(params):
 
-    """Priors on parameters common to all models.
+    """
+    Priors on parameters common to all models.
 
     Arguments
     ---------
@@ -361,7 +365,6 @@ def log_priors_global(params):
     k = np.array([kbhb,kkgiant,kms])
 
     if any(k<0.) or any(k>10.):
-        #cosmological sim priors on K from Smith et al.
         return -np.inf
     elif f<0. or f>1.:
         return -np.inf
@@ -432,12 +435,11 @@ def log_priors_model(params,vmin,model):
             return -np.inf 
         else:
             return -np.log(v0) \
-                    -np.log(rs)
-                    #-.5*(rs-15.)**2./7**2.
+                    -.5*(rs-15.)**2./7**2.
 
     else: 
 
-        raise ValueError(model+" not found.")
+        raise Exception(model+" not found.")
 
     return None
 
@@ -466,7 +468,6 @@ def sample_priors_model(model,vmin,n_walkers):
 
     if model == "spherical_powerlaw":
 
-        #vesc_Rsun_samples = np.random.normal(loc=533.,scale=25.,size=n_walkers)
         vesc_Rsun_samples = np.random.uniform(low=np.log(vmin),high=np.log(1000.),size=n_walkers)
         alpha_samples = np.random.uniform(low=0., high=1., size=n_walkers)
 
@@ -485,15 +486,14 @@ def sample_priors_model(model,vmin,n_walkers):
     elif model == "TF":
 
         v0_samples = np.random.uniform(low=np.log(150.),high=np.log(300.),size=n_walkers)
-        #rs_samples = np.clip(np.random.normal(loc=15.,scale=7.,size=n_walkers),0.,np.inf)
-        rs_samples = np.random.uniform(low=np.log(3.),high=np.log(100.),size=n_walkers)
+        rs_samples = np.clip(np.random.normal(loc=15.,scale=7.,size=n_walkers),0.,np.inf)
         alpha_samples = np.random.uniform(low=0.,high=1.,size=n_walkers)
 
-        return np.vstack((np.exp(v0_samples),np.exp(rs_samples),alpha_samples)).T
+        return np.vstack((np.exp(v0_samples),rs_samples,alpha_samples)).T
 
     else: 
 
-        raise ValueError(model+" not found.")
+        raise Exception(model+" not found.")
 
     return None
 
@@ -528,7 +528,7 @@ def sample_priors_global(n_walkers):
 def log_posterior(params, data, vmin, model):
 
     """
-    Likelihood function template for given model. 
+    Log posterior function. 
 
     Arguments
     ---------
@@ -589,6 +589,13 @@ def run_mcmc(model,filename,vmin=200.,n_walkers=80,n_steps=3000,n_threads=20,n_s
     n_samples: (=200) int
         the number of samples to draw from the uncertainties on the distances 
 
+    seed: (=0) int
+        the number with which to seed the random number generator
+
+    tracer: (=None) string
+        if set to "kgiant_only" or "main_sequence_only", then the analysis will 
+        be performed using only the kgiant/msto sample. 
+
     """
 
     np.random.seed(seed)
@@ -602,7 +609,6 @@ def run_mcmc(model,filename,vmin=200.,n_walkers=80,n_steps=3000,n_threads=20,n_s
         data[0] = None
         data[1] = None
 
-    #run a minimization for each walker to get starting points
     n_params = 4 + get_numparams(model)
     p0 = np.zeros((n_walkers,n_params))
     prior_samples_model = sample_priors_model(model,vmin,n_walkers)

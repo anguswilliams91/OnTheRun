@@ -6,7 +6,16 @@ from scipy.optimize import brentq
 def Phi(r,params):
 
     """
-    SPL potential
+    SPL potential.
+
+    Arguments
+    ---------
+
+    r: array_like
+        radii at which to evaluate the potential 
+
+    params: list 
+        [vesc(Rsun), alpha] the potential parameters
     """
 
     vesc_Rsun,alpha = params
@@ -14,12 +23,58 @@ def Phi(r,params):
 
 def rperi_rapo_eq(r,E,L,params):
 
-    """equation for finding rp, ra"""
+    """equation for finding rp, ra
+
+    Arguments
+    ---------
+
+    r: array_like
+        radii at which to evalute the equation
+
+    E: float 
+        the energy of the orbit 
+
+    L: float 
+        the angular momentum of the orbit 
+
+    params: list 
+        the potential parameters
+
+    Returns
+    -------
+
+    eq: array_like
+        values of the LHS of the equation at r
+
+    """
 
     return E  - .5*L**2. / r**2. - Phi(r,params)
 
 def rp_ra_getstart(r,E,L,params,apo=False):
-    """Find suitable place to start the minimization routine"""
+    """Find suitable place to start the root finding
+
+    Arguments
+    ---------
+
+    r: array_like
+        radii at which to evalute the equation
+
+    E: float 
+        the energy of the orbit 
+
+    L: float 
+        the angular momentum of the orbit 
+
+    params: list 
+        the potential parameters
+
+    Returns
+    -------
+
+    rtry: float
+        a good place to start using a root finder
+
+    """
     if apo:
         rtry = 1.1*r
     else:
@@ -36,7 +91,25 @@ def rp_ra_getstart(r,E,L,params,apo=False):
     return rtry
 
 def get_rp_ra(r,vr,vT,params):
-    """Find the limiting radii of the orbit"""
+
+    """Find the limiting radii of the orbit
+
+    Arguments
+    ---------
+
+    r: float 
+        the current radius of the dwarf 
+
+    vr: float 
+        the current radial velocity of the dwarf 
+
+    vT: float 
+        the current tangential velocity of the dwarf
+
+    params: list 
+        the potential parameters 
+    """
+
     E = .5*(vr**2. + vT**2.) + Phi(r,params)
     L = vT*r
     eps=1e-8
@@ -69,6 +142,36 @@ def sample_rp_ra_e_distributions(r,vr,chain,thin_by=100,burnin=200):
 
     """
     sample rp,ra,epsilon distribution given chain and measurement
+
+    Arguments
+    ---------
+
+    r: float 
+        galactocentric radius of the dwarf
+
+    vr: float 
+        the radial velocity of the dwarf 
+
+    chain: array_like
+        mcmc chain of the potential parameters and k 
+
+    thin_by: (=100) int 
+        the thinning factor for the mcmc chain 
+
+    burnin: (=200) int
+        the number of steps per walker to discard for burn in 
+
+    Returns
+    -------
+
+    rp: array_like
+        posterior samples on rp 
+
+    ra: array_like
+        posterior samples on ra
+
+    e: array_like
+        posterior samples on the eccentricity
     """
 
     c = gu.reshape_chain(chain)[:,burnin::thin_by,:]

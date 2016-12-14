@@ -93,10 +93,10 @@ def posterior_predictive_distribution(chain,model,burnin=200,cmap="Greys",thin_b
 
     return fig,ax
 
-def posterior_predictive_checks(cmap="Greys"):
+def posterior_predictive_checks():
 
     """
-    placeholder, need to add a bunch of stuff and update docstring
+    Graphical check of the model using posterior predictive samples.
     """
 
     main_sequence = np.load("/data/aamw3/SDSS/model_comparison_main_sequence.npy").item()
@@ -151,7 +151,7 @@ def posterior_predictive_checks(cmap="Greys"):
     return None
 
 
-def mass_enclosed(chain,model,burnin=200,cmap="Blues",fontsize=30,tickfontsize=20,thin_by=1,**kwargs):
+def mass_enclosed(chain,model,burnin=200,cmap="Blues",thin_by=1,**kwargs):
 
     """
     Plot the mass enclosed implied by a spherically symmetric model given 
@@ -166,6 +166,15 @@ def mass_enclosed(chain,model,burnin=200,cmap="Blues",fontsize=30,tickfontsize=2
 
     model: string 
         model name
+
+    burnin: (=200) int 
+        the number of steps per walker to discard as burn in
+
+    cmap: (="Blues") string 
+        matpotlib colormap to use
+
+    thin_by: (=1) int 
+        thinning factor for MCMC chains
 
     Returns
     -------
@@ -296,7 +305,10 @@ def Vesc_posterior(chain,model,burnin=200):
     ---------
 
     chain: array_like[nsamples,ndims]
-        mcmc output from a spherical_powerlaw chain
+        mcmc output
+
+    model: string 
+        the name of the model to plot
 
     burnin: int(=200)
         number of steps from the default chain to disregard
@@ -325,6 +337,23 @@ def Vesc_posterior(chain,model,burnin=200):
     return fig,ax
 
 def halo_distribution(chain,model,burnin=200):
+
+    """
+    Plot the mother sample line-of-sight velocity distributions and our inference on the escape speed. 
+
+    Arguments
+    ---------
+
+    chain: array_like[nsamples,ndims]
+        mcmc output
+
+    model: string 
+        the name of the model to plot
+
+    burnin: int(=200)
+        number of steps from the default chain to disregard
+
+    """
 
     fig,ax = plt.subplots()
     msto_data = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
@@ -362,6 +391,23 @@ def halo_distribution(chain,model,burnin=200):
     return fig,ax
 
 def dwarf_galaxies(chain,model,burnin=200):
+
+    """
+    Plot the dwarf galaxy line of sight velocities multiplied by sqrt(3) and our inference on the escape speed.
+
+    Arguments
+    ---------
+
+    chain: array_like[nsamples,ndims]
+        mcmc output
+
+    model: string 
+        the name of the model to plot
+
+    burnin: int(=200)
+        number of steps from the default chain to disregard
+
+    """
 
     fig,ax = plt.subplots()
     dwarf_data = pd.read_csv("/data/aamw3/satellites/r_vgsr_dwarfs.csv")
@@ -403,6 +449,16 @@ def dwarf_posteriors(chain,burnin=200):
 
     """
     Plot posteriors on rp,ra,e for BooIII, TriII and Herc
+
+    Arguments
+    ---------
+
+    chain: array_like[nsamples,ndims]
+        mcmc output from a spherical_powerlaw chain
+
+    burnin: int(=200)
+        number of steps from the default chain to disregard
+
     """
 
     data = pd.read_csv("/data/aamw3/satellites/r_vgsr_dwarfs.csv")
@@ -432,6 +488,10 @@ def dwarf_posteriors(chain,burnin=200):
     return fig,ax
 
 def corner_plots():
+
+    """
+    Make the corner plots in the paper
+    """
 
     chain = np.genfromtxt("/data/aamw3/mcmc/escape_chains/spherical_powerlaw.dat")
     chain = chain[80*200:,[3,2,1,4,5,6]]
