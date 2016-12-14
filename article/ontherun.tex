@@ -337,7 +337,7 @@ Our primary model for the escape speed is a spherically--symmetric power law mod
 %
 where $r$ is Galactocentric radius and $0 \leq \alpha \leq 1$, on physical grounds.  
 We normalise the model to the escape speed at the solar radius. 
-The gravitational potential $\Phi$ and escape speed are simply related by
+The gravitational potential $\Phi$ and escape speed are related by
 %
 \begin{equation}
 \vesc = \sqrt{-2\Phi},
@@ -350,7 +350,7 @@ meaning that the SPL model corresponds to a gravitational potential of the form
 \label{eq:splgrav}
 \end{equation}
 %
-Thus, unlike other studies that measure only the local escape speed, we can translate our measurements of $\vesc(R_\odot)$ and $\alpha$ into inference of the circular speed of the potential, and the mass enclosed within spherical shells.
+Thus, unlike other studies that measure only the local escape speed, we can translate our measurements of $\vesc(R_\odot)$ and $\alpha$ into inference of the circular speed of the potential, and the mass enclosed within spherical shells. 
 
 We will also report on results when two other models are used. 
 The first is a simple generalisation of the SPL, a power law in elliptical radius (EPL)
@@ -606,6 +606,12 @@ For example, the local circular speed that we measure is
 v_c(R_\odot) = 223^{+40}_{-34}\kms.
 \end{equation}
 %
+Note that our inferences on the mass profile and rotation curve rest heavily on the assumption that the speed distribution of stars in the Galaxy truncates at $\sqrt{-2\Phi}$.
+If the stars do not fill out to the this value, then our analysis will underestimate the depth of the potential well, which will lead to underestimates in the inferred mass profile and rotation curve of the Galaxy.
+P14 showed that the inferred halo virial mass increased by 20\% if the escape speed was instead defined as $\sqrt{-2\left(\Phi(r) - \Phi(r_\mathrm{max})\right)}$, with $r_\mathrm{max} = 3R_\mathrm{vir} \sim 600\kpc$.
+Since we do not attempt to track the Galaxy's mass out to such large radii, the possible bias incurred by effectively setting $r_\mathrm{max} = \infty$ will be significantly smaller than 20\%, and so we henceforth assume that the velocity distribution reaches $\sqrt{-2\Phi}$.
+The value of $v_c(R_\odot)$ that we obtain while making this assumption is pleasingly aligned with a multitude of other methods, and provides us with confidence that systematic uncertainty caused by these considerations are unimportant relative to our statistical uncertainties.
+
 It is worth noting that our method clearly possesses very different systematic uncertainties when compared to more common approaches in the literature.
 Most dynamical models of halo tracers, like distribution function and Jeans analyses, are most sensitive to the central parts of the velocity distributions.
 This is particularly true of Jeans analyses, which generally only model the first moments of the velocity distributions. 
