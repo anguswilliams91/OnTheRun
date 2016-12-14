@@ -193,3 +193,40 @@ def sample_rp_ra_e_distributions(r,vr,chain,thin_by=100,burnin=200):
 
     return rp[~np.isnan(rp)],ra[~np.isnan(rp)],e[~np.isnan(rp)]
 
+def test_rpra_solver(params):
+
+    """
+    Given some potential parameters, test the peri and apo solver 
+    by passing it orbits with known rp, ra.
+
+    Arguments
+    ---------
+
+    params: list
+        potential parameters [vesc_Rsun, alphas]
+
+    Returns
+    -------
+
+    delta_rp: array_like 
+        the differences between the true and solver pericentres
+
+    delta_ra: array_like 
+        the differences between the true and solver apocentres
+    """
+
+    rp = np.random.uniform(1.,30.,100)
+    ra = np.random.uniform(30.,1000.,100)
+    E = -(rp**2.*Phi(rp,params) - ra**2.*Phi(ra,params))/(ra**2. - rp**2.)
+    L = np.sqrt(2.*(Phi(ra,params) - Phi(rp,params))/(rp**-2. - ra**-2.))
+    dr = ra-rp 
+    f = np.random.uniform(size=100)
+    rs = rp + f*dr
+    vT = L/rs 
+    vr = np.sqrt(2.*(E - Phi(rs,params)) - vT**2.)
+    rp_s,ra_s = np.zeros(100), np.zeros(100)
+    for i in np.arange(100):
+        rp_s[i],ra_s[i] = get_rp_ra(rs[i],vr[i],vT[i],params)
+        
+    return rp - rp_s, ra - ra_s
+
