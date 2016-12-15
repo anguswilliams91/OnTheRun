@@ -87,7 +87,7 @@ These disadvantages are offset by a number of assets. First, only the high veloc
 This is clearly a massive simplification that sidesteps much of the complexity in building DFs. 
 Second, the method provides a nice counterpoint to other ways of measuring the potential (or equivalently the mass) of the Galaxy. 
 For example, methods based on the Jeans equations use the first and second moments of the distribution, and so are controlled by the main bulk rather than the tail. 
-And, third, future prospects are bright, with huge new datasets of radial velocities from spesctroscopic surveys and of proper motions from the Gaia astrometric satellite becoming available.
+And, third, future prospects are bright, with huge new data sets of radial velocities from spesctroscopic surveys and of proper motions from the Gaia astrometric satellite becoming available.
 
 All previous work has focussed on measuring the escape speed locally. 
 This is because samples of high velocity stars have been small (sometimes minute, for example S07 used just 16 stars, whilst P14 relied on 86 stars) and concentrated in the solar neighbourhood.
@@ -541,6 +541,8 @@ This is to be expected, and is the reason why a narrow prior on $k$ was necessar
 Figure 1 of P14 nicely demonstrates the appearance of this degeneracy for varying sample sizes. 
 Fortunately, our sample is large enough to locate the maximum along the degeneracy. 
 The same degeneracy is seen between $k_\mathrm{K-giant}$ and the local escape speed, though it is broader.
+Note that this explains why our statistical uncertainty on the local escape speed is larger than that of of P14, who found $533^{+54}_{-41}\kms$ at 90\% confidence, compared to our 90\% credible interval of $521^{+88}_{-45}\kms$.
+Our larger 95th percentile of $690\kms$ is a consequence of the degeneracy between $k$ and $\vesc(R_\odot)$: the 95th percentile of the posterior on $k_\mathrm{MSTO}$ is 6, which is considerably larger than the upper end of P14's prior.
 
 The inferred outlier fraction is very small, $f \simeq 0.001$, but non-zero. 
 This suggests that there are one or two outliers in our sample. 
@@ -838,8 +840,8 @@ Our mass is pleasingly consistent with the work of \citet{Gi14}, who modelled th
 Perhaps the most striking thing about this method is its simplicity. 
 We have demonstrated that modelling the tail of the velocity distribution can recover results in excellent agreement with other, much more elaborate, methods. 
 In particular, there is no evidence of any bias as the values of the escape velocity and circular speed are in good agreement with other methods.  
-As the size of datasets becomes huge, the computational cost of any algorithm will become an important yardstick. 
-Why model the whole of the distribution function, with the attendant complexity of finding the actions, if the tail alone can give reliable answers ? 
+As the size of data sets becomes huge, the computational cost of any algorithm will become an important yardstick. 
+Our method is computationally much cheaper than full distribution function approaches, and will be able to rapidly provide robust results when faced with the output of enormous surveys.
 
 As an application, we have used the posterior on our velocity distributions to study the orbital properties of the extreme Galactic satellites, Hercules, Bootes III and Triangulum II. 
 All three must have highly eccentric orbits, with Bootes III and Triangulum II possessing an eccentricity $\epsilon \simeq 0.95$, and Hercules
@@ -849,12 +851,15 @@ Given that Hercules and Bootes III are now moving radially outwards, this implie
 Triangulum II is moving inwards, and so must be on first infall, which is consistent with its roundish shape and ellipticity of 0.2.
 
 The advent of the second Gaia release in 2017 and the first results from the WEAVE spectroscopic survey in 2018 will provide proper motions and radial velocities for massive samples of halo stars. 
-The computational challenges of modelling such datasets are severe. 
+The computational challenges of modelling such data sets are severe. 
 We suggest that analysis of the high velocity tails may be the optimum method to quickly extract information on the potential of the Galaxy.  
-Current datasets preclude a stringent measurement on the shape of the halo using the variation in escape speed with position, but we reckon that this too will become possible in the very near future.
+Current data sets preclude a stringent measurement on the shape of the halo using the variation in escape speed with position, but we reckon that this too will become possible in the very near future.
 
-\section*{Acknowledgements}
+As well as allowing us to infer the escape speed and Galactic potential, the tail of the velocity distribution also provides information about the formation history of the Galaxy.
+If the stellar halo is formed by some number of disrupted dwarf galaxies, then the power law index $k$ encodes their accretion times.
+We are investigating how this information can be extracted from cosmological simulations, so that the tail can become a looking glass into the Milky Way's past.
 
+\section*{Acknowledgments}
 AAW acknowledges the support of STFC. 
 We thank Sergey Koposov for plenty of helpful advice, and Prashin Jethwa, Jason Sanders, Kathryn Johnston, Jorge Penarrubia and Gabriel Torrealba for useful conversations. 
 This project was developed in part at the 2016 NYC Gaia Sprint, hosted by the Center for Computational Astrophysics at the Simons Foundation in New York City.
