@@ -69,7 +69,7 @@ The local escape speed $\vesc$ is a measure of the depth of the potential well a
 Therefore, the velocities of the speediest stars passing through the solar neighbourhood can in principle provide information on the enclosed mass. 
 There were early investigations on the local escape speed by \citet{Ca81} and \citet{Al82}, who suggested values $\sim 450\kms$.
 The analysis methods were extended and systematized by \citet{Le90}, who emphasised the importance of modelling the shape of the tail of the velocity distribution. 
-They provided a number of physically-inspired models and concluded that $\vesc$ lay between $450$ and $650 \kms$ with 90 \% confidence. 
+They provided a number of physically-inspired models and concluded that $\vesc$ lay between $450$ and $650 \kms$ with 90\% confidence. 
 The recent spectroscopic surveys of the Galaxy have stimulated a surge of recent activity, notably by \cite{Sm07} and \cite{Pi14} (hereafter S07 and P14).
 These authors used data from the RAVE spectroscopic survey, which provided an abundance of information on the kinematics of local stars. 
 P14, who defined the escape speed as the minimum speed needed to reach three virial radii, concluded that it was $533^{+54}_{-41} \kms$ (90 \%confidence), albeit on the basis of a small sample.
@@ -134,7 +134,7 @@ Since we are only interested in the absolute value of $\vlos$ in this work, we s
 This model has been applied to data several times, most notably by S07 and P14 using data from the {\sc RAVE} survey \citep{Ko13}. 
 Both studies used small samples of stars ($<100$) close to the sun and found $\vesc \sim 530\kms$. 
 We seek to extend their work by constraining the escape speed of the Galaxy at a variety of locations. 
-We do this by parameterising the escape speed as a functionof position $\pos$, so that
+We do this by parameterising the escape speed as a function of position $\pos$, so that
 %
 \begin{equation}
   p(\vlos \,|\, \pos) = \begin{cases}
@@ -219,7 +219,7 @@ To extract the mother sample of MSTO stars, we start by selecting in the de-redd
 14.5 < r/\mathrm{mag} < 20,
 \end{gather}
 %
-where the r-band extinction $A_r<0.3$. We then make cuts on spectroscopic parameters, so that
+where the $r$-band extinction $A_r<0.3$. We then make cuts on spectroscopic parameters, so that
 %
 \begin{gather}
 4800 < T_{\mathrm{eff}}/\mathrm{K} < 8000, \nonumber \\
@@ -228,7 +228,7 @@ where the r-band extinction $A_r<0.3$. We then make cuts on spectroscopic parame
 \end{gather}
 % 
 This gives us a sample of metal-poor MSTO stars. 
-We also make cuts to ensure high-quality photometry and radial velocity measurements for the sample, resulting in a mother sample of 22070 MSTO stars. 
+We also make cuts to ensure high-quality photometry and radial velocity measurements for the sample, resulting in a mother sample of 22071 MSTO stars. 
 To compute distances to these stars, we estimate the absolute magnitude in the $r$-band using the prescription derived by \cite{Iv08}. 
 With $x=(g-i)_0$, we have
 %
@@ -246,7 +246,7 @@ We then draw Monte-Carlo samples from each of these distributions and compute th
 
 \subsection{BHB sample}
 
-To obtain a clean sample of BHBs, we first select in the dereddened colour-colour box
+To obtain a clean sample of BHBs, we first select in the de-reddened colour-colour box
 %
 \begin{gather}
 -0.25 < (g-r)_0 < 0, \nonumber \\
@@ -378,7 +378,7 @@ The form of the escape speed for this model cannot be written in terms of elemen
 \label{sec:pannm}
 
 Having constructed our likelihood function and gathered our data, we now need to choose explicit priors on each of our model parameters. 
-We split these parameters into two groups: global parameters, which are the model parameters than are independent of our choice for $\vesc(\pos)$, and potential parameters, which concern our explicit model of the escape speed.
+We split these parameters into two groups: global parameters, which are the model parameters that are independent of our choice for $\vesc(\pos)$, and potential parameters, which concern our explicit model of the escape speed.
 
 \subsection{Global priors}
 
@@ -460,10 +460,10 @@ We then use the {\sc emcee} code \citep{emcee} to Monte-Carlo sample the posteri
 {\sc emcee} is a {\sc python} implementation of the affine--invariant ensemble sampling approach suggested by \citet{Go10}, where an ensemble of $N$ `walkers' is used, and the proposal distribution for a given walker is based on the current positions of the remaining $N-1$ walkers. 
 Here, we choose $N=80$. We initialise the ensemble by randomly sampling from our prior distributions, and then evolve each walker for 5000 steps. 
 We then inspect the trace plots in each dimension in order to prune our samples for burn-in, which typically requires $\sim 200$ steps. 
-We then assess convergence using the \citet{Ge92} criterion, where the within--chain variances are compared to the between-chain variance in order to compute the Potential Scale Reduction Factor (PSRF). 
-If the PSRF is large ($\gg 1$), then the chains are not well-mixed and the $N$ walkers have not converged to the target posterior distribution. 
-We adjudge a given run to be converged if the PSRF is less than 1.1 in all parameters.  
-For each of the runs presented in this paper, the PSRF is $\simeq 1.01$ or smaller in all parameters.
+To assess the convergence of our chains, we first compute the acceptance fraction $a_f$.
+For all the analyses presented in this paper, $0.3 < a_f < 0.5$ for the entire ensemble of walkers.
+In addition, we compute the integrated autocorrelation time $\tau_f$ for each of our chains, which is the number of posterior evaluations required to produce independent samples.
+We find $\tau_f \simeq 50$ in each dimension, so that our chains are run for $\sim 100$ autocorrelation times, which provides us with plenty of independent samples from the posterior.
 
 \section{Results}
 
@@ -536,7 +536,12 @@ S07 points out that this is to be expected for small sample sizes.
 Nonetheless, the inference on $k_\mathrm{BHB}$ is not in significant tension with the hypothesis that $k$ is constant. 
 Our results vindicate the choice of prior by S07, while the range used by P14 is a touch on the low side.
 
-Figure \ref{fig:SPL_corner} shows a strong degeneracy between $k_\mathrm{MSTO}$ and $\vesc(R_\odot)$. 
+Figure \ref{fig:SPL_corner} shows a strong degeneracy between $k_\mathrm{MSTO}$ and $\vesc(R_\odot)$, which can be encoded by the empirical covariance matrix of the samples
+%
+\begin{equation}
+\mathrm{Cov}\left(k_\mathrm{MSTO}\,,\,\vesc(R_\odot)\right) = \begin{bmatrix} 0.84 & 37\kms \\ 37\kms & 1713 \mathrm{km^2s^{-2}}\end{bmatrix}.
+\end{equation}
+%
 This is to be expected, and is the reason why a narrow prior on $k$ was necessary in previous work. 
 Figure 1 of P14 nicely demonstrates the appearance of this degeneracy for varying sample sizes. 
 Fortunately, our sample is large enough to locate the maximum along the degeneracy. 
@@ -612,11 +617,11 @@ Note that our inferences on the mass profile and rotation curve rest heavily on 
 If the stars do not fill out to the this value, then our analysis will underestimate the depth of the potential well, which will lead to underestimates in the inferred mass profile and rotation curve of the Galaxy.
 P14 showed that the inferred halo virial mass increased by 20\% if the escape speed was instead defined as $\sqrt{-2\left(\Phi(r) - \Phi(r_\mathrm{max})\right)}$, with $r_\mathrm{max} = 3R_\mathrm{vir} \sim 600\kpc$.
 Since we do not attempt to track the Galaxy's mass out to such large radii, the possible bias incurred by effectively setting $r_\mathrm{max} = \infty$ will be significantly smaller than 20\%, and so we henceforth assume that the velocity distribution reaches $\sqrt{-2\Phi}$.
-The value of $v_c(R_\odot)$ that we obtain while making this assumption is pleasingly aligned with a multitude of other methods, and provides us with confidence that systematic uncertainty caused by these considerations are unimportant relative to our statistical uncertainties.
+The value of $v_c(R_\odot)$ that we obtain while making this assumption is pleasingly aligned with a multitude of other methods, and provides us with confidence that systematic uncertainty caused by these considerations is unimportant relative to our statistical uncertainties.
 
 It is worth noting that our method clearly possesses very different systematic uncertainties when compared to more common approaches in the literature.
 Most dynamical models of halo tracers, like distribution function and Jeans analyses, are most sensitive to the central parts of the velocity distributions.
-This is particularly true of Jeans analyses, which generally only model the first moments of the velocity distributions. 
+This is particularly true of Jeans analyses, which generally only model the first and second moments of the velocity distributions. 
 Distribution functions satisfy the full collisionless Boltzmann equation, and therefore the entire infinite hierarchy of Jeans equations, but this generally comes at the cost of large systematic uncertainties that arise from the chosen form of the model \citep{Wa15}.  
 Our approach moves the focus to the tail of the velocity distribution, and is therefore complimentary to other approaches.
 
@@ -660,7 +665,7 @@ The distribution, though significantly better sampled, broadly resembles the dis
 The left panel of Figure \ref{fig:sats} shows the distribution of known Milky Way dwarf galaxies in the $r-\sqrt{3}\,\vlos$ plane. 
 It is typical in the literature to multiply the radial velocity by $\sqrt{3}$ as a crude way of accounting for unknown tangential velocities. 
 We see that most of the dwarfs are enveloped by the escape speed curves, with a similar shape to the $r-\vlos$ distribution of stars (right hand panel).
-However, some of the dwarfs seem likely unbound based on our estimates of the escape speed. 
+However, some of the dwarfs seem likely unbound based on our estimate of the escape speed. 
 On the other hand, $\Lambda$CDM simulations predict that 99.9\% of subhalos should be bound to their hosts \citep{Bo13}. 
 A reconciliation of these two statements is to conclude that the $\sqrt{3}\vlos$ approximation for the total speed of these dwarfs is likely unrealistic in these cases. 
 Given our inference on the escape speed, the assumption that these objects are bound allows us to place constraints on their orbits. 
@@ -731,7 +736,7 @@ As a consequence, the dwarfs have large apocenters, $\ra \sim 100 - 300\kpc$ and
 
 \citet{Ku16} argued that the observed ellipticity of Hercules ($e \simeq 0.7$) and its large radial velocity are suggestive that it has `exploded' as a consequence of its last pericenter passage. 
 Using N-body simulations, they arrived at an estimate of the orbital eccentricity $\ecc \simeq 0.95$, which is larger than our value but not in significant tension with it. 
-Bootes III has a similar morphology ($e \simeq 0.5$) in keeping with the picture that these satellites are on orbits that will cause them to disrupt into streams very after comparatively few orbital periods. 
+Bootes III has a similar morphology ($e \simeq 0.5$) in keeping with the picture that these satellites are on orbits that will cause them to disrupt into streams after comparatively few orbital periods. 
 On the other hand, Triangulum II has a relatively small ellipticity ($e \simeq 0.2$). 
 However, both Bootes II and Hercules have positive radial velocities: they are travelling away from the Galactic centre, suggesting that they have undergone at least one pericenter passage. 
 Triangulum II, on the other hand, has a negative radial velocity. 
@@ -811,8 +816,8 @@ We chose $\vmin=200\kms$ because we were not particularly concerned about contam
 In order to check the sensitivity of our work to this value, we re--ran the analysis with $\vmin = 250\kms$. 
 This results in a significantly smaller sample of 644 stars (539 MSTO, 99 K-giants, 6 BHBs). 
 We thus expect much larger uncertainties on all of our model parameters. 
-This is indeed the case, and we find that the values of $k$ for each of the tracers are poorly constrained by comparison to our full analysis, leading to a worse determination of the local escape speed. 
-This is because the degeneracy between $k$ and $\vesc(R_\odot)$ is no longer broken by the data, which pushes up our estimates of $k$ and $\vesc(R_\odot)$ as predicted by S07. 
+This is indeed the case, and we find that the values of $k$ for each of the tracers are poorly constrained compared to our full analysis, leading to a worse determination of the local escape speed. 
+This is because the degeneracy between $k$ and $\vesc(R_\odot)$ is not broken as effectively by these data, which pushes up our estimates of $k$ and $\vesc(R_\odot)$, as predicted by S07. 
 Specifically, we find $\vesc(R_\odot) = 617^{+77}_{-84}\kms$.  
 This value is nonetheless consistent with our full analysis, due to the inflated uncertainties. 
 Correspondingly, the inferred values of $k$ are $\sim 6$, with uncertainties $\sim 2$, which again are consistent with our previous estimates, but systematically higher. 
@@ -843,21 +848,22 @@ In particular, there is no evidence of any bias as the values of the escape velo
 As the size of data sets becomes huge, the computational cost of any algorithm will become an important yardstick. 
 Our method is computationally much cheaper than full distribution function approaches, and will be able to rapidly provide robust results when faced with the output of enormous surveys.
 
-As an application, we have used the posterior on our velocity distributions to study the orbital properties of the extreme Galactic satellites, Hercules, Bootes III and Triangulum II. 
-All three must have highly eccentric orbits, with Bootes III and Triangulum II possessing an eccentricity $\epsilon \simeq 0.95$, and Hercules
-$\epsilon \simeq 0.8$. 
-The dwarfs must have large apocenters, $\ra \sim 100 - 300\kpc$ and small pericenters $\rp \sim 10\kpc$. 
-Given that Hercules and Bootes III are now moving radially outwards, this implies that they must have at least one pericentric passage already and so we expect their morphology to be elongated and disrupted, as is the case. 
-Triangulum II is moving inwards, and so must be on first infall, which is consistent with its roundish shape and ellipticity of 0.2.
-
 The advent of the second Gaia release in 2017 and the first results from the WEAVE spectroscopic survey in 2018 will provide proper motions and radial velocities for massive samples of halo stars. 
 The computational challenges of modelling such data sets are severe. 
 We suggest that analysis of the high velocity tails may be the optimum method to quickly extract information on the potential of the Galaxy.  
 Current data sets preclude a stringent measurement on the shape of the halo using the variation in escape speed with position, but we reckon that this too will become possible in the very near future.
 
 As well as allowing us to infer the escape speed and Galactic potential, the tail of the velocity distribution also provides information about the formation history of the Galaxy.
-If the stellar halo is formed by some number of disrupted dwarf galaxies, then the power law index $k$ encodes their accretion times.
-We are investigating how this information can be extracted from cosmological simulations, so that the tail can become a looking glass into the Milky Way's past.
+If the stellar halo is formed by some number of disrupted dwarf galaxies, then the power law index $k$ encodes their accretion times: we expect $k \equiv k(\tau)$, where $\tau$ is the time since infall of the dwarf progenitor of a given halo star.
+We are investigating how this information can be extracted from cosmological simulations, in order to develop the machinery required to constrain $k(\tau)$. 
+This method will turn the high velocity tail into a looking glass into the Milky Way's past.
+
+As an application, we have used our model of the escape speed to study the orbital properties of the extreme Galactic satellites, Hercules, Bootes III and Triangulum II. 
+All three must have highly eccentric orbits, with Bootes III and Triangulum II possessing an eccentricity $\epsilon \simeq 0.95$, and Hercules
+$\epsilon \simeq 0.8$. 
+The dwarfs must have large apocenters, $\ra \sim 100 - 300\kpc$ and small pericenters $\rp \sim 10\kpc$. 
+Given that Hercules and Bootes III are now moving radially outwards, this implies that they must have at least one pericentric passage already and so we expect their morphology to be elongated and disrupted, as is the case. 
+Triangulum II is moving inwards, and so must be on first infall, which is consistent with its roundish shape and ellipticity of 0.2.
 
 \section*{Acknowledgments}
 AAW acknowledges the support of STFC. 
