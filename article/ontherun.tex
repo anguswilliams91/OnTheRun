@@ -13,7 +13,7 @@
 
 \def\vsun{{\boldsymbol{v}_\odot}}
 \def\kpc{{\,\mathrm{kpc}}}
-\def\kms{{\,\mathrm{kms^{-1}}}}
+\def\kms{{\,\mathrm{km\,s^{-1}}}}
 \def\Msun{{\,\mathrm{M}_\odot}}
 \def\vlos{{v_{||}}}
 \def\vesc{{v_\mathrm{esc}}}
@@ -72,14 +72,14 @@ The analysis methods were extended and systematized by \citet{Le90}, who emphasi
 They provided a number of physically-inspired models and concluded that $\vesc$ lay between $450$ and $650 \kms$ with 90\% confidence. 
 The recent spectroscopic surveys of the Galaxy have stimulated a surge of recent activity, notably by \cite{Sm07} and \cite{Pi14} (hereafter S07 and P14).
 These authors used data from the RAVE spectroscopic survey, which provided an abundance of information on the kinematics of local stars. 
-P14, who defined the escape speed as the minimum speed needed to reach three virial radii, concluded that it was $533^{+54}_{-41} \kms$ (90 \%confidence), albeit on the basis of a small sample.
+P14, who defined the escape speed as the minimum speed needed to reach three virial radii, concluded that it was $533^{+54}_{-41} \kms$ (90\% confidence), albeit on the basis of a small sample.
 
 There are some obvious drawbacks. First, there is no guarantee that the high velocity tail of the distribution function is actually occupied all the way up to the escape speed. 
 This may mean that the velocity of the fastest moving star is an under-estimate of the true escape speed. 
 Second, the method is sensitive to interlopers or contaminants, which may be unrepresentative of a smooth, relaxed stellar population. 
 This includes stars in the process of leaving the Galaxy, such as hypervelocity stars ejected by interaction of binaries with black holes~\citep[e.g.,][]{Br15,Bou16}. 
 Stars may also be unbound to the Milky Way but nonetheless bound to the Local Group. 
-Although no such stars are known, the phenomenon is familiar to us throught the intergalactic stars identified in nearby clusters like Fornax~\citep{Th97}. 
+Although no such stars are known, the phenomenon is familiar to us through the intergalactic stars identified in nearby clusters like Fornax~\citep{Th97}. 
 Third, and perhaps most awkwardly, the spatial distribution of the highest energy stars is set by the stochastic patterns of cosmic accretion. 
 Therefore, the concept of a smooth velocity distribution may be a fiction at the highest energies, even at locations in the inner galaxy.
 
@@ -138,22 +138,22 @@ We do this by parameterising the escape speed as a function of position $\pos$, 
 %
 \begin{equation}
   p(\vlos \,|\, \pos) = \begin{cases}
-    \mathcal{N}(\vesc(\pos) - |\vlos|)^{k+1} & \text{if $\vmin \leq \vlos <\vesc(\pos)$},\\
+    \ell\cdot\vesc(\pos) - |\vlos|)^{k+1} & \text{if $\vmin \leq \vlos <\vesc(\pos)$},\\
     0 & \text{otherwise},
   \end{cases}
   \label{eq:model}
 \end{equation}
 %
-where $\mathcal{N}$ is a location-dependent normalisation factor, given by
+where $\ell$ is a location-dependent normalisation factor, given by
 %
 \begin{equation}
-\mathcal{N} = \dfrac{k+2}{(\vesc(\pos) - \vmin)^{k+2}}.
+\ell = \dfrac{k+2}{(\vesc(\pos) - \vmin)^{k+2}}.
 \label{eq:norm}
 \end{equation}
 %
 By far the largest source of uncertainty in our analysis is in the distance to each star. 
 Consequently, we consider the uncertainty in the radial velocity, longitude and latitude to be negligible. 
-Our likelihood function should therefore be the probability of a radial velocity, given Galactic coordinates and an imperfect measurement of the distance to the star. 
+Our likelihood function should therefore be the probability of a radial velocity, given Galactic coordinates and an imperfect inference on the distance to the star. 
 Writing $\pos = (\ell, b, s)$, where $(\ell,b)$ are Galactic longitude and latitude, respectively, and $s$ is the measured line of sight distance to the star, we then have
 %
 \begin{equation}
@@ -161,7 +161,7 @@ p(\vlos \,|\, \ell, b, s) = \int p(\vlos \,| \,\ell, b, s' )p(s'\,|\,s)\, \intd 
 \label{eq:crux}
 \end{equation}
 %
-$p(s'\,|\,s)$ is the probability that $s'$ is the true distance to the star given our imperfect observation $s$. 
+$p(s'\,|\,s)$ is the probability that $s'$ is the true distance to the star given our imperfect inference $s$. 
 Finally, we also include a Gaussian outlier model for possibly unbound stars
 %
 \begin{equation}
@@ -204,7 +204,7 @@ To obtain such a sample, we use the SDSS 9th data release \citep{Ah12}.
 We choose to utilise three distinct sets of tracers: main sequence turnoff (MSTO), K-giant and blue horizontal branch (BHB) stars. 
 MSTO stars are numerous, and are mostly observed at distances $\sim 3\kpc$. 
 These stars allow us to constrain the local escape speed, and its variation relatively close to the sun. 
-K-giants and BHBs are fewer in number, but are bright and have been observed at distances $\sim 50\kpc$ from the sun, pushing the spatial extent of our sample to a range of $\sim 40\kpc$. 
+K-giants and BHBs are fewer in number, but are bright and have been observed at distances $\sim 50\kpc$ from the sun, pushing the spatial extent of our sample to a range of $\sim 40\kpc$ in Galactocentric radius. 
 Before selecting our high-speed sample of stars, we first constructed a `mother sample' for each class of tracer using a series of cuts. 
 In addition to the cuts described below, we also removed stars with latitudes $|b| < 20^\circ$ in order to remove possible disc contaminants, and remove stars with radii $r>50\kpc$. 
 We compute Galactocentric radii by assuming a solar radius $R_\odot = 8.5\kpc$. 
@@ -241,7 +241,7 @@ M_{r0} = -5.06 + 14.32\,x - 12.{}&97\,x^2 + 6.127\,x^3 \nonumber \\
 M_r = M_{r0} + \delta M_r.
 \end{gather}
 % 
-In order to draw samples from $p(s' \,|\, s)$ (Equation \ref{eq:crux}), we take the quoted uncertainties on $g$, $r$, $i$ and $\lbrack \mathrm{Fe/H} \rbrack$ from the SDSS pipelines and assume that they are Gaussian distributed and uncorrelated. 
+In order to draw samples from $p(s' \,|\, s)$ (Equation \ref{eq:crux}), we take the quoted uncertainties on $g$, $r$, $i$ and $\lbrack \mathrm{Fe/H} \rbrack$ from the SDSS pipelines and assume that they are normally distributed and uncorrelated. 
 We then draw Monte-Carlo samples from each of these distributions and compute the distance for each sample.
 
 \subsection{BHB sample}
@@ -302,9 +302,9 @@ Besides our cuts on latitude and Galactocentric radius, we make one further cut 
 \end{equation}
 %
 After applying our latitude and metallicity cuts, there remain 5160 K-giants in our mother sample. 
-\citeauthor{Xu14} compute posterior samples for the distance moduli, $\mathcal{DM}$, of the K-giants. 
-Their table provides the maximum a posteriori value of $\mathcal{DM}$ for each star, percentiles of the posterior samples, and a summary of the uncertainty, $\delta \mathcal{DM}$. 
-In order to compute distance samples for the K-giants, we simply assume that the uncertainty in the distance modulus is Gaussian, with a standard deviation of $\delta\mathcal{DM}$.
+\citeauthor{Xu14} compute posterior samples for the distance moduli, $\mu$, of the K-giants. 
+Their table provides the maximum a posteriori value of $\mu$ for each star, percentiles of the posterior samples, and a summary of the uncertainty, $\delta \mu$. 
+In order to compute distance samples for the K-giants, we simply assume that the uncertainty in the distance modulus is Gaussian, with a standard deviation of $\delta\mu$.
 
 \subsection{High-speed sample}
 
@@ -317,7 +317,7 @@ Since we expect very little disc contamination, our choice of $v_\mathrm{min}$ n
 
 P14 performed a detailed analysis of the simulation suite of \citet{Sc09} in order to make an educated choice for $v_\mathrm{min}$, and found that the distribution function of $\vlos$ in the simulations does not significantly deviate from a power-law when $\vlos>150\kms$. 
 In our work, we must consider the fact that our cut must be appropriate across a range of locations. 
-Since the vast majority of our sample are further from the Galactic center than the Sun, and physical reasoning suggests that the escape speed cannot increase as a function of radius, then a cut of $200\kms$ should guarantee that the power-law model of Equation (\ref{eq:model}) is appropriate at the locations of all the stars in our study. 
+Since the vast majority of our sample are further from the Galactic center than the sun, and physical reasoning suggests that the escape speed cannot increase as a function of radius, then a cut of $200\kms$ should guarantee that the power-law model of Equation (\ref{eq:model}) is appropriate at the locations of all the stars in our study. 
 Consequently, we set $v_\mathrm{min}=200\kms$.  
 Note that this cut is applied to Galactocentric radial velocities, and so the motion of the sun must be removed beforehand. 
 For this, we assume a local standard of rest $v_\mathrm{LSR} = 240\kms$ and a solar peculiar motion $\left(U_\odot,V_\odot,W_\odot\right) = \left(11.1,12.24,7.25\right)\kms$ \citep{Sc10}.
@@ -381,9 +381,8 @@ Having constructed our likelihood function and gathered our data, we now need to
 We split these parameters into two groups: global parameters, which are the model parameters that are independent of our choice for $\vesc(\pos)$, and potential parameters, which concern our explicit model of the escape speed.
 
 \subsection{Global priors}
-
-Our global parameter set consists of four numbers: $(\boldsymbol{k},f)$. 
-We allow a different power law slope in the velocity distribution of each tracer $\boldsymbol{k} = (k_\mathrm{MSTO},k_\mathrm{K-giant},k_\mathrm{BHB})$, and we fit for the outlier fraction, $f$. 
+We allow a different power law slope in the velocity distribution of each tracer $\boldsymbol{k} = (k_\mathrm{MSTO},k_\mathrm{K-giant},k_\mathrm{BHB})$, and we fit for the outlier fraction, $f$.
+These four parameters constitute our global model parameters. 
 We anticipate that the three values of $k$ should be similar, since all three sets of tracers belong to the halo.
 On the other hand, the MSTO sample spans a different radial range to the BHB and K-giant samples, and so any differences in our inferred $k$ values could suggest a radial variation in $k$.
 
@@ -406,7 +405,7 @@ If the Galaxy is to possess a flat or declining rotation curve, as we would expe
 \end{equation}
 %
 Besides this basic physical constraint, we do not include any more information about the value of $\alpha$, so our prior is flat over the above range. 
-Since $\vesc(R_\odot)$ a positive definite scale parameter, we adopt a scale invariant Jeffreys prior
+Since $\vesc(R_\odot)$ is a positive definite scale parameter, we adopt a scale invariant Jeffreys prior
 %
 \begin{equation}
 p\left(\vesc(R_\odot)\right) \propto 1/\vesc(R_\odot).
@@ -521,13 +520,13 @@ Our results imply a local escape speed of $521^{+46}_{-30}\kms$, which is in goo
 We infer a power law index $\alpha = 0.37\pm0.09$, suggesting that the escape speed is falling rapidly as a function of radius.
 The middle panel of Figure \ref{fig:data} is prophetic of this, because the edge of the K-giant distribution in the $r-\vlos$ plane is steep.
 Figure \ref{fig:vesc_posterior} shows the run of $\vesc$ with radius implied by our inference, with associated 68\% and 94\% credible intervals, and the steep drop in the escape speed is clear.
-The Milky Way loosens its grip on its inhabitants significantly: our model predicts that the escape speed at $30\kpc$ from the Galactic centre is $415^{+33}_{-25}\kms$, and by $50\kpc$ this has dropped to $379^{+34}_{-28}\kms$.
+The Milky Way loosens its grip on its inhabitants significantly: our model predicts that the local escape speed is $521^{+46}_{-30}\kms$, and by $50\kpc$ this has dropped to $379^{+34}_{-28}\kms$.
 
 A priori, it is unclear what the value of $k$ should be. 
 \citet{Le90} point out that violent relaxation would lead to $k=3/2$, whereas collisional relaxation gives $k=1$ \citep{Sp72}. 
 S07 further showed that the Plummer and Hernquist spheres \citep{BT08} have $k=2.5$ and $k=3.5$, respectively. 
 The simulations analysed by S07 and P14 both suggest $k\simeq3$. 
-Clearly, then, there is a relatively large range of possible values.  
+Clearly, there is a relatively large range of possible values.  
 Due to small sample sizes in previous studies, $k$ has never been measured from data on the Milky Way. 
 Given our significantly larger sample of stars, we are able to do this for the first time. 
 The two tracer samples containing the most stars, MSTO and K-giants, both favour $k\simeq4\pm1$, which is in comfortable agreement with simulations.
@@ -735,10 +734,9 @@ As a consequence, the dwarfs have large apocenters, $\ra \sim 100 - 300\kpc$ and
 \citet{Ku16} argued that the observed ellipticity of Hercules ($e \simeq 0.7$) and its large radial velocity are suggestive that it has `exploded' as a consequence of its last pericenter passage. 
 Using N-body simulations, they arrived at an estimate of the orbital eccentricity $\ecc \simeq 0.95$, which is larger than our value but not in significant tension with it. 
 Bootes III has a similar morphology ($e \simeq 0.5$) in keeping with the picture that these satellites are on orbits that will cause them to disrupt into streams after comparatively few orbital periods. 
-On the other hand, Triangulum II has a relatively small ellipticity ($e \simeq 0.2$). 
-However, both Bootes II and Hercules have positive radial velocities: they are travelling away from the Galactic centre, suggesting that they have undergone at least one pericenter passage. 
-Triangulum II, on the other hand, has a negative radial velocity. 
-It is plausible, therefore, that it is on first infall and is about to undergo a large amount of disruption on its first pericenter passage.
+Both Bootes II and Hercules have positive radial velocities: they are travelling away from the Galactic centre, suggesting that they have undergone at least one pericenter passage. 
+Triangulum II, on the other hand, has a negative radial velocity and a relatively small ellipticity ($e \simeq 0.2$). 
+Therefore, it is plausible that Triangulum II is on first infall and is about to undergo a large amount of disruption on its first pericenter passage.
 
 \begin{figure*}
 \includegraphics[width=2\columnwidth]{plots/boo_tri_herc}\\
@@ -849,7 +847,7 @@ Our method is computationally much cheaper than full distribution function appro
 The advent of the second Gaia release in 2017 and the first results from the WEAVE spectroscopic survey in 2018 will provide proper motions and radial velocities for massive samples of halo stars. 
 The computational challenges of modelling such data sets are severe. 
 We suggest that analysis of the high velocity tails may be the optimum method to quickly extract information on the potential of the Galaxy.  
-Current data sets preclude a stringent measurement on the shape of the halo using the variation in escape speed with position, but we reckon that this too will become possible in the very near future.
+Current data sets preclude a stringent measurement on the shape of the halo using the variation in escape speed with position, but we anticipate that this too will become possible in the very near future.
 
 As well as allowing us to infer the escape speed and Galactic potential, the tail of the velocity distribution also provides information about the formation history of the Galaxy.
 If the stellar halo is formed by some number of disrupted dwarf galaxies, then the power law index $k$ encodes their accretion times: we expect $k \equiv k(\tau)$, where $\tau$ is the time since infall of the dwarf progenitor of a given halo star.
