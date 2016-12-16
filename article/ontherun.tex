@@ -457,8 +457,9 @@ In order to constrain the model parameters, we use an MCMC approach.
 In order to compute the likelihood, we evaluate the integral in Equation (\ref{eq:crux}) using 200 Monte-Carlo samples from the distance uncertainties of each star. 
 We draw these samples once, and then use the same set for each posterior evaluation, thus avoiding random noise in the posterior \citep{Mc13}.
 We then use the {\sc emcee} code \citep{emcee} to Monte-Carlo sample the posterior distribution. 
-{\sc emcee} is a {\sc python} implementation of the affine--invariant ensemble sampling approach suggested by \citet{Go10}, where an ensemble of $N$ `walkers' is used, and the proposal distribution for a given walker is based on the current positions of the remaining $N-1$ walkers. 
-Here, we choose $N=80$. We initialise the ensemble by randomly sampling from our prior distributions, and then evolve each walker for 5000 steps. 
+{\sc emcee} is a {\sc python} implementation of the affine--invariant ensemble sampling approach suggested by \citet{Go10}, where an ensemble of $N$ `walkers' is used, and the proposal distribution for a given walker is based on the current positions of $N/2$ of the remaining walkers. 
+Here, we choose $N=80$.
+We initialise the ensemble by randomly sampling from our prior distributions, and then evolve each walker for 5000 steps. 
 We then inspect the trace plots in each dimension in order to prune our samples for burn-in, which typically requires $\sim 200$ steps. 
 To assess the convergence of our chains, we first compute the acceptance fraction $a_f$.
 For all the analyses presented in this paper, $0.3 < a_f < 0.5$ for the entire ensemble of walkers.
