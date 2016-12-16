@@ -562,13 +562,10 @@ p(\mathrm{outlier}\,|\,\vlos,\ell,b,s) = \dfrac{\bar{f}\,p_\mathrm{out}(\vlos)}{
 \end{equation}
 %     
 using the model parameters obtained by taking the median values of each of the one dimensional marginalised posterior distributions, $\bar{\Theta}$.  
-The largest outlier probability is $>0.999$, and belongs to the star identified visually in Figure \ref{fig:data}. 
+The largest outlier probability is $>0.999$, and belongs to the object identified visually in Figure \ref{fig:data}. 
 Otherwise, the largest outlier probability is $<0.01$, and so we conclude that this object is the only probable outlier in the sample. 
-Having verified this status, it is now interesting to ask whether this star is genuinely unbound. 
-Unfortunately, this conclusion seems unlikely after further investigation. 
-The outlier has a quoted radial velocity uncertainty of $17\kms$, which is $7\kms$ larger than the second largest uncertainty in the MSTO sample, and $14\kms$ larger than the median uncertainty. 
-Furthermore, its measured effective temperature is the largest of all of the MSTO sample, with $T_\mathrm{eff} = 6877\,\mathrm{K}$. 
-Given its outlier status in other spectroscopic parameters, we conclude that it is likely that this star has a spurious radial velocity measurement.
+Having identified this outlier, we visually inspected its spectrum and image data from SDSS.
+From the image data it is clear that this object is a galaxy, and has been misclassified by the spectroscopic pipeline of SDSS: we therefore remove this object when comparing our model to the data.
 
 Figures \ref{fig:EPL_posterior} and \ref{fig:TF_posterior} show the results of the EPL and TF analyses. 
 We removed the global parameters from the figures because the results were essentially identical to those found for the SPL model, without any interesting additional degeneracies. 

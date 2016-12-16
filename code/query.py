@@ -13,7 +13,7 @@ def main_sequence_query():
     getstr = "SELECT spa.ra, spa.dec, spa.dered_u, spa.psfmagerr_u,spa.dered_g,\
     spa.psfmagerr_g,spa.dered_r, spa.psfmagerr_r,spa.dered_i, spa.psfmagerr_i,\
     spa.dered_z, spa.psfmagerr_z,spp.elodiervfinal,spp.elodiervfinalerr,\
-    spp.fehadop,spp.fehadopunc,spp.loggadop,spp.loggadopunc,spp.teffadop,spp.teffadopunc, spa.objid \
+    spp.fehadop,spp.fehadopunc,spp.loggadop,spp.loggadopunc,spp.teffadop,spp.teffadopunc, spa.specobjid \
     \
     FROM sdssdr9.specphotoall AS spa,\
          sdssdr9.sppparams AS spp \
@@ -35,10 +35,10 @@ def main_sequence_query():
     AND spp.snr > 20."
 
     res = sql.get(getstr) 
-    data = pd.DataFrame(np.array(res).T,columns=['ra','dec','u','u_err','g','g_err','r','r_err','i','i_err',\
+    data = pd.DataFrame(np.array(res).T[:,:-1],columns=['ra','dec','u','u_err','g','g_err','r','r_err','i','i_err',\
                                                     'z','z_err','vhel','vhel_err','feh','feh_err','logg',\
-                                                    'logg_err','teff','teff_err', 'objid'])
-    data['objid'] = data['objid'].astype(int)
+                                                    'logg_err','teff','teff_err'])
+    data.loc[:,'specobjid'] = pd.Series(res[-1].astype(np.int64), index=data.index)
     l,b = gu.radec2galactic(data.ra.values,data.dec.values)
     vgsr = gu.helio2galactic(data.vhel.values,l,b)
     data.loc[:,'l'] = pd.Series(l,index=data.index)
