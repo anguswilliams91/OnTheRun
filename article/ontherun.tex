@@ -57,7 +57,7 @@ This naturally explains the large observed ellipticities of two of the dwarfs, w
 Galaxy: halo -- galaxies: kinematics and dynamics -- dark matter
 \end{keywords}
 
-\section{Wyntroduction}
+\section{Introduction}
 
 The fastest moving stars have long been a subject of fascination and speculation. 
 \citet{Vi56} recounts a discussion between Kopff and Eddington on horse-racing, an enthusiasm of the latter. 
@@ -138,16 +138,16 @@ We do this by parameterising the escape speed as a function of position $\pos$, 
 %
 \begin{equation}
   p(\vlos \,|\, \pos) = \begin{cases}
-    \ell\cdot\vesc(\pos) - |\vlos|)^{k+1} & \text{if $\vmin \leq \vlos <\vesc(\pos)$},\\
+    C\cdot(\vesc(\pos) - |\vlos|)^{k+1} & \text{if $\vmin \leq \vlos <\vesc(\pos)$},\\
     0 & \text{otherwise},
   \end{cases}
   \label{eq:model}
 \end{equation}
 %
-where $\ell$ is a location-dependent normalisation factor, given by
+where $C$ is a location-dependent normalisation factor, given by
 %
 \begin{equation}
-\ell = \dfrac{k+2}{(\vesc(\pos) - \vmin)^{k+2}}.
+C = \dfrac{k+2}{(\vesc(\pos) - \vmin)^{k+2}}.
 \label{eq:norm}
 \end{equation}
 %
