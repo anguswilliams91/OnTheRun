@@ -138,16 +138,16 @@ We do this by parameterising the escape speed as a function of position $\pos$, 
 %
 \begin{equation}
   p(\vlos \,|\, \pos) = \begin{cases}
-    \mathcal{N}(\vesc(\pos) - |\vlos|)^{k+1} & \text{if $\vmin \leq \vlos <\vesc(\pos)$},\\
+    \ell\cdot\vesc(\pos) - |\vlos|)^{k+1} & \text{if $\vmin \leq \vlos <\vesc(\pos)$},\\
     0 & \text{otherwise},
   \end{cases}
   \label{eq:model}
 \end{equation}
 %
-where $\mathcal{N}$ is a location-dependent normalisation factor, given by
+where $\ell$ is a location-dependent normalisation factor, given by
 %
 \begin{equation}
-\mathcal{N} = \dfrac{k+2}{(\vesc(\pos) - \vmin)^{k+2}}.
+\ell = \dfrac{k+2}{(\vesc(\pos) - \vmin)^{k+2}}.
 \label{eq:norm}
 \end{equation}
 %
