@@ -551,7 +551,7 @@ Our larger 95th percentile of $690\kms$ is a consequence of the degeneracy betwe
 
 The inferred outlier fraction is very small, $f \simeq 0.001$, but non-zero. 
 This suggests that there are one or two outliers in our sample. 
-Inspection of Figure \ref{fig:data} suggests one clear candidate (circled in black): there is an MSTO star at $r\simeq10\kpc$ with a measured line of sight velocity of $518.2\kms$, which is more than $100\kms$ larger than any other star at a comparable radius in our sample. 
+Inspection of Figure \ref{fig:data} suggests one clear candidate: there is an MSTO star at $r\simeq10\kpc$, circled in black, with a measured line of sight velocity of $518.2\kms$, which is more than $100\kms$ larger than any other star at a comparable radius in our sample. 
 Otherwise, there are no obvious outliers through visual inspection. 
 As a check of this intuition, we calculated the outlier probability of each star in our sample as
 %
@@ -693,15 +693,17 @@ where $v_T$ is the transverse velocity.
 In a spherical potential, the two velocities $(v_T,v_r)$ and radius $r$ completely specify the orbit, and hence $\rp$, $\ra$ and $\ecc$. 
 This gives rise to the delta--function in Equation (\ref{eq:deltafun}), where $f_X$ represents the relation between $(v_r,v_T,r)$ and $X$. 
 Finally, we need to specify $p(v_T\,|\,v_r,r,\Theta)$. 
-To do this, we assume that the high speed dwarfs follow the same distribution function as the high speed stars, given by Equation (\ref{eq:lt90}). 
-Some measure of justification of this assumption is possible through inspection of Figure \ref{fig:sats}, where both distributions have a similar `zone of avoidance' away from the escape speed. 
-This gives
+To do this, we assume that the high speed dwarfs follow the same distribution function as the high speed stars, given by Equation (\ref{eq:lt90})
 %
 \begin{equation}
 p(v_T\,|\,v_r,r,\Theta) \propto \left(\vesc(r) - \sqrt{v_T^2+v_r^2}\right)^k.
 \label{eq:dwarfvT} 
 \end{equation}
 %
+We make this assumption for simplicity, although \citet{Er16} note that the velocity distributions of subhaloes in the VLII simulations \citep{Di08} are not the same as those of the dark matter particles, and have velocity dispersions of size $160-200\kms$.
+Measured velocity dispersions for Milky Way halo stars tend to be somewhat smaller than this, at $\sim 100-150\kms$ \citep{Ev16}.
+Hence, for a given radial velocity, larger tangential velocities could be more probable than the estimate of Equation (\ref{eq:dwarfvT}), which in turn means that the orbit of the dwarf may be more eccentric than our simple calculation suggests.
+
 Since $f_X$ is not analytic, we must solve for $\rp$, $\ra$ and $\ecc$ numerically. 
 We do this by solving the equation 
 %
