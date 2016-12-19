@@ -553,7 +553,7 @@ The inferred outlier fraction is very small, $f \simeq 0.001$, but non-zero.
 This suggests that there are one or two outliers in our sample. 
 Inspection of Figure \ref{fig:data} suggests one clear candidate: there is an MSTO star at $r\simeq10\kpc$, circled in black, with a measured line of sight velocity of $518.2\kms$, which is more than $100\kms$ larger than any other star at a comparable radius in our sample. 
 Otherwise, there are no obvious outliers through visual inspection. 
-As a check of this intuition, we calculated the outlier probability of each star in our sample as
+As a check of this intuition, we calculated the outlier probability of each star in our sample as 
 %
 \begin{equation}
 p(\mathrm{outlier}\,|\,\vlos,\ell,b,s) = \dfrac{\bar{f}\,p_\mathrm{out}(\vlos)}{\bar{f}\,p_\mathrm{out}(\vlos) + 
@@ -564,7 +564,10 @@ using the model parameters obtained by taking the median values of each of the o
 The largest outlier probability is $>0.999$, and belongs to the object identified visually in Figure \ref{fig:data}. 
 Otherwise, the largest outlier probability is $<0.01$, and so we conclude that this object is the only probable outlier in the sample. 
 Having identified this outlier, we visually inspected its spectrum and image data from SDSS.
-From the image data it is clear that this object is a galaxy, and has been misclassified by the spectroscopic pipeline of SDSS: we therefore remove this object when comparing our model to the data.
+From the image data it is clear that this object is a galaxy, and has been misclassified by the spectroscopic pipeline of SDSS.
+We re-ran our analysis with this object removed and found the results to be near identical. 
+Later, when we assess how well our model fits the data, we remove this outlier from the sample.
+
 
 Figures \ref{fig:EPL_posterior} and \ref{fig:TF_posterior} show the results of the EPL and TF analyses. 
 We removed the global parameters from the figures because the results were essentially identical to those found for the SPL model, without any interesting additional degeneracies. 
