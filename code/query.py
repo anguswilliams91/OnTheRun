@@ -59,7 +59,7 @@ def bhb_query():
     """
 
     getstr = "SELECT spa.ra,spa.dec,spa.psfmag_g-spa.extinction_g,spa.psfmag_r-spa.extinction_r,spa.psfmagerr_g,spa.psfmagerr_r, \
-    spp.loggadop,spp.fehadop,spp.teffadop,spp.elodiervfinal,spp.elodiervfinalerr \
+    spp.loggadop,spp.fehadop,spp.teffadop,spp.elodiervfinal,spp.elodiervfinalerr,spa.specobjid \
     \
     FROM sdssdr9.specphotoall AS spa, \
     sdssdr9.sppparams AS spp \
@@ -78,8 +78,9 @@ def bhb_query():
     AND spp.snr>20."
 
     res = sql.get(getstr)
-    data = pd.DataFrame(np.array(res).T, columns=['ra','dec','g','r','g_err','r_err','logg','feh','teff','vhel',\
+    data = pd.DataFrame(np.array(res).T[:,:-1], columns=['ra','dec','g','r','g_err','r_err','logg','feh','teff','vhel',\
                         'vhel_err'])
+    data.loc[:,'specobjid'] = pd.Series(res[-1].astype(np.int64), index=data.index)
     l,b = gu.radec2galactic(data.ra.values,data.dec.values)
     vgsr = gu.helio2galactic(data.vhel.values,l,b)
     data.loc[:,'l'] = pd.Series(l,index=data.index)
