@@ -7,6 +7,7 @@ import plotting as pl, gus_utils as gu, models as m, fits as f, corner_plot as  
 
 from scipy.special import gammaincinv
 from palettable.colorbrewer.qualitative import Set1_6
+from matplotlib.patches import Ellipse
 
 def posterior_predictive_distribution(chain,model,burnin=200,cmap="Greys",thin_by=10,nbins=[20,20,10],pool_size=8):
 
@@ -255,7 +256,7 @@ def mass_enclosed(chain,model,burnin=200,cmap="Blues",thin_by=1,**kwargs):
 
     return ax
 
-def plot_tracers(**kwargs):
+def plot_tracers(mark_outlier=False,**kwargs):
 
     """
     Plot the full distributions of vLOS against galactocentric r for 
@@ -293,6 +294,11 @@ def plot_tracers(**kwargs):
     ax[1].set_xlabel("$r/\\mathrm{kpc}$",fontsize=25)
     ax[0].set_ylabel("$v_{||}/\\mathrm{kms^{-1}}$",fontsize=25)
     fig.subplots_adjust(bottom=0.3,left=0.2)
+
+    if mark_outlier:
+        idx = msto.vgsr==np.max(msto.vgsr)
+        ell = Ellipse([np.float(msto[idx].rgc),np.float(msto[idx].vgsr)],width=1.,height=10.,fill=False,edgecolor='k',lw=2.)
+        ax[0].add_artist(ell)
 
     return None
 
