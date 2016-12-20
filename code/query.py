@@ -21,6 +21,7 @@ def main_sequence_query():
     WHERE spp.specobjid=spa.specobjid \
     AND spp.scienceprimary=1 \
     AND spa.class='STAR' \
+    AND spa.type=6\
     AND spa.extinction_r<0.3\
     AND spa.dered_g-spa.dered_r BETWEEN 0.2 AND 0.6 \
     AND spa.dered_r BETWEEN 14.5 AND 20. \
@@ -67,6 +68,7 @@ def bhb_query():
     WHERE spp.specobjid=spa.specobjid \
     AND spp.scienceprimary=1 \
     AND spa.class='STAR' \
+    AND spa.type=6\
     AND spa.psfmag_g-spa.extinction_g-spa.psfmag_r \
         +spa.extinction_r BETWEEN -0.25 AND 0. \
     AND spa.psfmag_u-spa.extinction_u-spa.psfmag_g \
