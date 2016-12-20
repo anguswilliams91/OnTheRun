@@ -82,9 +82,9 @@ def sample_distances_multiple_tracers(n_samples=200,vmin=200.):
 
     bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
     kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
-    ms = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
+    ms = pd.read_csv("/data/aamw3/SDSS/main_sequence_nogal.csv")
 
-    ms = ms[np.abs(ms.vgsr)<np.max(np.abs(ms.vgsr))].reset_index(drop=True) #get rid of the galaxy
+    #ms = ms[np.abs(ms.vgsr)<np.max(np.abs(ms.vgsr))].reset_index(drop=True) #get rid of the galaxy
 
     #try a different circular speed
     # bhb.vgsr = gu.helio2galactic(bhb.vhel,bhb.l,bhb.b,vcirc=220.)

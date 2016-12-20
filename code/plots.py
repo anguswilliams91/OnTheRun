@@ -394,6 +394,8 @@ def halo_distribution(chain,model,burnin=200):
     ax.set_ylabel("$v_{||}/\\mathrm{kms^{-1}}$")
     ax.set_xlabel("$r/\\mathrm{kpc}$")
     ax.set_ylim((-600.,600.))
+    ax.axhline(-200.,ls='--',c='k')
+    ax.axhline(+200.,ls='--',c='k')
 
 
     return fig,ax
@@ -519,6 +521,14 @@ def corner_plots():
     axis_labels = ["$v_0/\\mathrm{kms^{-1}}$","$r_s/\\mathrm{kpc}$","$\\gamma$"]
     cp.corner_plot(chain,axis_labels=axis_labels)
     plt.gcf().text(0.75,0.75,"TF",fontsize=30)
+
+    chain = np.genfromtxt("/data/aamw3/mcmc/escape_chains/spherical_powerlaw.dat")
+    chain_1 = np.genfromtxt("/data/aamw3/mcmc/escape_chains/spherical_powerlaw_nogal.dat")
+    chain = chain[80*200:,[3,2,1,4,5,6]]
+    chain_1 = chain_1[80*200:,[3,2,1,4,5,6]]
+    axis_labels = ["$k_\\mathrm{MSTO}$","$k_\\mathrm{K-giant}$","$k_\\mathrm{BHB}$","$N_*f$","$v_\\mathrm{esc}(R_\\odot)/\\mathrm{kms^{-1}}$","$\\alpha$"]
+    chain_labels = ["Main analysis", "Extra morphological cut"]
+    cp.multi_corner_plot((chain,chain_1),axis_labels=axis_labels,chain_labels=chain_labels,fontsize=15,tickfontsize=12,figsize=(10.,10.),linecolors=['k','r'])
 
     return None
 
