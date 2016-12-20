@@ -193,7 +193,7 @@ where each of the $s_n$ is drawn from $p(s'\,|\,s)$.
 \caption{The distribution in Galactocentric radius and $\vlos$ of each of our tracer samples. 
 The MSTO stars probe a smaller range in radius, but are numerous, whereas the K-giants probe a much larger distance range, but are fewer in number.
 The BHBs probe a similar range to the K-giants, but form a far smaller sample.
-The black circled point in the MSTO panel highlights the outlier that is discussed in Section \ref{sec:res}.}
+The black points in the MSTO panel highlight the 11 objects that are discussed in Section \ref{sec:res}.}
 \label{fig:data}
 \end{figure*}
 
@@ -551,7 +551,7 @@ Our larger 95th percentile of $690\kms$ is a consequence of the degeneracy betwe
 
 The inferred outlier fraction is very small, $f \simeq 0.001$, but non-zero. 
 This suggests that there are one or two outliers in our sample. 
-Inspection of Figure \ref{fig:data} suggests one clear candidate: there is an MSTO star at $r\simeq10\kpc$, circled in black, with a measured line of sight velocity of $518.2\kms$, which is more than $100\kms$ larger than any other star at a comparable radius in our sample. 
+Inspection of Figure \ref{fig:data} suggests one clear candidate: there is an MSTO star at $r\simeq10\kpc$, shown as a black point, with a measured line of sight velocity of $518.2\kms$, which is more than $100\kms$ larger than any other star at a comparable radius in our sample. 
 Otherwise, there are no obvious outliers through visual inspection. 
 As a check of this intuition, we calculated the outlier probability of each star in our sample as 
 %
@@ -565,8 +565,13 @@ The largest outlier probability is $>0.999$, and belongs to the object identifie
 Otherwise, the largest outlier probability is $<0.01$, and so we conclude that this object is the only probable outlier in the sample. 
 Having identified this outlier, we visually inspected its spectrum and image data from SDSS.
 From the image data it is clear that this object is a galaxy, and has been misclassified by the spectroscopic pipeline of SDSS.
-We re-ran our analysis with this object removed and found the results to be near identical. 
-Later, when we assess how well our model fits the data, we remove this outlier from the sample.
+Having found a galaxy contaminant in our sample, we added a further constraint to our {\sc SQL} query that all of the MSTO targets should be morphologically classified as stars (as well as spectroscopically, as in our original query) in order to check for any other similar contaminants.
+The high speed sample is reduced in size by 11 objects when this stricter constraint is applied: all 11 of these targets, including the galaxy outlier previously discussed, are shown as black points in Figure \ref{fig:data}.
+We visually inspected the spectra and image data for all of these objects, and concluded that, other than the original outlier that we identified, they are likely partially blended stars.
+Although this might mean that the photometry for some of these objects may be unrepresentative to some degree, visual inspection of their spectra suggests that they likely have reliable stellar parameters and radial velocities.
+For this reason, we opted not to remove them from our sample, but we did re-run our analysis with these objects removed to check for inconsistencies.
+We found that none of our conclusions change when these targets are removed from the sample.
+Later, when we compare our model to the data, we remove the bona-fide galaxy contaminant from the sample, but retain the other 10 objects.
 
 
 Figures \ref{fig:EPL_posterior} and \ref{fig:TF_posterior} show the results of the EPL and TF analyses. 
@@ -906,6 +911,11 @@ AND spa.fehadopunc < 0.1
 AND (spp.zwarning=0 OR spp.zwarning=16)
 AND spp.snr > 20.
 \end{verbatim}
+When we apply our extra morphological cut, the condition
+\begin{verbatim}
+spa.TYPE = 6
+\end{verbatim}
+is included in the above query.
 %
 \item BHB query:
 %
@@ -929,6 +939,18 @@ AND (spp.zwarning=0 OR spp.zwarning=16)
 AND spp.snr>20.
 \end{verbatim}
 \end{enumerate}
+
+\section{Results with stricter morphological cuts}
+
+Here we show the results when objects that have not been morphologically classified as stars are removed from the MSTO catalog.
+
+\begin{figure*}
+\includegraphics[width=2\columnwidth]{plots/morphological_comparison_corner}\\
+\caption{One and two dimensional posterior distributions of two runs: our original SPL run, and the run where the stricter morphological cut discussed in Section \ref{sec:res} is applied.
+The projections of the posterior distributions from the two runs are completely consistent with one another, save for the outlier fraction.
+This is because, when the morphological cut is applied, the galaxy contaminant with a spurious radial velocity discussed in Section \ref{sec:res} is removed.}
+\label{fig:morph_corner}
+\end{figure*}
 
 \end{document}
 

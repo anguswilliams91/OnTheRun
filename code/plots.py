@@ -256,7 +256,7 @@ def mass_enclosed(chain,model,burnin=200,cmap="Blues",thin_by=1,**kwargs):
 
     return ax
 
-def plot_tracers(mark_outlier=False,**kwargs):
+def plot_tracers(mark_outliers=False,**kwargs):
 
     """
     Plot the full distributions of vLOS against galactocentric r for 
@@ -295,10 +295,12 @@ def plot_tracers(mark_outlier=False,**kwargs):
     ax[0].set_ylabel("$v_{||}/\\mathrm{kms^{-1}}$",fontsize=25)
     fig.subplots_adjust(bottom=0.3,left=0.2)
 
-    if mark_outlier:
-        idx = msto.vgsr==np.max(msto.vgsr)
-        ell = Ellipse([np.float(msto[idx].rgc),np.float(msto[idx].vgsr)],width=1.,height=10.,fill=False,edgecolor='k',lw=2.)
-        ax[0].add_artist(ell)
+    if mark_outliers:
+        sids = np.array([611488477824968704,687975180215019520,814161184382019584,1154154111483013120,1220628099725551616\
+        ,1511087739091576832,2473759385139046400,2507504500953081856,2837293955551356928,2982662855519660032,3027555364468975616])
+        msto_outliers = msto[msto.specobjid.isin(sids)]
+        ax[0].scatter(msto_outliers.rgc.values,np.abs(msto_outliers.vgsr),c='k',edgecolors='none')
+
 
     return None
 
