@@ -395,6 +395,18 @@ Our prior on $f$ is flat in the permissible range $0 \leq f \leq 1$.
 
 \subsection{Potential priors}
 
+\begin{figure*}
+\includegraphics[width=2\columnwidth]{plots/big_corner_spherical_powerlaw}\\
+\caption{One and two--dimensional projections of our MCMC samples for the SPL fit. 
+The 68\% and 94\% credible intervals are shown in the 2D projections, and the median parameter values and uncertainties computed using the $\pm 34\%$ credible intervals of the 1D projections are shown above the 1D histograms. 
+We multiply the outlier fraction $f$ by the number of stars in our sample, $N_*=1960$ in order to make the inferred value easier to interpret.
+All of our parameters are well constrained, except $k_\mathrm{BHB}$, which is unsurprising given that this is the tracer sample with the smallest number of stars by an order of magnitude. 
+Notable degeneracies are between $k_\mathrm{MSTO}$ and $k_\mathrm{K-giant}$, which are constrained to be close to equal, {} and between $\vesc(R_\odot)$ and $k_\mathrm{MSTO}$ and $k_\mathrm{K-giant}$. 
+Larger values of $k$ suggest larger values of $\vesc(R_\odot)$, as expected. 
+See text for discussion.}
+\label{fig:SPL_corner}
+\end{figure*}
+
 We now detail the priors used on the parameters on each of the three forms for $\vesc(\pos)$.
 The SPL model has two parameters: $\theta = (\vesc(R_\odot),\alpha)$. 
 If the Galaxy is to possess a flat or declining rotation curve, as we would expect from physical reasoning, then
@@ -469,18 +481,6 @@ We find $\tau_f \simeq 50$ in each dimension, so that our chains are run for $\s
 
 \label{sec:res}
 
-\begin{figure*}
-\includegraphics[width=2\columnwidth]{plots/big_corner_spherical_powerlaw}\\
-\caption{One and two--dimensional projections of our MCMC samples for the SPL fit. 
-The 68\% and 94\% credible intervals are shown in the 2D projections, and the median parameter values and uncertainties computed using the $\pm 34\%$ credible intervals of the 1D projections are shown above the 1D histograms. 
-We multiply the outlier fraction $f$ by the number of stars in our sample, $N_*=1960$ in order to make the inferred value easier to interpret.
-All of our parameters are well constrained, except $k_\mathrm{BHB}$, which is unsurprising given that this is the tracer sample with the smallest number of stars by an order of magnitude. 
-Notable degeneracies are between $k_\mathrm{MSTO}$ and $k_\mathrm{K-giant}$, which are constrained to be close to equal, {} and between $\vesc(R_\odot)$ and $k_\mathrm{MSTO}$ and $k_\mathrm{K-giant}$. 
-Larger values of $k$ suggest larger values of $\vesc(R_\odot)$, as expected. 
-See text for discussion.}
-\label{fig:SPL_corner}
-\end{figure*}
-
 \begin{figure}
 \includegraphics[width=\columnwidth]{plots/vesc_posterior}\\
 \caption{Our inference on the escape speed as a function of Galactocentric radius. 
@@ -491,17 +491,11 @@ We measure a significant gradient in the escape speed, such that it has already 
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=\columnwidth]{plots/corner_flattened_powerlaw}\\
-\caption{Posterior distribution for the EPL model. 
-The results are very similar to the SPL model, and the extra parameter $q$ is found to be $\sim 1$, suggesting that the Galactic potential is probably spherical, though our uncertainties are quite large.}
-\label{fig:EPL_posterior}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=\columnwidth]{plots/corner_TF}\\
-\caption{Posterior for the TF model when the prior based on the inference of \citet{Gi14} is used for $r_s$. 
-We infer a rotation curve amplitude of $220\kms$ and a power law decline of $\gamma \simeq 0.4$, both of which are entirely consistent with the results of \citet{Gi14}.}
-\label{fig:TF_posterior}
+\includegraphics[width=\columnwidth]{plots/stars_bound}\\
+\caption{The distribution of our mother samples of stars in the $r-\vlos$ plane. 
+The `spur' at negative radial velocities is from K-giants belonging to the Sagittarius stream. 
+Note that the contamination in our high speed sample from these stars is negligible, since the maximum velocity that the stream centroid reaches is $\sim 150\kms$ \citep{Be14} with a dispersion of $\sim 20\kms$.}
+\label{fig:stars_bound}
 \end{figure}
 
 %show corner plots and tables of parameters of the potentials. 
@@ -520,6 +514,7 @@ Our results imply a local escape speed of $521^{+46}_{-30}\kms$, which is in goo
 We infer a power law index $\alpha = 0.37\pm0.09$, suggesting that the escape speed is falling rapidly as a function of radius.
 The middle panel of Figure \ref{fig:data} is prophetic of this, because the edge of the K-giant distribution in the $r-\vlos$ plane is steep.
 Figure \ref{fig:vesc_posterior} shows the run of $\vesc$ with radius implied by our inference, with associated 68\% and 94\% credible intervals, and the steep drop in the escape speed is clear.
+For perspective, we also show the distribution of the mother samples of each tracer group in the $r-\vlos$ plane in Figure \ref{fig:stars_bound}.
 The Milky Way loosens its grip on its inhabitants significantly: our model predicts that the local escape speed is $521^{+46}_{-30}\kms$, and by $50\kpc$ this has dropped to $379^{+34}_{-28}\kms$.
 
 A priori, it is unclear what the value of $k$ should be. 
@@ -570,7 +565,7 @@ The high speed sample is reduced in size by 11 objects when this stricter constr
 We visually inspected the spectra and image data for all of these objects, and concluded that, other than the original outlier that we identified, they are likely partially blended stars.
 Although this might mean that the photometry for some of these objects may be unrepresentative to some degree, visual inspection of their spectra suggests that they likely have reliable stellar parameters and radial velocities.
 For this reason, we opted not to remove them from our sample, but we did re-run our analysis with these objects removed to check for inconsistencies.
-We found that none of our conclusions change when these targets are removed from the sample.
+We found that none of our conclusions change when these targets are removed from the sample: the comparison of the posterior distributions with and without these objects is shown in Appendix \ref{sec:morph}.
 Later, when we compare our model to the data, we remove the bona-fide galaxy contaminant from the sample, but retain the other 10 objects.
 
 
@@ -591,14 +586,19 @@ This suggests that our inference is relatively robust against different paramete
 \subsection{The mass and rotation curve of the Milky Way}
 \label{sec:mass}
 
-\begin{figure*}
-\includegraphics[width=2\columnwidth]{plots/spherical_powerlaw_massenclosed}\\
-\caption{Left: cumulative mass distribution within spherical shells, predicted by the SPL model. 
-The 68\% (94\%) credible interval is shown as a dark (light) blue band around our median result. 
-We predict a relatively light Milky Way within $50\kpc$, with $M(50\kpc)=29.8^{+6.9}_{-5.2} \times 10^{10}\mathrm{M}_\odot$. 
-In both panels are the results from various other studies, see text for discussion.}
-\label{fig:mass}
-\end{figure*}
+\begin{figure}
+\includegraphics[width=\columnwidth]{plots/corner_flattened_powerlaw}\\
+\caption{Posterior distribution for the EPL model. 
+The results are very similar to the SPL model, and the extra parameter $q$ is found to be $\sim 1$, suggesting that the Galactic potential is probably spherical, though our uncertainties are quite large.}
+\label{fig:EPL_posterior}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{plots/corner_TF}\\
+\caption{Posterior for the TF model when the prior based on the inference of \citet{Gi14} is used for $r_s$. 
+We infer a rotation curve amplitude of $220\kms$ and a power law decline of $\gamma \simeq 0.4$, both of which are entirely consistent with the results of \citet{Gi14}.}
+\label{fig:TF_posterior}
+\end{figure}
 
 % We get a light MW - too big to fail blah blah blah
 % Make plot with comparisons to everyone
@@ -651,17 +651,14 @@ The two analyses, though very different in detail, produce near identical result
 
 \subsection{The orbits of Milky Way dwarf galaxies}
 
-\begin{figure*}
-\includegraphics[width=\columnwidth]{plots/sats}\hfill 
-\includegraphics[width=\columnwidth]{plots/stars_bound}\\
+\begin{figure}
+\includegraphics[width=\columnwidth]{plots/sats}\\ 
 \caption{Left: the distribution of dwarf galaxies around the Milky Way in the $r-\sqrt{3}\,\vlos$ plane. 
 The blue bands are our inference on the escape speed as a function of radius. 
 Radial velocities have been multiplied by $\sqrt{3}$, as is done in the literature to account for unknown tangential velocities. 
-If the true speeds of Triangulum II, Tucana II, Grus 1, Bootes III and Hercules are close to $\sqrt{3}\,\vlos$, then they are likely to be unbound.
-Right: the distribution of our mother samples of stars in the $r-\vlos$ plane. 
-The distribution, though significantly better sampled, broadly resembles the distribution of dwarfs, suggesting that the high--speed dwarfs might follow a similar power law tail in speed.}
+If the true speeds of Triangulum II, Tucana II, Grus 1, Bootes III and Hercules are close to $\sqrt{3}\,\vlos$, then they are likely to be unbound.}
 \label{fig:sats}
-\end{figure*}
+\end{figure}
 
 %McConnachie 2012 - look at Boo III and Herc
 %Kuepper 2016 about Herc
@@ -749,24 +746,17 @@ Triangulum II, on the other hand, has a negative radial velocity and a relativel
 Therefore, it is plausible that Triangulum II is on first infall and is about to undergo a large amount of disruption on its first pericenter passage.
 
 \begin{figure*}
-\includegraphics[width=2\columnwidth]{plots/boo_tri_herc}\\
-\caption{Posterior distributions on orbital pericenter $r_\mathrm{peri}$, apocenter $r_\mathrm{apo}$ and eccentricity $\epsilon$ for Bootes III, Triangulum II and Hercules. 
-If the dwarfs are bound, they must be on very eccentric orbits.}
-\label{fig:bootriherc}
+\includegraphics[width=2\columnwidth]{plots/spherical_powerlaw_massenclosed}\\
+\caption{Left: cumulative mass distribution within spherical shells, predicted by the SPL model. 
+The 68\% (94\%) credible interval is shown as a dark (light) blue band around our median result. 
+We predict a relatively light Milky Way within $50\kpc$, with $M(50\kpc)=29.8^{+6.9}_{-5.2} \times 10^{10}\mathrm{M}_\odot$. 
+In both panels are the results from various other studies, see text for discussion.}
+\label{fig:mass}
 \end{figure*}
+
 
 \subsection{Model performance and systematics}
 \label{sec:model_performance}
-
-\begin{figure*}
-\includegraphics[width=1.5\columnwidth]{plots/ppc}\\
-\caption{Posterior predictive checks of the SPL model. 
-The black points are the number of stars observed in bins of $\vlos$. 
-The solid lines are the median counts from our replicated data sets. 
-The coloured bands around the median line are the 68\%, 95\% intervals and full range of the counts in the replicated data sets. 
-Our model produces replicated data that resemble the SDSS sample.}
-\label{fig:ppc}
-\end{figure*}
 
 We now seek to assess how well our model fits the data by performing posterior predictive checks. 
 Since our model is only generative in radial velocities, and not in the positions of stars, we should compare the distribution in $\vlos$ of the data with our model. 
@@ -839,6 +829,13 @@ The K-giants favour a marginally larger value of $\alpha$, but the difference is
 
 \section{Conclusions}
 
+\begin{figure*}
+\includegraphics[width=2\columnwidth]{plots/boo_tri_herc}\\
+\caption{Posterior distributions on orbital pericenter $r_\mathrm{peri}$, apocenter $r_\mathrm{apo}$ and eccentricity $\epsilon$ for Bootes III, Triangulum II and Hercules. 
+If the dwarfs are bound, they must be on very eccentric orbits.}
+\label{fig:bootriherc}
+\end{figure*}
+
 The main achievement of this paper is the measurement of the escape speed and its variation over Galactocentric radii between $\sim 8$ and $50$ kpc.  
 This was done using a variety of tracer populations -- main sequence turn-off stars (MSTOs), blue horizontal branch stars (BHBs) and K giants -- extracted from the Sloan Digital Sky Survey. 
 We find that the local escape speed is $521^{+46}_{-30}\kms$ in good agreement with the studies by \cite{Sm07} and \cite{Pi14} using data from the RAVE survey.
@@ -870,6 +867,16 @@ $\epsilon \simeq 0.8$.
 The dwarfs must have large apocenters, $\ra \sim 100 - 300\kpc$ and small pericenters $\rp \sim 10\kpc$. 
 Given that Hercules and Bootes III are now moving radially outwards, this implies that they must have at least one pericentric passage already and so we expect their morphology to be elongated and disrupted, as is the case. 
 Triangulum II is moving inwards, and so must be on first infall, which is consistent with its roundish shape and ellipticity of 0.2.
+
+\begin{figure*}
+\includegraphics[width=1.5\columnwidth]{plots/ppc}\\
+\caption{Posterior predictive checks of the SPL model. 
+The black points are the number of stars observed in bins of $\vlos$. 
+The solid lines are the median counts from our replicated data sets. 
+The coloured bands around the median line are the 68\%, 95\% intervals and full range of the counts in the replicated data sets. 
+Our model produces replicated data that resemble the SDSS sample.}
+\label{fig:ppc}
+\end{figure*}
 
 \section*{Acknowledgments}
 AAW acknowledges the support of STFC. 
@@ -951,6 +958,8 @@ The projections of the posterior distributions from the two runs are completely 
 This is because, when the morphological cut is applied, the galaxy contaminant with a spurious radial velocity discussed in Section \ref{sec:res} is removed.}
 \label{fig:morph_corner}
 \end{figure*}
+
+\label{sec:morph}
 
 \end{document}
 
