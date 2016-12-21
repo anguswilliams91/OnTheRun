@@ -528,7 +528,8 @@ def corner_plots():
     chain_1 = chain_1[80*200:,[3,2,1,4,5,6]]
     axis_labels = ["$k_\\mathrm{MSTO}$","$k_\\mathrm{K-giant}$","$k_\\mathrm{BHB}$","$N_*f$","$v_\\mathrm{esc}(R_\\odot)/\\mathrm{kms^{-1}}$","$\\alpha$"]
     chain_labels = ["Main analysis", "Extra morphological cut"]
-    cp.multi_corner_plot((chain,chain_1),axis_labels=axis_labels,chain_labels=chain_labels,fontsize=15,tickfontsize=12,figsize=(10.,10.),linecolors=['k','r'])
+    cp.multi_corner_plot((chain,chain_1),axis_labels=axis_labels,chain_labels=chain_labels,fontsize=15,tickfontsize=12,figsize=(10.,10.),linecolors=['k','r'],\
+                            linewidth=2.)
 
     return None
 

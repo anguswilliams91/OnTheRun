@@ -70,7 +70,7 @@ Therefore, the velocities of the speediest stars passing through the solar neigh
 There were early investigations on the local escape speed by \citet{Ca81} and \citet{Al82}, who suggested values $\sim 450\kms$.
 The analysis methods were extended and systematized by \citet{Le90}, who emphasised the importance of modelling the shape of the tail of the velocity distribution. 
 They provided a number of physically-inspired models and concluded that $\vesc$ lay between $450$ and $650 \kms$ with 90\% confidence. 
-The recent spectroscopic surveys of the Galaxy have stimulated a surge of recent activity, notably by \cite{Sm07} and \cite{Pi14} (hereafter S07 and P14).
+The recent spectroscopic surveys of the Galaxy have stimulated a surge of activity, notably by \cite{Sm07} and \cite{Pi14} (hereafter S07 and P14).
 These authors used data from the RAVE spectroscopic survey, which provided an abundance of information on the kinematics of local stars. 
 P14, who defined the escape speed as the minimum speed needed to reach three virial radii, concluded that it was $533^{+54}_{-41} \kms$ (90\% confidence), albeit on the basis of a small sample.
 
@@ -78,7 +78,7 @@ There are some obvious drawbacks. First, there is no guarantee that the high vel
 This may mean that the velocity of the fastest moving star is an under-estimate of the true escape speed. 
 Second, the method is sensitive to interlopers or contaminants, which may be unrepresentative of a smooth, relaxed stellar population. 
 This includes stars in the process of leaving the Galaxy, such as hypervelocity stars ejected by interaction of binaries with black holes~\citep[e.g.,][]{Br15,Bou16}. 
-Stars may also be unbound to the Milky Way but nonetheless bound to the Local Group. 
+Stars may also be unbound from the Milky Way but nonetheless bound to the Local Group. 
 Although no such stars are known, the phenomenon is familiar to us through the intergalactic stars identified in nearby clusters like Fornax~\citep{Th97}. 
 Third, and perhaps most awkwardly, the spatial distribution of the highest energy stars is set by the stochastic patterns of cosmic accretion. 
 Therefore, the concept of a smooth velocity distribution may be a fiction at the highest energies, even at locations in the inner galaxy.
@@ -87,7 +87,7 @@ These disadvantages are offset by a number of assets. First, only the high veloc
 This is clearly a massive simplification that sidesteps much of the complexity in building DFs. 
 Second, the method provides a nice counterpoint to other ways of measuring the potential (or equivalently the mass) of the Galaxy. 
 For example, methods based on the Jeans equations use the first and second moments of the distribution, and so are controlled by the main bulk rather than the tail. 
-And, third, future prospects are bright, with huge new data sets of radial velocities from spesctroscopic surveys and of proper motions from the Gaia astrometric satellite becoming available.
+And, third, future prospects are bright, with huge new data sets of radial velocities from spectroscopic surveys and of proper motions from the Gaia astrometric satellite becoming available.
 
 All previous work has focussed on measuring the escape speed locally. 
 This is because samples of high velocity stars have been small (sometimes minute, for example S07 used just 16 stars, whilst P14 relied on 86 stars) and concentrated in the solar neighbourhood.
@@ -103,8 +103,6 @@ Priors and numerical implementation are described in Section~\ref{sec:pannm}, wh
 \section{Method}
 
 \label{sec:method}
-
-%describe likelihood function and models we consider
 
 \cite{Le90} proposed that the velocity distribution of high-speed stars is a power law of the form
 %
@@ -197,8 +195,6 @@ The black points in the MSTO panel highlight the 11 objects that are discussed i
 \label{fig:data}
 \end{figure*}
 
-%describe choice of tracers, distance estimators etc.
-
 In order to measure the variation in the escape speed with position in the Galaxy, we require a set of halo tracers that spans a sufficiently large volume, and has measured radial velocities and distances. 
 To obtain such a sample, we use the SDSS 9th data release \citep{Ah12}. 
 We choose to utilise three distinct sets of tracers: main sequence turnoff (MSTO), K-giant and blue horizontal branch (BHB) stars. 
@@ -228,7 +224,7 @@ where the $r$-band extinction $A_r<0.3$. We then make cuts on spectroscopic para
 \end{gather}
 % 
 This gives us a sample of metal-poor MSTO stars. 
-We also make cuts to ensure high-quality photometry and radial velocity measurements for the sample, resulting in a mother sample of 22071 MSTO stars. 
+We also make cuts to ensure high-quality photometry and radial velocity measurements for the sample. 
 To compute distances to these stars, we estimate the absolute magnitude in the $r$-band using the prescription derived by \cite{Iv08}. 
 With $x=(g-i)_0$, we have
 %
@@ -241,6 +237,7 @@ M_{r0} = -5.06 + 14.32\,x - 12.{}&97\,x^2 + 6.127\,x^3 \nonumber \\
 M_r = M_{r0} + \delta M_r.
 \end{gather}
 % 
+Using these formulae, we compute a point estimate of the distance to each star and remove objects with implied heliocentric distances > 15 kpc in order to remove objects with spurious absolute magnitude estimates.
 In order to draw samples from $p(s' \,|\, s)$ (Equation \ref{eq:crux}), we take the quoted uncertainties on $g$, $r$, $i$ and $\lbrack \mathrm{Fe/H} \rbrack$ from the SDSS pipelines and assume that they are normally distributed and uncorrelated. 
 We then draw Monte-Carlo samples from each of these distributions and compute the distance for each sample.
 
@@ -448,7 +445,7 @@ The power law index $\gamma$ can take any value between 0 and 1, and hence we ad
 \subsection{Sampling method}
 \label{sec:sampling_method}
 
-Armed with our priors, we can now perform a fully Bayesian analysis. 
+Armed with our priors, we can now perform a Bayesian analysis. 
 Our full parameter space is $\Theta =(\boldsymbol{k},f,\theta)$, which has 6 (SPL) or 7 (EPL and TF) dimensions. 
 Bayes' theorem for our problem can be written in the following way
 %
@@ -485,7 +482,7 @@ We find $\tau_f \simeq 50$ in each dimension, so that our chains are run for $\s
 \includegraphics[width=\columnwidth]{plots/vesc_posterior}\\
 \caption{Our inference on the escape speed as a function of Galactocentric radius. 
 The median posterior result is shown as a {} dark blue line, and the 68\% (94\%) credible interval is a dark (light) blue band. 
-The result using RAVE data from \citet{Pi14} and the associated 90\% credible interval is also shown, and is in good agreement with our inference. 
+The result using RAVE data from P14 and the associated 90\% credible interval is also shown, and is in good agreement with our inference. 
 We measure a significant gradient in the escape speed, such that it has already fallen by $\sim 100\kms$ by  a radius of $30\kpc$.}
 \label{fig:vesc_posterior}
 \end{figure}
@@ -493,19 +490,11 @@ We measure a significant gradient in the escape speed, such that it has already 
 \begin{figure}
 \includegraphics[width=\columnwidth]{plots/stars_bound}\\
 \caption{The distribution of our mother samples of stars in the $r-\vlos$ plane, with horizontal dashed lines at $\vlos = \pm 200\kms$, our cut in radial velocity. 
+The coloured bands are our inference on the escape speed as a function of radius.
 The `spur' at negative radial velocities is from K-giants belonging to the Sagittarius stream. 
 Note that the contamination in our high speed sample from these stars is negligible, since the maximum velocity that the stream centroid reaches is $\sim 150\kms$ \citep{Be14} with a dispersion of $\sim 20\kms$.}
 \label{fig:stars_bound}
 \end{figure}
-
-%show corner plots and tables of parameters of the potentials. 
-%mention that we checked consistency between kgiants and MSTO by fitting the model with each separately.
-%dicuss uncertainties (LSR choice, cut velocity)
-
-%Discuss the corner plots and results. Table?
-%Robust against form of vesc(x)?
-%Comparison to P14 and S07
-%Values of k - verification of cosmo sims? What processes mean that the vel dist fills to vesc?
 
 Figure \ref{fig:SPL_corner} shows the one and two dimensional projections of the posterior samples of the six SPL model parameters, as well as the inferred median posterior values and uncertainties based on the $\pm 34\%$ credible intervals. 
 All of the model parameters are well constrained, save for $k_\mathrm{BHB}$, which is unsurprising given that BHBs are by far the least numerous tracer in our sample.
@@ -600,9 +589,6 @@ We infer a rotation curve amplitude of $220\kms$ and a power law decline of $\ga
 \label{fig:TF_posterior}
 \end{figure}
 
-% We get a light MW - too big to fail blah blah blah
-% Make plot with comparisons to everyone
-
 Having mapped the escape speed across the Galaxy, we are now able to convert this measurement into a mass profile $M(r)$ and rotation curve $v_c(r)$ for the Galaxy. 
 For a spherically symmetric escape speed profile, we have
 %
@@ -653,20 +639,16 @@ The two analyses, though very different in detail, produce near identical result
 
 \begin{figure}
 \includegraphics[width=\columnwidth]{plots/sats}\\ 
-\caption{Left: the distribution of dwarf galaxies around the Milky Way in the $r-\sqrt{3}\,\vlos$ plane. 
+\caption{The distribution of dwarf galaxies around the Milky Way in the $r-\sqrt{3}\,\vlos$ plane. 
 The blue bands are our inference on the escape speed as a function of radius. 
 Radial velocities have been multiplied by $\sqrt{3}$, as is done in the literature to account for unknown tangential velocities. 
 If the true speeds of Triangulum II, Tucana II, Grus 1, Bootes III and Hercules are close to $\sqrt{3}\,\vlos$, then they are likely to be unbound.}
 \label{fig:sats}
 \end{figure}
 
-%McConnachie 2012 - look at Boo III and Herc
-%Kuepper 2016 about Herc
-%Magellanic dwarfs - Tuc 2 and Gru 1 (Walker et al. 2016)
-
-The left panel of Figure \ref{fig:sats} shows the distribution of known Milky Way dwarf galaxies in the $r-\sqrt{3}\,\vlos$ plane. 
+Figure \ref{fig:sats} shows the distribution of known Milky Way dwarf galaxies in the $r-\sqrt{3}\,\vlos$ plane. 
 It is typical in the literature to multiply the radial velocity by $\sqrt{3}$ as a crude way of accounting for unknown tangential velocities. 
-We see that most of the dwarfs are enveloped by the escape speed curves, with a similar shape to the $r-\vlos$ distribution of stars (right hand panel).
+We see that most of the dwarfs are enveloped by the escape speed curves, with a similar shape to the $r-\vlos$ distribution of stars (Figure \ref{fig:stars_bound}).
 However, some of the dwarfs seem likely unbound based on our estimate of the escape speed. 
 On the other hand, $\Lambda$CDM simulations predict that 99.9\% of subhalos should be bound to their hosts \citep{Bo13}. 
 A reconciliation of these two statements is to conclude that the $\sqrt{3}\vlos$ approximation for the total speed of these dwarfs is likely unrealistic in these cases. 
@@ -880,7 +862,7 @@ Our model produces replicated data that resemble the SDSS sample.}
 
 \section*{Acknowledgments}
 AAW acknowledges the support of STFC. 
-We thank Sergey Koposov for plenty of helpful advice, and Prashin Jethwa, Jason Sanders, Kathryn Johnston, Jorge Penarrubia and Gabriel Torrealba for useful conversations. 
+We thank Sergey Koposov for plenty of helpful advice, and Prashin Jethwa, Jason Sanders, Kathryn Johnston, Jorge Pe\~{n}arrubia and Gabriel Torrealba for useful conversations. 
 This project was developed in part at the 2016 NYC Gaia Sprint, hosted by the Center for Computational Astrophysics at the Simons Foundation in New York City.
 
 \bibliography{ontherun}
