@@ -299,7 +299,7 @@ def plot_tracers(mark_outliers=False,**kwargs):
         sids = np.array([611488477824968704,687975180215019520,814161184382019584,1154154111483013120,1220628099725551616\
         ,1511087739091576832,2473759385139046400,2507504500953081856,2837293955551356928,2982662855519660032,3027555364468975616])
         msto_outliers = msto[msto.specobjid.isin(sids)]
-        ax[0].scatter(msto_outliers.rgc.values,np.abs(msto_outliers.vgsr),c='k',edgecolors='none')
+        ax[0].scatter(msto_outliers.rgc.values,np.abs(msto_outliers.vgsr),c='k',edgecolors='none',s=50)
 
 
     return None
