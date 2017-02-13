@@ -117,7 +117,7 @@ Priors and numerical implementation are described in Section~\ref{sec:pannm}, wh
 $\vesc$ is the escape speed and $\vmin$ is a cut-off, such that $p(v < \vmin)$ begins to deviate from a power law. 
 Since the model depends only on the speed $v$, the full velocity distribution function is implicitly isotropic. 
 As line of sight velocities are measured far more precisely than transverse velocities, it is useful to marginalise the above model over proper motion. 
-This gives
+Reasoning that
 %
 \begin{equation}
   p(v)\propto\begin{cases}
@@ -201,7 +201,7 @@ We choose to utilise three distinct sets of tracers: main sequence turnoff (MSTO
 MSTO stars are numerous, and are mostly observed at distances $\sim 3\kpc$. 
 These stars allow us to constrain the local escape speed, and its variation relatively close to the sun. 
 K-giants and BHBs are fewer in number, but are bright and have been observed at distances $\sim 50\kpc$ from the sun, pushing the spatial extent of our sample to a range of $\sim 40\kpc$ in Galactocentric radius. 
-Before selecting our high-speed sample of stars, we first constructed a `mother sample' for each class of tracer using a series of cuts. 
+Before selecting our sample of high-speed stars, we first constructed a `mother sample' for each class of tracer using a series of cuts. 
 In addition to the cuts described below, we also removed stars with latitudes $|b| < 20^\circ$ in order to remove possible disc contaminants, and stars with radii $r>50\kpc$. 
 We compute Galactocentric radii by assuming a solar radius $R_0 = 8.5\kpc$. 
 The full {\sc SQL} queries used are given in Appendix \ref{sec:sql}.
@@ -363,7 +363,7 @@ This model corresponds to a gravitational potential of the same form as Equation
 
 The final model we consider is the truncated flat rotation curve (TF) model \citep[see][]{Gi14,Wi99}. 
 We primarily investigate this model in order to facilitate a direct comparison with the mass inference of \citet{Gi14}.
-The model has a flat rotation curve of amplitude $v_0$ in the inner parts, which then starts to decline as a power-law $\gamma/2$ around a scale radius $r_s$
+The spherical model has a flat rotation curve of amplitude $v_0$ in the inner parts, which then starts to decline as a power-law $\gamma/2$ around a scale radius $r_s$
 %
 \begin{equation}
 v_0^2(r) = \dfrac{v_0^2\,r_s^\gamma}{(r_s^2 + r^2)^{\gamma/2}}.
@@ -658,7 +658,7 @@ The red points in Figure \ref{fig:sats} are Bootes III \citep{Gr09}, Triangulum 
 They are also at radii where our inference on the escape speed is trustworthy (although Hercules is a somewhat marginal case).  
 The two yellow points are Tucana 2 and Grus 1 \citep{Ko15,Be15}, which are probably dwarfs of the Magellanic clouds \citep{Je16}. 
 We do not seek to constrain the orbital properties of these dwarfs because of their more complex orbital histories. 
-For the three Milky Way dwarfs, we would like to characterise their orbits through their pericentre radii $\rp$, apocenter radii $\ra$ and orbital eccentricities $\ecc$.
+For the three Milky Way dwarfs, we would like to characterise their orbits through their pericentre radii $\rp$, apocentre radii $\ra$ and orbital eccentricities $\ecc$.
 
 In order to compute posterior distributions on $\rp$, $\ra$ and $\ecc$, we first write:
 %
@@ -667,7 +667,7 @@ p(X\,|\,v_r,r) = \int p(X\,|\,v_r,r,\Theta)\,p(\Theta\,|\,\mathrm{data})\,\intd 
 \label{eq:dwarfpost}
 \end{equation}
 %
-where $X = (\rp,\ra,\ecc)$ and $p(\Theta\,|\,\mathrm{data})$ is the posterior distribution on our model of the escape speed. 
+where $X = (\rp,\ra)$ and $p(\Theta\,|\,\mathrm{data})$ is the posterior distribution on our model of the escape speed. 
 We have written $\vlos \simeq v_r$, where $v_r$ is the velocity away from the centre of the Galaxy, because these objects are distant.  
 We then have
 %
@@ -719,7 +719,7 @@ The results of this procedure are shown in Figure \ref{fig:bootriherc}.
 All three dwarfs are expected to be on very eccentric orbits. 
 Bootes III and Triangulum II have $e \simeq 0.95$, while Hercules has $e \simeq 0.8$, though with a somewhat broader distribution. 
 This is aligned with our intuition: if the line of sight velocity alone is relatively close to the escape speed at the radius of the dwarf, then the tangential velocity cannot be large and hence the orbit must be eccentric. 
-As a consequence, the dwarfs have large apocenters, $\ra \sim 100 - 300\kpc$ and considerably smaller pericentres $\rp \sim 10\kpc$ (although the posterior on the pericentre of Hercules is significantly less peaked than for Bootes III and Triangulum II).
+As a consequence, the dwarfs have large apocentres, $\ra \sim 100 - 300\kpc$ and considerably smaller pericentres $\rp \sim 10\kpc$ (although the posterior on the pericentre of Hercules is significantly less peaked than for Bootes III and Triangulum II).
 
 \citet{Ku16} argued that the observed ellipticity of Hercules ($\epsilon \simeq 0.7$) and its large line of sight velocity are suggestive that it has `exploded' as a consequence of its last pericentre passage. 
 Using N-body simulations, they arrived at an estimate of the orbital eccentricity $\ecc \simeq 0.95$, which is larger than our value but not in significant tension with it. 
@@ -765,9 +765,7 @@ p(\vlos\,|\,\mathrm{data}) = \int p(\vlos\,|\,\Theta)\,p(\Theta\,|\,\mathrm{data
 \end{equation}
 %
 which is the predicted distribution of $\vlos$ given the knowledge we have gained by analysing our SDSS sample.  
-To sample this distribution, we first take the discrete samples from the posterior generated by our MCMC runs. 
-Then, for each set of parameters $\Theta$, we draw a sample from Equation (\ref{eq:ppc}) that is the same size as the data, giving us many replicated data sets \citep{Ge13}. 
-If the model is performing well, a typical replicated data set should look like the SDSS sample. 
+To sample this distribution, we draw a sample from Equation (\ref{eq:ppc}) that is the same size as the data at each draw from the posterior in our MCMC chain \citep{Ge13}, producing many replicated data sets.
 In order to sample from Equation (\ref{eq:ppc}), we use inverse transform sampling, where we numerically compute the CDF
 %
 \begin{equation}
@@ -814,7 +812,7 @@ The K-giants favour a marginally larger value of $\alpha$, but the difference is
 
 \begin{figure*}
 \includegraphics[width=2\columnwidth]{plots/boo_tri_herc}\\
-\caption{Posterior distributions on orbital pericentre $r_\mathrm{peri}$, apocenter $r_\mathrm{apo}$ and eccentricity $e$ for Bootes III, Triangulum II and Hercules. 
+\caption{Posterior distributions on orbital pericentre $r_\mathrm{peri}$, apocentre $r_\mathrm{apo}$ and eccentricity $e$ for Bootes III, Triangulum II and Hercules. 
 If the dwarfs are bound, they must be on very eccentric orbits.}
 \label{fig:bootriherc}
 \end{figure*}
@@ -842,7 +840,7 @@ Current data sets preclude a stringent measurement on the shape of the halo usin
 As an application, we have used our model of the escape speed to study the orbital properties of the extreme Galactic satellites, Hercules, Bootes III and Triangulum II. 
 All three must have highly eccentric orbits, with Bootes III and Triangulum II possessing an eccentricity $e \simeq 0.95$, and Hercules
 $e \simeq 0.8$. 
-The dwarfs must have large apocenters, $\ra \sim 100 - 300\kpc$ and small pericentres $\rp \sim 10\kpc$. 
+The dwarfs must have large apocentres, $\ra \sim 100 - 300\kpc$ and small pericentres $\rp \sim 10\kpc$. 
 Given that Hercules and Bootes III are now moving radially outwards, this implies that they must have at least one pericentric passage already and so we expect their morphology to be elongated and disrupted, as is the case. 
 Triangulum II is moving inwards, and so must be on first infall, which is consistent with its roundish shape and ellipticity of 0.2.
 
