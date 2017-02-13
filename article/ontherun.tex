@@ -115,7 +115,7 @@ In a spherical potential, the two quantities are related through the energy equa
 \label{eq:vesc_def}
 \end{equation}
 %
-so that a star travelling at $\vesc(r)$ will have zero velocity at $r=r_\text{max}$, the radius at which tracers are considered unbound from the Milky Way.
+so that a star travelling at speed $\vesc(r)$ at r will have zero velocity at $r=r_\text{max}$, the radius at which tracers are considered unbound from the Milky Way.
 If the Galaxy existed in isolation then $r_\text{max}=\infty$, but in practice $r_\text{max}$ quantifies the distance a star must reach from the Galactic centre before it falls into another potential well.
 \footnote{Andromeda is $\sim 800\kpc$ from the Milky Way, so a rough estimate for $r_\text{max}$ is 400 kpc.}
 A measurement of $\vesc(r)$ therefore amounts to quantifying $\sqrt{-2\left[\Phi(r) - \Phi(r_\text{max})\right]}$.
@@ -527,9 +527,10 @@ Our results vindicate the choice of prior by S07, while the range used by P14 is
 Figure \ref{fig:SPL_corner} shows a strong degeneracy between $k_\mathrm{MSTO}$ and $\vesc(R_0)$, which can be encoded by the empirical covariance matrix of the samples
 %
 \begin{equation}
-\mathrm{Cov}\left(k_\mathrm{MSTO}\,,\,\vesc(R_0)\right) = \begin{bmatrix} 0.84 & 37\kms \\ 37\kms & 1713 \mathrm{km^2s^{-2}}\end{bmatrix}.
+\mathrm{Cov}\left(k_\mathrm{MSTO}\,,\,\vesc(R_0)\right) = \begin{bmatrix} 0.84 & 37\kms \\ 37\kms & 1713 \mathrm{km^2s^{-2}}\end{bmatrix},
 \end{equation}
 %
+i.e. if $k_\mathrm{MSTO}$ increases by unity, then $\vesc(R_0)$ increases by $37\kms$.
 This is to be expected, and is the reason why a narrow prior on $k$ was necessary in previous work. 
 Figure 1 of P14 nicely demonstrates the appearance of this degeneracy for varying sample sizes. 
 Fortunately, our sample is large enough to locate the maximum along the degeneracy. 
@@ -559,6 +560,7 @@ We visually inspected the spectra and image data for all of these objects, and c
 Although this might mean that the photometry for some of these objects may be unrepresentative to some degree, visual inspection of their spectra suggests that they likely have reliable stellar parameters and line of sight velocities.
 For this reason, we opted not to remove them from our sample, but we did re-run our analysis with these objects removed to check for inconsistencies.
 We found that none of our conclusions change when these targets are removed from the sample: the comparison of the posterior distributions with and without these objects is shown in Appendix \ref{sec:morph}.
+We also experimented with a stricter colour cut of $0.2 \leq (g-r)_0 \leq 0.35$, to further remove objects with potentially spurious stellar parameters, but again found that this made no quantitative difference to our conclusions. 
 Later, when we compare our model to the data, we remove the bona-fide galaxy contaminant from the sample, but retain the other 10 objects.
 
 
@@ -860,6 +862,7 @@ Our model produces replicated data that resemble the SDSS sample.}
 AAW acknowledges the support of STFC. 
 We thank Sergey Koposov for plenty of helpful advice, and Prashin Jethwa, Jason Sanders, Kathryn Johnston, Jorge Pe\~{n}arrubia and Gabriel Torrealba for useful conversations. 
 This project was developed in part at the 2016 NYC Gaia Sprint, hosted by the Center for Computational Astrophysics at the Simons Foundation in New York City.
+We thank the referee, James Binney, for a helpful report that led to important clarifications in the paper. 
 
 \bibliography{ontherun}
 \bibliographystyle{mn2e}
