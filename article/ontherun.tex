@@ -65,7 +65,7 @@ Kopff stated he was not interested, because of course one horse will always run 
 ``But why'', retorted Eddington. ``When one star moves faster, you are very interested!'' 
 The fastest moving stars are intriguing both because of the processes that accelerated them and because they are probes of their environment.
 
-The local escape speed $\vesc$ is a measure of the depth of the potential well at the solar position $\Phi(R_\odot)$. 
+The local escape speed $\vesc$ is a measure of the depth of the potential well at the solar position $\Phi(R_0)$. 
 Therefore, the velocities of the speediest stars passing through the solar neighbourhood can in principle provide information on the enclosed mass. 
 There were early investigations on the local escape speed by \citet{Ca81} and \citet{Al82}, who suggested values $\sim 450\kms$.
 The analysis methods were extended and systematized by \citet{Le90}, who emphasised the importance of modelling the shape of the tail of the velocity distribution. 
@@ -203,7 +203,7 @@ These stars allow us to constrain the local escape speed, and its variation rela
 K-giants and BHBs are fewer in number, but are bright and have been observed at distances $\sim 50\kpc$ from the sun, pushing the spatial extent of our sample to a range of $\sim 40\kpc$ in Galactocentric radius. 
 Before selecting our high-speed sample of stars, we first constructed a `mother sample' for each class of tracer using a series of cuts. 
 In addition to the cuts described below, we also removed stars with latitudes $|b| < 20^\circ$ in order to remove possible disc contaminants, and stars with radii $r>50\kpc$. 
-We compute Galactocentric radii by assuming a solar radius $R_\odot = 8.5\kpc$. 
+We compute Galactocentric radii by assuming a solar radius $R_0 = 8.5\kpc$. 
 The full {\sc SQL} queries used are given in Appendix \ref{sec:sql}.
 
 \subsection{MSTO sample}
@@ -330,7 +330,7 @@ We note that our sample of 1960 stars represents a factor of $>100$ increase fro
 Our primary model for the escape speed is a spherically--symmetric power law model (SPL)
 %
 \begin{equation}
-\vesc(r) = \vesc(R_\odot)\,\left(\dfrac{r}{R_\odot}\right)^{-\alpha/2},
+\vesc(r) = \vesc(R_0)\,\left(\dfrac{r}{R_0}\right)^{-\alpha/2},
 \end{equation}
 %
 where $r$ is Galactocentric radius and $0 \leq \alpha \leq 1$, on physical grounds.  
@@ -344,17 +344,17 @@ The gravitational potential $\Phi$ and escape speed are related by
 meaning that the SPL model corresponds to a gravitational potential of the form
 %
 \begin{equation}
-\Phi(r) = -\dfrac{v_\mathrm{circ}(R_\odot)^2}{\alpha}\,\left(\dfrac{r}{R_\odot}\right)^{-\alpha}.
+\Phi(r) = -\dfrac{v_\mathrm{circ}(R_0)^2}{\alpha}\,\left(\dfrac{r}{R_0}\right)^{-\alpha}.
 \label{eq:splgrav}
 \end{equation}
 %
-Thus, unlike other studies that measure only the local escape speed, we can translate our measurements of $\vesc(R_\odot)$ and $\alpha$ into inference of the circular speed of the potential, and the mass enclosed within spherical shells. 
+Thus, unlike other studies that measure only the local escape speed, we can translate our measurements of $\vesc(R_0)$ and $\alpha$ into inference of the circular speed of the potential, and the mass enclosed within spherical shells. 
 
 We will also report on results when two other models are used. 
 The first is a simple generalisation of the SPL, a power law in elliptical radius (EPL)
 %
 \begin{equation}
-\vesc(r_q) = \vesc(R_\odot)\,\left(\dfrac{r_q}{R_\odot}\right)^{-\beta/2},
+\vesc(r_q) = \vesc(R_0)\,\left(\dfrac{r_q}{R_0}\right)^{-\beta/2},
 \end{equation}
 %
 with $r_q = \sqrt{R^2 + z^2/q^2}$, where $R$ and $z$ are the usual cylindrical coordinates, and $0 \leq q \leq \infty$. 
@@ -399,14 +399,14 @@ Our prior on $f$ is flat in the permissible range $0 \leq f \leq 1$.
 The 68\% and 94\% credible intervals are shown in the 2D projections, and the median parameter values and uncertainties computed using the $\pm 34\%$ credible intervals of the 1D projections are shown above the 1D histograms. 
 We multiply the outlier fraction $f$ by the number of stars in our sample, $N_*=1960$ in order to make the inferred value easier to interpret.
 All of our parameters are well constrained, except $k_\mathrm{BHB}$, which is unsurprising given that this is the tracer sample with the smallest number of stars by an order of magnitude. 
-Notable degeneracies are between $k_\mathrm{MSTO}$ and $k_\mathrm{K-giant}$, which are constrained to be close to equal, {} and between $\vesc(R_\odot)$ and $k_\mathrm{MSTO}$ and $k_\mathrm{K-giant}$. 
-Larger values of $k$ suggest larger values of $\vesc(R_\odot)$, as expected. 
+Notable degeneracies are between $k_\mathrm{MSTO}$ and $k_\mathrm{K-giant}$, which are constrained to be close to equal, {} and between $\vesc(R_0)$ and $k_\mathrm{MSTO}$ and $k_\mathrm{K-giant}$. 
+Larger values of $k$ suggest larger values of $\vesc(R_0)$, as expected. 
 See text for discussion.}
 \label{fig:SPL_corner}
 \end{figure*}
 
 We now detail the priors used on the parameters on each of the three forms for $\vesc(\pos)$.
-The SPL model has two parameters: $\theta = (\vesc(R_\odot),\alpha)$. 
+The SPL model has two parameters: $\theta = (\vesc(R_0),\alpha)$. 
 If the Galaxy is to possess a flat or declining rotation curve, as we would expect from physical reasoning, then
 %
 \begin{equation}
@@ -415,15 +415,15 @@ If the Galaxy is to possess a flat or declining rotation curve, as we would expe
 \end{equation}
 %
 Besides this basic physical constraint, we do not include any more information about the value of $\alpha$, so our prior is flat over the above range. 
-Since $\vesc(R_\odot)$ is a positive definite scale parameter, we adopt a scale invariant Jeffreys prior
+Since $\vesc(R_0)$ is a positive definite scale parameter, we adopt a scale invariant Jeffreys prior
 %
 \begin{equation}
-p\left(\vesc(R_\odot)\right) \propto 1/\vesc(R_\odot).
+p\left(\vesc(R_0)\right) \propto 1/\vesc(R_0).
 \label{eq:jeffreys}
 \end{equation}
 %
-The EPL model is identical to the SPL model other than the inclusion of the axis ratio, $q$, so that $\theta = (\vesc(R_\odot),\,\beta,\,q)$. 
-The priors we use for $\beta$ and $\vesc(R_\odot)$ are the same as in Equations (\ref{eq:powerlawprior}) and (\ref{eq:jeffreys}). For $q$, we follow \citet{Bo16} and use a prior
+The EPL model is identical to the SPL model other than the inclusion of the axis ratio, $q$, so that $\theta = (\vesc(R_0),\,\beta,\,q)$. 
+The priors we use for $\beta$ and $\vesc(R_0)$ are the same as in Equations (\ref{eq:powerlawprior}) and (\ref{eq:jeffreys}). For $q$, we follow \citet{Bo16} and use a prior
 %
 \begin{equation}
 p(q) \propto \dfrac{1}{1+q^2},
@@ -521,10 +521,10 @@ S07 points out that this is to be expected for small sample sizes.
 Nonetheless, the inference on $k_\mathrm{BHB}$ is not in significant tension with the hypothesis that $k$ is constant. 
 Our results vindicate the choice of prior by S07, while the range used by P14 is a touch on the low side.
 
-Figure \ref{fig:SPL_corner} shows a strong degeneracy between $k_\mathrm{MSTO}$ and $\vesc(R_\odot)$, which can be encoded by the empirical covariance matrix of the samples
+Figure \ref{fig:SPL_corner} shows a strong degeneracy between $k_\mathrm{MSTO}$ and $\vesc(R_0)$, which can be encoded by the empirical covariance matrix of the samples
 %
 \begin{equation}
-\mathrm{Cov}\left(k_\mathrm{MSTO}\,,\,\vesc(R_\odot)\right) = \begin{bmatrix} 0.84 & 37\kms \\ 37\kms & 1713 \mathrm{km^2s^{-2}}\end{bmatrix}.
+\mathrm{Cov}\left(k_\mathrm{MSTO}\,,\,\vesc(R_0)\right) = \begin{bmatrix} 0.84 & 37\kms \\ 37\kms & 1713 \mathrm{km^2s^{-2}}\end{bmatrix}.
 \end{equation}
 %
 This is to be expected, and is the reason why a narrow prior on $k$ was necessary in previous work. 
@@ -532,7 +532,7 @@ Figure 1 of P14 nicely demonstrates the appearance of this degeneracy for varyin
 Fortunately, our sample is large enough to locate the maximum along the degeneracy. 
 The same degeneracy is seen between $k_\mathrm{K-giant}$ and the local escape speed, though it is broader.
 Note that this explains why our statistical uncertainty on the local escape speed is larger than that of of P14, who found $533^{+54}_{-41}\kms$ at 90\% confidence, compared to our 90\% credible interval of $521^{+88}_{-45}\kms$.
-Our larger 95th percentile of $690\kms$ is a consequence of the degeneracy between $k$ and $\vesc(R_\odot)$: the 95th percentile of the posterior on $k_\mathrm{MSTO}$ is 6, which is considerably larger than the upper end of P14's prior.
+Our larger 95th percentile of $690\kms$ is a consequence of the degeneracy between $k$ and $\vesc(R_0)$: the 95th percentile of the posterior on $k_\mathrm{MSTO}$ is 6, which is considerably larger than the upper end of P14's prior.
 
 The inferred outlier fraction is very small, $f \simeq 0.001$, but non-zero. 
 This suggests that there are one or two outliers in our sample. 
@@ -602,14 +602,14 @@ Given our model of $\vesc(r)$, and our inference on its parameters, we can compu
 For example, the local circular speed that we measure is
 %
 \begin{equation}
-v_c(R_\odot) = 223^{+40}_{-34}\kms.
+v_c(R_0) = 223^{+40}_{-34}\kms.
 \end{equation}
 %
 Note that our inferences on the mass profile and rotation curve rest heavily on the assumption that the speed distribution of stars in the Galaxy truncates at $\sqrt{-2\Phi}$.
 If the stars do not fill out to the this value, then our analysis will underestimate the depth of the potential well, which will lead to underestimates in the inferred mass profile and rotation curve of the Galaxy.
 P14 showed that the inferred halo virial mass increased by 20\% if the escape speed was instead defined as $\sqrt{-2\left(\Phi(r) - \Phi(r_\mathrm{max})\right)}$, with $r_\mathrm{max} = 3R_\mathrm{vir} \sim 600\kpc$.
 Since we do not attempt to track the Galaxy's mass out to such large radii, the possible bias incurred by effectively setting $r_\mathrm{max} = \infty$ will be significantly smaller than 20\%, and so we henceforth assume that the velocity distribution reaches $\sqrt{-2\Phi}$.
-The value of $v_c(R_\odot)$ that we obtain while making this assumption is pleasingly aligned with a multitude of other methods, and provides us with confidence that systematic uncertainty caused by these considerations is unimportant relative to our statistical uncertainties.
+The value of $v_c(R_0)$ that we obtain while making this assumption is pleasingly aligned with a multitude of other methods, and provides us with confidence that systematic uncertainty caused by these considerations is unimportant relative to our statistical uncertainties.
 
 It is worth noting that our method clearly possesses very different systematic uncertainties when compared to more common approaches in the literature.
 Most dynamical models of halo tracers, like distribution function and Jeans analyses, are most sensitive to the central parts of the velocity distributions.
@@ -796,8 +796,8 @@ In order to check the sensitivity of our work to this value, we re--ran the anal
 This results in a significantly smaller sample of 644 stars (539 MSTO, 99 K-giants, 6 BHBs). 
 We thus expect much larger uncertainties on all of our model parameters. 
 This is indeed the case, and we find that the values of $k$ for each of the tracers are poorly constrained compared to our full analysis, leading to a worse determination of the local escape speed. 
-This is because the degeneracy between $k$ and $\vesc(R_\odot)$ is not broken as effectively by these data, which pushes up our estimates of $k$ and $\vesc(R_\odot)$, as predicted by S07. 
-Specifically, we find $\vesc(R_\odot) = 617^{+77}_{-84}\kms$.  
+This is because the degeneracy between $k$ and $\vesc(R_0)$ is not broken as effectively by these data, which pushes up our estimates of $k$ and $\vesc(R_0)$, as predicted by S07. 
+Specifically, we find $\vesc(R_0) = 617^{+77}_{-84}\kms$.  
 This value is nonetheless consistent with our full analysis, due to the inflated uncertainties. 
 Correspondingly, the inferred values of $k$ are $\sim 6$, with uncertainties $\sim 2$, which again are consistent with our previous estimates, but systematically higher. 
 Given how well our full model represents the data, we would suggest that the speed distribution of halo stars does not significantly deviate from a power law at speeds $>200\kms$, thus vindicating our choice of $\vmin = 200\kms$. 
@@ -838,11 +838,6 @@ The advent of the second Gaia release in 2017 and the first results from the WEA
 The computational challenges of modelling such data sets are severe. 
 We suggest that analysis of the high velocity tails may be the optimum method to quickly extract information on the potential of the Galaxy.  
 Current data sets preclude a stringent measurement on the shape of the halo using the variation in escape speed with position, but we anticipate that this too will become possible in the very near future.
-
-As well as allowing us to infer the escape speed and Galactic potential, the tail of the velocity distribution also provides information about the formation history of the Galaxy.
-If the stellar halo is formed by some number of disrupted dwarf galaxies, then the power law index $k$ encodes their accretion times: we expect $k \equiv k(\tau)$, where $\tau$ is the time since infall of the dwarf progenitor of a given halo star.
-We are investigating how this information can be extracted from cosmological simulations, in order to develop the machinery required to constrain $k(\tau)$. 
-This method will turn the high velocity tail into a looking glass into the Milky Way's past.
 
 As an application, we have used our model of the escape speed to study the orbital properties of the extreme Galactic satellites, Hercules, Bootes III and Triangulum II. 
 All three must have highly eccentric orbits, with Bootes III and Triangulum II possessing an eccentricity $\epsilon \simeq 0.95$, and Hercules
