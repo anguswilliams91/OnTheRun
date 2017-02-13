@@ -49,8 +49,8 @@ Through measuring the escape speed and its variation, we obtain constraints on t
 In particular, the gradient in the escape speed with radius suggests that the total mass contained within $50\kpc$ is $29^{+7}_{-5}\times10^{10}\Msun$, implying a relatively light dark halo for the Milky Way. 
 Our method represents a novel way of estimating the mass of the Galaxy, and has very different systematics to more commonly used models of tracers, which are more sensitive to the central parts of the halo velocity distributions. 
 Using our inference on the escape speed, we then investigate the orbits of high--speed Milky Way dwarf galaxies. 
-For each dwarf we consider, we predict small pericenter radii and large orbital eccentricities. 
-This naturally explains the large observed ellipticities of two of the dwarfs, which are likely to have been heavily disrupted as they passed through pericenter.
+For each considered dwarf, we predict small pericentre radii and large orbital eccentricities. 
+This naturally explains the large observed ellipticities of two of the dwarfs, which are likely to have been heavily disrupted at pericentre.
 \end{abstract}
 
 \begin{keywords}
@@ -163,7 +163,7 @@ $p(s'\,|\,s)$ is the probability that $s'$ is the true distance to the star give
 Finally, we also include a Gaussian outlier model for possibly unbound stars
 %
 \begin{equation}
-p_\mathrm{out}(\vlos) = \dfrac{A}{\sqrt{2\,\mathrm{\pi}\,\sigma^2}}\exp \dfrac{-\vlos^2}{2\sigma^2},
+p_\mathrm{out}(\vlos) = \dfrac{A}{\sqrt{2\,\mathrm{\pi}\,\sigma^2}}\exp\left(-\vlos^2/2\sigma^2\right),
 \end{equation}
 %
 where we fix $\sigma = 1000\kms$, and $A$ is the normalisation of the Gaussian over the interval $\left[v_\mathrm{min},\infty\right]$. 
@@ -174,7 +174,7 @@ p_\mathrm{tot}(\vlos \,|\, \ell, b, s) = (1-f)\,p(\vlos \,|\, \ell, b, s) + f\,p
 \end{equation}
 %
 This Equation represents the likelihood that we will use for the remainder of the paper, while making specific choices for $\vesc(\pos)$. 
-In practice, we compute the RHS of Equation (\ref{eq:crux}) using Monte-Carlo integration \citep[e.g.][]{Ev16,Bo16}, so that
+In practice, we compute the RHS of Equation (\ref{eq:crux}) using Monte-Carlo integration so that
 %
 \begin{equation}
 p(\vlos \,|\, \ell, b, s) \simeq \dfrac{1}{N}\sum\limits_{n=1}^{N} p(\vlos \,| \,\ell, b, s_n ),
@@ -658,7 +658,7 @@ The red points in Figure \ref{fig:sats} are Bootes III \citep{Gr09}, Triangulum 
 They are also at radii where our inference on the escape speed is trustworthy (although Hercules is a somewhat marginal case).  
 The two yellow points are Tucana 2 and Grus 1 \citep{Ko15,Be15}, which are probably dwarfs of the Magellanic clouds \citep{Je16}. 
 We do not seek to constrain the orbital properties of these dwarfs because of their more complex orbital histories. 
-For the three Milky Way dwarfs, we would like to characterise their orbits through their pericenter radii $\rp$, apocenter radii $\ra$ and orbital eccentricities $\ecc$.
+For the three Milky Way dwarfs, we would like to characterise their orbits through their pericentre radii $\rp$, apocenter radii $\ra$ and orbital eccentricities $\ecc$.
 
 In order to compute posterior distributions on $\rp$, $\ra$ and $\ecc$, we first write:
 %
@@ -719,14 +719,14 @@ The results of this procedure are shown in Figure \ref{fig:bootriherc}.
 All three dwarfs are expected to be on very eccentric orbits. 
 Bootes III and Triangulum II have $e \simeq 0.95$, while Hercules has $e \simeq 0.8$, though with a somewhat broader distribution. 
 This is aligned with our intuition: if the line of sight velocity alone is relatively close to the escape speed at the radius of the dwarf, then the tangential velocity cannot be large and hence the orbit must be eccentric. 
-As a consequence, the dwarfs have large apocenters, $\ra \sim 100 - 300\kpc$ and considerably smaller pericenters $\rp \sim 10\kpc$ (although the posterior on the pericenter of Hercules is significantly less peaked than for Bootes III and Triangulum II).
+As a consequence, the dwarfs have large apocenters, $\ra \sim 100 - 300\kpc$ and considerably smaller pericentres $\rp \sim 10\kpc$ (although the posterior on the pericentre of Hercules is significantly less peaked than for Bootes III and Triangulum II).
 
-\citet{Ku16} argued that the observed ellipticity of Hercules ($\epsilon \simeq 0.7$) and its large line of sight velocity are suggestive that it has `exploded' as a consequence of its last pericenter passage. 
+\citet{Ku16} argued that the observed ellipticity of Hercules ($\epsilon \simeq 0.7$) and its large line of sight velocity are suggestive that it has `exploded' as a consequence of its last pericentre passage. 
 Using N-body simulations, they arrived at an estimate of the orbital eccentricity $\ecc \simeq 0.95$, which is larger than our value but not in significant tension with it. 
 Bootes III has a similar morphology ($\epsilon \simeq 0.5$) in keeping with the picture that these satellites are on orbits that will cause them to disrupt into streams after comparatively few orbital periods. 
-Both Bootes II and Hercules have positive line of sight velocities: they are travelling away from the Galactic centre, suggesting that they have undergone at least one pericenter passage. 
+Both Bootes II and Hercules have positive line of sight velocities: they are travelling away from the Galactic centre, suggesting that they have undergone at least one pericentre passage. 
 Triangulum II, on the other hand, has a negative line of sight velocity and a relatively small ellipticity ($\epsilon \simeq 0.2$). 
-Therefore, it is plausible that Triangulum II is on first infall and is about to undergo a large amount of disruption on its first pericenter passage.
+Therefore, it is plausible that Triangulum II is on first infall and is about to undergo a large amount of disruption on its first pericentre passage.
 
 \begin{figure*}
 \includegraphics[width=2\columnwidth]{plots/spherical_powerlaw_massenclosed}\\
@@ -814,7 +814,7 @@ The K-giants favour a marginally larger value of $\alpha$, but the difference is
 
 \begin{figure*}
 \includegraphics[width=2\columnwidth]{plots/boo_tri_herc}\\
-\caption{Posterior distributions on orbital pericenter $r_\mathrm{peri}$, apocenter $r_\mathrm{apo}$ and eccentricity $e$ for Bootes III, Triangulum II and Hercules. 
+\caption{Posterior distributions on orbital pericentre $r_\mathrm{peri}$, apocenter $r_\mathrm{apo}$ and eccentricity $e$ for Bootes III, Triangulum II and Hercules. 
 If the dwarfs are bound, they must be on very eccentric orbits.}
 \label{fig:bootriherc}
 \end{figure*}
@@ -842,7 +842,7 @@ Current data sets preclude a stringent measurement on the shape of the halo usin
 As an application, we have used our model of the escape speed to study the orbital properties of the extreme Galactic satellites, Hercules, Bootes III and Triangulum II. 
 All three must have highly eccentric orbits, with Bootes III and Triangulum II possessing an eccentricity $e \simeq 0.95$, and Hercules
 $e \simeq 0.8$. 
-The dwarfs must have large apocenters, $\ra \sim 100 - 300\kpc$ and small pericenters $\rp \sim 10\kpc$. 
+The dwarfs must have large apocenters, $\ra \sim 100 - 300\kpc$ and small pericentres $\rp \sim 10\kpc$. 
 Given that Hercules and Bootes III are now moving radially outwards, this implies that they must have at least one pericentric passage already and so we expect their morphology to be elongated and disrupted, as is the case. 
 Triangulum II is moving inwards, and so must be on first infall, which is consistent with its roundish shape and ellipticity of 0.2.
 
