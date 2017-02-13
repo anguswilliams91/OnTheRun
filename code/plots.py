@@ -492,7 +492,7 @@ def dwarf_posteriors(chain,burnin=200):
     ax[2].set_xlim((0.5,1.))
     ax[0].set_xlabel("$r_\\mathrm{peri}/\\mathrm{kpc}$",fontsize=20)
     ax[1].set_xlabel("$r_\\mathrm{apo}/\\mathrm{kpc}$",fontsize=20)
-    ax[2].set_xlabel("$\\epsilon$",fontsize=20)
+    ax[2].set_xlabel("$e$",fontsize=20)
     ax[2].legend(loc='upper left',fontsize=25)
 
     return fig,ax

@@ -22,7 +22,7 @@
 \def\intd{{\mathrm{d}}}
 \def\rp{{r_\mathrm{peri}}}
 \def\ra{{r_\mathrm{apo}}}
-\def\ecc{{\epsilon}}
+\def\ecc{{e}}
 
 \newcommand{\edit}[1]{\textcolor{red}{#1}}
 
@@ -87,7 +87,7 @@ These disadvantages are offset by a number of assets. First, only the high veloc
 This is clearly a massive simplification that sidesteps much of the complexity in building DFs. 
 Second, the method provides a nice counterpoint to other ways of measuring the potential (or equivalently the mass) of the Galaxy. 
 For example, methods based on the Jeans equations use the first and second moments of the distribution, and so are controlled by the main bulk rather than the tail. 
-And, third, future prospects are bright, with huge new data sets of radial velocities from spectroscopic surveys and of proper motions from the Gaia astrometric satellite becoming available.
+And, third, future prospects are bright, with huge new data sets of line of sight velocities from spectroscopic surveys and of proper motions from the Gaia astrometric satellite becoming available.
 
 All previous work has focussed on measuring the escape speed locally. 
 This is because samples of high velocity stars have been small (sometimes minute, for example S07 used just 16 stars, whilst P14 relied on 86 stars) and concentrated in the solar neighbourhood.
@@ -116,7 +116,7 @@ Priors and numerical implementation are described in Section~\ref{sec:pannm}, wh
 %
 $\vesc$ is the escape speed and $\vmin$ is a cut-off, such that $p(v < \vmin)$ begins to deviate from a power law. 
 Since the model depends only on the speed $v$, the full velocity distribution function is implicitly isotropic. 
-As radial velocities are measured far more precisely than transverse velocities, it is useful to marginalise the above model over proper motion. 
+As line of sight velocities are measured far more precisely than transverse velocities, it is useful to marginalise the above model over proper motion. 
 This gives
 %
 \begin{equation}
@@ -126,7 +126,7 @@ This gives
   \end{cases}
 \end{equation}
 %
-where $\vlos$ is Galactocentric radial velocity. 
+where $\vlos$ is the line of sight velocity from the perspective of an observer who is stationary with respect to the Galactic centre at the location of the Sun (hereafter `Galactocentric line of sight velocity', or simply `radial velocity'). 
 Since we are only interested in the absolute value of $\vlos$ in this work, we shall now refer to $|\vlos|$ as $\vlos$ for brevity.
 
 This model has been applied to data several times, most notably by S07 and P14 using data from the {\sc RAVE} survey \citep{Ko13}. 
@@ -150,8 +150,8 @@ C = \dfrac{k+2}{(\vesc(\pos) - \vmin)^{k+2}}.
 \end{equation}
 %
 By far the largest source of uncertainty in our analysis is in the distance to each star. 
-Consequently, we consider the uncertainty in the radial velocity, longitude and latitude to be negligible. 
-Our likelihood function should therefore be the probability of a radial velocity, given Galactic coordinates and an imperfect inference on the distance to the star. 
+Consequently, we consider the uncertainty in the line of sight velocity, longitude and latitude to be negligible. 
+Our likelihood function should therefore be the probability of a line of sight velocity, given Galactic coordinates and an imperfect inference on the distance to the star. 
 Writing $\pos = (\ell, b, s)$, where $(\ell,b)$ are Galactic longitude and latitude, respectively, and $s$ is the measured line of sight distance to the star, we then have
 %
 \begin{equation}
@@ -195,7 +195,7 @@ The black points in the MSTO panel highlight the 11 objects that are discussed i
 \label{fig:data}
 \end{figure*}
 
-In order to measure the variation in the escape speed with position in the Galaxy, we require a set of halo tracers that spans a sufficiently large volume, and has measured radial velocities and distances. 
+In order to measure the variation in the escape speed with position in the Galaxy, we require a set of halo tracers that spans a sufficiently large volume, and has measured line of sight velocities and distances. 
 To obtain such a sample, we use the SDSS 9th data release \citep{Ah12}. 
 We choose to utilise three distinct sets of tracers: main sequence turnoff (MSTO), K-giant and blue horizontal branch (BHB) stars. 
 MSTO stars are numerous, and are mostly observed at distances $\sim 3\kpc$. 
@@ -224,7 +224,7 @@ where the $r$-band extinction $A_r<0.3$. We then make cuts on spectroscopic para
 \end{gather}
 % 
 This gives us a sample of metal-poor MSTO stars. 
-We also make cuts to ensure high-quality photometry and radial velocity measurements for the sample. 
+We also make cuts to ensure high-quality photometry and line of sight velocity measurements for the sample. 
 To compute distances to these stars, we estimate the absolute magnitude in the $r$-band using the prescription derived by \cite{Iv08}. 
 With $x=(g-i)_0$, we have
 %
@@ -317,7 +317,7 @@ P14 performed a detailed analysis of the simulation suite of \citet{Sc09} in ord
 In our work, we must consider the fact that our cut must be appropriate across a range of locations. 
 Since the vast majority of our sample are further from the Galactic center than the sun, and physical reasoning suggests that the escape speed cannot increase as a function of radius, then a cut of $200\kms$ should guarantee that the power-law model of Equation (\ref{eq:model}) is appropriate at the locations of all the stars in our study. 
 Consequently, we set $v_\mathrm{min}=200\kms$.  
-Note that this cut is applied to Galactocentric radial velocities, and so the motion of the sun must be removed beforehand. 
+Note that this cut is applied to Galactocentric line of sight velocities, and so the motion of the sun must be removed beforehand. 
 For this, we assume a local standard of rest $v_\mathrm{LSR} = 240\kms$ and a solar peculiar motion $\left(U_\odot,V_\odot,W_\odot\right) = \left(11.1,12.24,7.25\right)\kms$ \citep{Sc10}.
 Once this cut is applied, there remain 1573 MSTO stars, 343 K-giants and 44 BHBs. 
 The distributions of each of our final tracer samples in the $r-\vlos$ plane is shown in Figure \ref{fig:data}. 
@@ -490,9 +490,9 @@ We measure a significant gradient in the escape speed, such that it has already 
 
 \begin{figure}
 \includegraphics[width=\columnwidth]{plots/stars_bound}\\
-\caption{The distribution of our mother samples of stars in the $r-\vlos$ plane, with horizontal dashed lines at $\vlos = \pm 200\kms$, our cut in radial velocity. 
+\caption{The distribution of our mother samples of stars in the $r-\vlos$ plane, with horizontal dashed lines at $\vlos = \pm 200\kms$, our cut in line of sight velocity. 
 The coloured bands are our inference on the escape speed as a function of radius.
-The `spur' at negative radial velocities is from K-giants belonging to the Sagittarius stream. 
+The `spur' at negative line of sight velocities is from K-giants belonging to the Sagittarius stream. 
 Note that the contamination in our high speed sample from these stars is negligible, since the maximum velocity that the stream centroid reaches is $\sim 150\kms$ \citep{Be14} with a dispersion of $\sim 20\kms$.}
 \label{fig:stars_bound}
 \end{figure}
@@ -553,7 +553,7 @@ From the image data it is clear that this object is a galaxy, and has been miscl
 Having found a galaxy contaminant in our sample, we added a further constraint to our {\sc SQL} query that all of the MSTO targets should be morphologically classified as stars (as well as spectroscopically, as in our original query) in order to check for any other similar contaminants.
 The high speed sample is reduced in size by 11 objects when this stricter constraint is applied: all 11 of these targets, including the galaxy outlier previously discussed, are shown as black points in Figure \ref{fig:data}.
 We visually inspected the spectra and image data for all of these objects, and concluded that, other than the original outlier that we identified, they are likely partially blended stars.
-Although this might mean that the photometry for some of these objects may be unrepresentative to some degree, visual inspection of their spectra suggests that they likely have reliable stellar parameters and radial velocities.
+Although this might mean that the photometry for some of these objects may be unrepresentative to some degree, visual inspection of their spectra suggests that they likely have reliable stellar parameters and line of sight velocities.
 For this reason, we opted not to remove them from our sample, but we did re-run our analysis with these objects removed to check for inconsistencies.
 We found that none of our conclusions change when these targets are removed from the sample: the comparison of the posterior distributions with and without these objects is shown in Appendix \ref{sec:morph}.
 Later, when we compare our model to the data, we remove the bona-fide galaxy contaminant from the sample, but retain the other 10 objects.
@@ -642,19 +642,19 @@ The two analyses, though very different in detail, produce near identical result
 \includegraphics[width=\columnwidth]{plots/sats}\\ 
 \caption{The distribution of dwarf galaxies around the Milky Way in the $r-\sqrt{3}\,\vlos$ plane. 
 The blue bands are our inference on the escape speed as a function of radius. 
-Radial velocities have been multiplied by $\sqrt{3}$, as is done in the literature to account for unknown tangential velocities. 
+Line of sight velocities have been multiplied by $\sqrt{3}$, as is done in the literature to account for unknown tangential velocities. 
 If the true speeds of Triangulum II, Tucana II, Grus 1, Bootes III and Hercules are close to $\sqrt{3}\,\vlos$, then they are likely to be unbound.}
 \label{fig:sats}
 \end{figure}
 
 Figure \ref{fig:sats} shows the distribution of known Milky Way dwarf galaxies in the $r-\sqrt{3}\,\vlos$ plane. 
-It is typical in the literature to multiply the radial velocity by $\sqrt{3}$ as a crude way of accounting for unknown tangential velocities. 
+It is typical in the literature to multiply the line of sight velocity by $\sqrt{3}$ as a crude way of accounting for unknown tangential velocities. 
 We see that most of the dwarfs are enveloped by the escape speed curves, with a similar shape to the $r-\vlos$ distribution of stars (Figure \ref{fig:stars_bound}).
 However, some of the dwarfs seem likely unbound based on our estimate of the escape speed. 
 On the other hand, $\Lambda$CDM simulations predict that 99.9\% of subhalos should be bound to their hosts \citep{Bo13}. 
 A reconciliation of these two statements is to conclude that the $\sqrt{3}\vlos$ approximation for the total speed of these dwarfs is likely unrealistic in these cases. 
 Given our inference on the escape speed, the assumption that these objects are bound allows us to place constraints on their orbits. 
-The red points in Figure \ref{fig:sats} are Bootes III \citep{Gr09}, Triangulum II \citep{La15} and Hercules \citep{Be07}, all of which are likely associated with the Milky Way and have large radial velocities. 
+The red points in Figure \ref{fig:sats} are Bootes III \citep{Gr09}, Triangulum II \citep{La15} and Hercules \citep{Be07}, all of which are likely associated with the Milky Way and have large line of sight velocities. 
 They are also at radii where our inference on the escape speed is trustworthy (although Hercules is a somewhat marginal case).  
 The two yellow points are Tucana 2 and Grus 1 \citep{Ko15,Be15}, which are probably dwarfs of the Magellanic clouds \citep{Je16}. 
 We do not seek to constrain the orbital properties of these dwarfs because of their more complex orbital histories. 
@@ -717,15 +717,15 @@ The resulting histograms in $\rp$, $\ra$ and $\ecc$ are then faithful representa
 
 The results of this procedure are shown in Figure \ref{fig:bootriherc}. 
 All three dwarfs are expected to be on very eccentric orbits. 
-Bootes III and Triangulum II have $\epsilon \simeq 0.95$, while Hercules has $\epsilon \simeq 0.8$, though with a somewhat broader distribution. 
-This is aligned with our intuition: if the radial velocity alone is relatively close to the escape speed at the radius of the dwarf, then the tangential velocity cannot be large and hence the orbit must be eccentric. 
+Bootes III and Triangulum II have $e \simeq 0.95$, while Hercules has $e \simeq 0.8$, though with a somewhat broader distribution. 
+This is aligned with our intuition: if the line of sight velocity alone is relatively close to the escape speed at the radius of the dwarf, then the tangential velocity cannot be large and hence the orbit must be eccentric. 
 As a consequence, the dwarfs have large apocenters, $\ra \sim 100 - 300\kpc$ and considerably smaller pericenters $\rp \sim 10\kpc$ (although the posterior on the pericenter of Hercules is significantly less peaked than for Bootes III and Triangulum II).
 
-\citet{Ku16} argued that the observed ellipticity of Hercules ($e \simeq 0.7$) and its large radial velocity are suggestive that it has `exploded' as a consequence of its last pericenter passage. 
+\citet{Ku16} argued that the observed ellipticity of Hercules ($\epsilon \simeq 0.7$) and its large line of sight velocity are suggestive that it has `exploded' as a consequence of its last pericenter passage. 
 Using N-body simulations, they arrived at an estimate of the orbital eccentricity $\ecc \simeq 0.95$, which is larger than our value but not in significant tension with it. 
-Bootes III has a similar morphology ($e \simeq 0.5$) in keeping with the picture that these satellites are on orbits that will cause them to disrupt into streams after comparatively few orbital periods. 
-Both Bootes II and Hercules have positive radial velocities: they are travelling away from the Galactic centre, suggesting that they have undergone at least one pericenter passage. 
-Triangulum II, on the other hand, has a negative radial velocity and a relatively small ellipticity ($e \simeq 0.2$). 
+Bootes III has a similar morphology ($\epsilon \simeq 0.5$) in keeping with the picture that these satellites are on orbits that will cause them to disrupt into streams after comparatively few orbital periods. 
+Both Bootes II and Hercules have positive line of sight velocities: they are travelling away from the Galactic centre, suggesting that they have undergone at least one pericenter passage. 
+Triangulum II, on the other hand, has a negative line of sight velocity and a relatively small ellipticity ($\epsilon \simeq 0.2$). 
 Therefore, it is plausible that Triangulum II is on first infall and is about to undergo a large amount of disruption on its first pericenter passage.
 
 \begin{figure*}
@@ -742,7 +742,7 @@ In both panels are the results from various other studies, see text for discussi
 \label{sec:model_performance}
 
 We now seek to assess how well our model fits the data by performing posterior predictive checks. 
-Since our model is only generative in radial velocities, and not in the positions of stars, we should compare the distribution in $\vlos$ of the data with our model. 
+Since our model is only generative in line of sight velocities, and not in the positions of stars, we should compare the distribution in $\vlos$ of the data with our model. 
 There is a subtlety in how this must be done, however. 
 The velocity distribution of high-speed stars is position dependent in the model, owing to the spatial variation of the escape speed. 
 The fastest star at a given radius is likely to be travelling slower than its counterparts at smaller radii, where the escape speed is larger. 
@@ -778,7 +778,7 @@ on a grid of points in $\vlos$, and compute the inverse function $F^{-1}$ as a c
 Finally, we draw a set of points $u$, uniformly distributed between 0 and 1, and compute the corresponding velocities via $\vlos = F^{-1}(u)$.
 
 Figure \ref{fig:ppc} shows the comparison of the posterior predictive distributions with the data for our MSTO, K-giant and BHB samples. 
-For each tracer, we constructed a histogram in radial velocity, and show the number of counts as a black point at each bin centroid. 
+For each tracer, we constructed a histogram in line of sight velocity, and show the number of counts as a black point at each bin centroid. 
 The median number of counts in each bin from our replicated data sets is shown as a solid line in each panel.
 The 68\% and 95\% intervals are shown as bands around the median, and the final band shows the full extent of the number of counts.  
 Our model reproduces the data very well over a range of $\sim 2.5$ orders of magnitude in the number of counts for the MSTO sample. 
@@ -814,7 +814,7 @@ The K-giants favour a marginally larger value of $\alpha$, but the difference is
 
 \begin{figure*}
 \includegraphics[width=2\columnwidth]{plots/boo_tri_herc}\\
-\caption{Posterior distributions on orbital pericenter $r_\mathrm{peri}$, apocenter $r_\mathrm{apo}$ and eccentricity $\epsilon$ for Bootes III, Triangulum II and Hercules. 
+\caption{Posterior distributions on orbital pericenter $r_\mathrm{peri}$, apocenter $r_\mathrm{apo}$ and eccentricity $e$ for Bootes III, Triangulum II and Hercules. 
 If the dwarfs are bound, they must be on very eccentric orbits.}
 \label{fig:bootriherc}
 \end{figure*}
@@ -834,14 +834,14 @@ In particular, there is no evidence of any bias as the values of the escape velo
 As the size of data sets becomes huge, the computational cost of any algorithm will become an important yardstick. 
 Our method is computationally much cheaper than full distribution function approaches, and will be able to rapidly provide robust results when faced with the output of enormous surveys.
 
-The advent of the second Gaia release in 2017 and the first results from the WEAVE spectroscopic survey in 2018 will provide proper motions and radial velocities for massive samples of halo stars. 
+The advent of the second Gaia release in 2017 and the first results from the WEAVE spectroscopic survey in 2018 will provide proper motions and line of sight velocities for massive samples of halo stars. 
 The computational challenges of modelling such data sets are severe. 
 We suggest that analysis of the high velocity tails may be the optimum method to quickly extract information on the potential of the Galaxy.  
 Current data sets preclude a stringent measurement on the shape of the halo using the variation in escape speed with position, but we anticipate that this too will become possible in the very near future.
 
 As an application, we have used our model of the escape speed to study the orbital properties of the extreme Galactic satellites, Hercules, Bootes III and Triangulum II. 
-All three must have highly eccentric orbits, with Bootes III and Triangulum II possessing an eccentricity $\epsilon \simeq 0.95$, and Hercules
-$\epsilon \simeq 0.8$. 
+All three must have highly eccentric orbits, with Bootes III and Triangulum II possessing an eccentricity $e \simeq 0.95$, and Hercules
+$e \simeq 0.8$. 
 The dwarfs must have large apocenters, $\ra \sim 100 - 300\kpc$ and small pericenters $\rp \sim 10\kpc$. 
 Given that Hercules and Bootes III are now moving radially outwards, this implies that they must have at least one pericentric passage already and so we expect their morphology to be elongated and disrupted, as is the case. 
 Triangulum II is moving inwards, and so must be on first infall, which is consistent with its roundish shape and ellipticity of 0.2.
@@ -933,7 +933,7 @@ Here we show the results when objects that have not been morphologically classif
 \includegraphics[width=2\columnwidth]{plots/morphological_comparison_corner}\\
 \caption{One and two dimensional posterior distributions of two runs: our original SPL run, and the run where the stricter morphological cut discussed in Section \ref{sec:res} is applied.
 The projections of the posterior distributions from the two runs are completely consistent with one another, save for the outlier fraction.
-This is because, when the morphological cut is applied, the galaxy contaminant with a spurious radial velocity discussed in Section \ref{sec:res} is removed.}
+This is because, when the morphological cut is applied, the galaxy contaminant with a spurious line of sight velocity discussed in Section \ref{sec:res} is removed.}
 \label{fig:morph_corner}
 \end{figure*}
 
