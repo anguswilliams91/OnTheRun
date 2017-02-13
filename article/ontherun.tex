@@ -45,8 +45,9 @@
 We measure the variation of the escape speed of the Galaxy across a range of $\sim 40\kpc$ in Galactocentric radius. 
 The local escape speed is found to be $521^{+46}_{-30}\kms$, in good agreement with other studies. 
 We find that this has already fallen to $379^{+34}_{-28}\kms$ at a radius of $50\kpc$. 
-Through measuring the escape speed and its variation, we obtain constraints on the Galactic potential as a whole. 
-In particular, the gradient in the escape speed with radius suggests that the total mass contained within $50\kpc$ is $29^{+7}_{-5}\times10^{10}\Msun$, implying a relatively light dark halo for the Milky Way. 
+Through measuring the escape speed and its variation, we obtain constraints on the Galactic mass profile and rotation curve. 
+The gradient in the escape speed with radius suggests that the total mass contained within $50\kpc$ is $30^{+7}_{-5}\times10^{10}\Msun$, implying a relatively light dark halo for the Milky Way. 
+The local circular speed is found to be $v_c(R_0) = 223^{+40}_{-34}\kms$ and falls with radius as a power law with index $-0.19\pm0.05$. 
 Our method represents a novel way of estimating the mass of the Galaxy, and has very different systematics to more commonly used models of tracers, which are more sensitive to the central parts of the halo velocity distributions. 
 Using our inference on the escape speed, we then investigate the orbits of high--speed Milky Way dwarf galaxies. 
 For each considered dwarf, we predict small pericentre radii and large orbital eccentricities. 
@@ -74,7 +75,8 @@ The recent spectroscopic surveys of the Galaxy have stimulated a surge of activi
 These authors used data from the RAVE spectroscopic survey, which provided an abundance of information on the kinematics of local stars. 
 P14, who defined the escape speed as the minimum speed needed to reach three virial radii, concluded that it was $533^{+54}_{-41} \kms$ (90\% confidence), albeit on the basis of a small sample.
 
-There are some obvious drawbacks. First, there is no guarantee that the high velocity tail of the distribution function is actually occupied all the way up to the escape speed. 
+There are some obvious drawbacks.
+First, there is no guarantee that the high velocity tail of the distribution function is actually occupied all the way up to the escape speed. 
 This may mean that the velocity of the fastest moving star is an under-estimate of the true escape speed. 
 Second, the method is sensitive to interlopers or contaminants, which may be unrepresentative of a smooth, relaxed stellar population. 
 This includes stars in the process of leaving the Galaxy, such as hypervelocity stars ejected by interaction of binaries with black holes~\citep[e.g.,][]{Br15,Bou16}. 
@@ -104,6 +106,20 @@ Priors and numerical implementation are described in Section~\ref{sec:pannm}, wh
 
 \label{sec:method}
 
+A star travelling at the Galactic escape speed $\vesc(\pos)$ possesses just enough energy to free itself from the Milky Way's potential well.
+Consequently, a measurement of the escape speed is linked to a measurement of the potential, $\Phi(\pos)$.
+In a spherical potential, the two quantities are related through the energy equation
+%
+\begin{equation}
+\frac{1}{2}\vesc^2(r) + \Phi(r) = \Phi(r_\text{max}),
+\label{eq:vesc_def}
+\end{equation}
+%
+so that a star travelling at $\vesc(r)$ will have zero velocity at $r=r_\text{max}$, the radius at which tracers are considered unbound from the Milky Way.
+If the Galaxy existed in isolation then $r_\text{max}=\infty$, but in practice $r_\text{max}$ quantifies the distance a star must reach from the Galactic centre before it falls into another potential well.
+\footnote{Andromeda is $\sim 800\kpc$ from the Milky Way, so a rough estimate for $r_\text{max}$ is 400 kpc.}
+A measurement of $\vesc(r)$ therefore amounts to quantifying $\sqrt{-2\left[\Phi(r) - \Phi(r_\text{max})\right]}$.
+
 \cite{Le90} proposed that the velocity distribution of high-speed stars is a power law of the form
 %
 \begin{equation}
@@ -114,8 +130,10 @@ Priors and numerical implementation are described in Section~\ref{sec:pannm}, wh
   \label{eq:lt90}
 \end{equation}
 %
-$\vesc$ is the escape speed and $\vmin$ is a cut-off, such that $p(v < \vmin)$ begins to deviate from a power law. 
+where $\vmin$ is a cut-off such that $p(v < \vmin)$ begins to deviate from a power law. 
 Since the model depends only on the speed $v$, the full velocity distribution function is implicitly isotropic. 
+An obvious yet important assumption of this model is that stellar velocities really do extend to $\vesc$, instead of at some smaller value.
+Cosmological simulations provide some reassurance that this is likely the case: S07 showed that star particles are seen with speeds $\gtrsim 0.9\,\vesc$, so that premature truncations in the stellar velocity distribution may only cause small biases.  
 As line of sight velocities are measured far more precisely than transverse velocities, it is useful to marginalise the above model over proper motion. 
 Reasoning that
 %
@@ -126,7 +144,7 @@ Reasoning that
   \end{cases}
 \end{equation}
 %
-where $\vlos$ is the line of sight velocity from the perspective of an observer who is stationary with respect to the Galactic centre at the location of the Sun (hereafter `Galactocentric line of sight velocity', or simply `radial velocity'). 
+where $\vlos$ is the line of sight velocity from the perspective of an observer who is stationary with respect to the Galactic centre at the location of the Sun (hereafter `Galactocentric line of sight velocity', or simply `line of sight velocity'). 
 Since we are only interested in the absolute value of $\vlos$ in this work, we shall now refer to $|\vlos|$ as $\vlos$ for brevity.
 
 This model has been applied to data several times, most notably by S07 and P14 using data from the {\sc RAVE} survey \citep{Ko13}. 
@@ -335,20 +353,6 @@ Our primary model for the escape speed is a spherically--symmetric power law mod
 %
 where $r$ is Galactocentric radius and $0 \leq \alpha \leq 1$, on physical grounds.  
 We normalise the model to the escape speed at the solar radius. 
-The gravitational potential $\Phi$ and escape speed are related by
-%
-\begin{equation}
-\vesc = \sqrt{-2\Phi},
-\end{equation}
-%
-meaning that the SPL model corresponds to a gravitational potential of the form
-%
-\begin{equation}
-\Phi(r) = -\dfrac{v_\mathrm{circ}(R_0)^2}{\alpha}\,\left(\dfrac{r}{R_0}\right)^{-\alpha}.
-\label{eq:splgrav}
-\end{equation}
-%
-Thus, unlike other studies that measure only the local escape speed, we can translate our measurements of $\vesc(R_0)$ and $\alpha$ into inference of the circular speed of the potential, and the mass enclosed within spherical shells. 
 
 We will also report on results when two other models are used. 
 The first is a simple generalisation of the SPL, a power law in elliptical radius (EPL)
@@ -359,7 +363,6 @@ The first is a simple generalisation of the SPL, a power law in elliptical radiu
 %
 with $r_q = \sqrt{R^2 + z^2/q^2}$, where $R$ and $z$ are the usual cylindrical coordinates, and $0 \leq q \leq \infty$. 
 If the escape speed falls off more rapidly with height above the Galactic plane than it does in the radial direction, then $q<1$ (oblate), whereas larger escape speeds high above the plane suggest $q>1$ (prolate). 
-This model corresponds to a gravitational potential of the same form as Equation (\ref{eq:splgrav}), but with elliptical radius $r_q$ replacing spherical radius $r$.
 
 The final model we consider is the truncated flat rotation curve (TF) model \citep[see][]{Gi14,Wi99}. 
 We primarily investigate this model in order to facilitate a direct comparison with the mass inference of \citet{Gi14}.
@@ -591,25 +594,24 @@ We infer a rotation curve amplitude of $220\kms$ and a power law decline of $\ga
 \end{figure}
 
 Having mapped the escape speed across the Galaxy, we are now able to convert this measurement into a mass profile $M(r)$ and rotation curve $v_c(r)$ for the Galaxy. 
-For a spherically symmetric escape speed profile, we have
-%
-\begin{eqnarray}
-M(r) &=& \dfrac{-r^2\,\vesc}{G}\dfrac{\mathrm{d}\vesc}{\mathrm{d}r}, \label{eq:mass}\\
-v_c(r) &=& \sqrt{-r\,\vesc\,\dfrac{\mathrm{d}\vesc}{\mathrm{d}r}}. \label{eq:circspeed}
-\end{eqnarray}
-%
-Given our model of $\vesc(r)$, and our inference on its parameters, we can compute posterior distributions on $M(r)$ and $v_c(r)$ using these formulae.
-For example, the local circular speed that we measure is
+S07 and P14 both converted their measurements of the escape speed into a virial mass for the Galaxy, although they had to make educated guesses for an appropriate value of $r_\text{max}$ in Equation (\ref{eq:vesc_def}), which could have introduced systematic biases into their mass estimates.
+Fortunately, by mapping the escape speed, we remove this issue.
+The mass enclosed at radius $r$ in a spherical Galaxy is
 %
 \begin{equation}
-v_c(R_0) = 223^{+40}_{-34}\kms.
+M(r) = \dfrac{r^2}{G}\dfrac{\mathrm{d}\Phi}{\mathrm{d}r}.
 \end{equation}
 %
-Note that our inferences on the mass profile and rotation curve rest heavily on the assumption that the speed distribution of stars in the Galaxy truncates at $\sqrt{-2\Phi}$.
-If the stars do not fill out to the this value, then our analysis will underestimate the depth of the potential well, which will lead to underestimates in the inferred mass profile and rotation curve of the Galaxy.
-P14 showed that the inferred halo virial mass increased by 20\% if the escape speed was instead defined as $\sqrt{-2\left(\Phi(r) - \Phi(r_\mathrm{max})\right)}$, with $r_\mathrm{max} = 3R_\mathrm{vir} \sim 600\kpc$.
-Since we do not attempt to track the Galaxy's mass out to such large radii, the possible bias incurred by effectively setting $r_\mathrm{max} = \infty$ will be significantly smaller than 20\%, and so we henceforth assume that the velocity distribution reaches $\sqrt{-2\Phi}$.
-The value of $v_c(R_0)$ that we obtain while making this assumption is pleasingly aligned with a multitude of other methods, and provides us with confidence that systematic uncertainty caused by these considerations is unimportant relative to our statistical uncertainties.
+Eliminating $\Phi(r)$ in place of $\vesc(r)$ via $\vesc(r) = \sqrt{-2\left[\Phi(r) - \Phi(r_\text{max})\right]}$, we find
+%
+\begin{equation}
+M(r) = \dfrac{-r^2\,\vesc}{G}\dfrac{\mathrm{d}\vesc}{\mathrm{d}r},
+\end{equation}
+%
+and the dependence on $r_\text{max}$ is removed.
+The same reasoning applies to the rotation curve because $v_c^2(r) = GM(r)/r$.
+Consequently, the mass and circular speed profiles for the Galaxy that we infer are reliable over the range for which we have mapped $\vesc(r)$: $6 \lesssim r/\kpc \lesssim 50$.
+For example, the local circular speed implied by our method is $v_c(R_0) = 223^{+40}_{-34}\kms$, which is pleasingly consistent with a multitude of other methods.
 
 It is worth noting that our method clearly possesses very different systematic uncertainties when compared to more common approaches in the literature.
 Most dynamical models of halo tracers, like distribution function and Jeans analyses, are most sensitive to the central parts of the velocity distributions.
@@ -677,7 +679,7 @@ p(X\,|\,v_r,r,\,&\Theta) = \int p(X\,|\,v_r,v_T,r,\Theta)\,p(v_T\,|\,v_r,r,\Thet
 \label{eq:deltafun}
 \end{align}
 %
-where $v_T$ is the transverse velocity. 
+where $v_T$ is the transverse speed. 
 In a spherical potential, the two velocities $(v_T,v_r)$ and radius $r$ completely specify the orbit, and hence $\rp$, $\ra$ and $\ecc$. 
 This gives rise to the delta--function in Equation (\ref{eq:deltafun}), where $f_X$ represents the relation between $(v_r,v_T,r)$ and $X$. 
 Finally, we need to specify $p(v_T\,|\,v_r,r,\Theta)$. 
