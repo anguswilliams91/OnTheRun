@@ -115,7 +115,8 @@ In a spherical potential, the two quantities are related through the energy equa
 \label{eq:vesc_def}
 \end{equation}
 %
-so that a star travelling at speed $\vesc(r)$ at r will have zero velocity at $r=r_\text{max}$, the radius at which tracers are considered unbound from the Milky Way.
+so that a star travelling at speed $\vesc(r)$ at radius $r$ will be stationary at radius $r_\text{max}$.
+$r_\text{max}$ is the radius beyond which stars are no longer bound to the Milky Way.
 If the Galaxy existed in isolation then $r_\text{max}=\infty$, but in practice $r_\text{max}$ quantifies the distance a star must reach from the Galactic centre before it falls into another potential well.
 \footnote{Andromeda is $\sim 800\kpc$ from the Milky Way, so a rough estimate for $r_\text{max}$ is 400 kpc.}
 A measurement of $\vesc(r)$ therefore amounts to quantifying $\sqrt{-2\left[\Phi(r) - \Phi(r_\text{max})\right]}$.
@@ -134,11 +135,11 @@ where $\vmin$ is a cut-off such that $p(v < \vmin)$ begins to deviate from a pow
 Since the model depends only on the speed $v$, the full velocity distribution function is implicitly isotropic. 
 An obvious yet important assumption of this model is that stellar velocities really do extend to $\vesc$, instead of at some smaller value.
 Cosmological simulations provide some reassurance that this is likely the case: S07 showed that star particles are seen with speeds $\gtrsim 0.9\,\vesc$, so that premature truncations in the stellar velocity distribution may only cause small biases.  
-As line of sight velocities are measured far more precisely than transverse velocities, it is useful to marginalise the above model over proper motion. 
-Reasoning that
+Reasoning that line of sight velocities are measured far more precisely than transverse velocities, it is useful to marginalise the above model over proper motion.
+This gives
 %
 \begin{equation}
-  p(v)\propto\begin{cases}
+  p(\vlos)\propto\begin{cases}
     (\vesc - |\vlos|)^{k+1} & \text{if $\vmin \leq \vlos <\vesc$},\\
     0 & \text{otherwise},
   \end{cases}
@@ -354,25 +355,15 @@ Our primary model for the escape speed is a spherically--symmetric power law mod
 where $r$ is Galactocentric radius and $0 \leq \alpha \leq 1$, on physical grounds.  
 We normalise the model to the escape speed at the solar radius. 
 
-We will also report on results when two other models are used. 
-The first is a simple generalisation of the SPL, a power law in elliptical radius (EPL)
+We will also report on results when a simple generalisation of the SPL, a power law in elliptical radius (EPL), is used.
+The EPL is parameterised as
 %
 \begin{equation}
 \vesc(r_q) = \vesc(R_0)\,\left(\dfrac{r_q}{R_0}\right)^{-\beta/2},
 \end{equation}
 %
 with $r_q = \sqrt{R^2 + z^2/q^2}$, where $R$ and $z$ are the usual cylindrical coordinates, and $0 \leq q \leq \infty$. 
-If the escape speed falls off more rapidly with height above the Galactic plane than it does in the radial direction, then $q<1$ (oblate), whereas larger escape speeds high above the plane suggest $q>1$ (prolate). 
-
-The final model we consider is the truncated flat rotation curve (TF) model \citep[see][]{Gi14,Wi99}. 
-We primarily investigate this model in order to facilitate a direct comparison with the mass inference of \citet{Gi14}.
-The spherical model has a flat rotation curve of amplitude $v_0$ in the inner parts, which then starts to decline as a power-law $\gamma/2$ around a scale radius $r_s$
-%
-\begin{equation}
-v_0^2(r) = \dfrac{v_0^2\,r_s^\gamma}{(r_s^2 + r^2)^{\gamma/2}}.
-\end{equation}
-%
-The form of the escape speed for this model cannot be written in terms of elementary functions, so we omit it here.
+If the escape speed falls off more rapidly with height above the Galactic plane than it does in the radial direction, then $q<1$ (oblate), whereas larger escape speeds high above the plane suggest $q>1$ (prolate).
 
 \section{Priors and numerical implementation}
 
@@ -408,7 +399,7 @@ See text for discussion.}
 \label{fig:SPL_corner}
 \end{figure*}
 
-We now detail the priors used on the parameters on each of the three forms for $\vesc(\pos)$.
+We now detail the priors used on the parameters for our two forms for $\vesc(\pos)$.
 The SPL model has two parameters: $\theta = (\vesc(R_0),\alpha)$. 
 If the Galaxy is to possess a flat or declining rotation curve, as we would expect from physical reasoning, then
 %
@@ -426,7 +417,8 @@ p\left(\vesc(R_0)\right) \propto 1/\vesc(R_0).
 \end{equation}
 %
 The EPL model is identical to the SPL model other than the inclusion of the axis ratio, $q$, so that $\theta = (\vesc(R_0),\,\beta,\,q)$. 
-The priors we use for $\beta$ and $\vesc(R_0)$ are the same as in Equations (\ref{eq:powerlawprior}) and (\ref{eq:jeffreys}). For $q$, we follow \citet{Bo16} and use a prior
+The priors we use for $\beta$ and $\vesc(R_0)$ are the same as in Equations (\ref{eq:powerlawprior}) and (\ref{eq:jeffreys}).
+For $q$, we follow \citet{Bo16} and use a prior
 %
 \begin{equation}
 p(q) \propto \dfrac{1}{1+q^2},
@@ -434,23 +426,11 @@ p(q) \propto \dfrac{1}{1+q^2},
 %
 which places equal weight on oblate ($0\leq q <1$) and prolate ($q>1$) axis ratios.
 
-Our final model, the TF model, has three parameters: $\theta = (v_0,\,r_s,\,\gamma)$. 
-For the velocity normalisation $v_0$, we use a Jeffreys prior, limited so that $150 < v_0/\mathrm{kms^{-1}} < 400$. 
-For the scale length, $r_s$, we use a prior that mirrors the result found by \citet{Gi14}, so that
-%
-\begin{equation}
-\log p(r_s) \propto -\dfrac{1}{2}(r_s - \mu)^2 / \sigma^2,
-\end{equation}
-% 
-where $\mu=15\kpc$ and $\sigma=7\kpc$. 
-We adopted this prior after experimentation with less informative priors, where we found that our model, in combination with these data, does not constrain $r_s$ (i.e., the posterior distribution on $r_s$ always resembles the prior).
-The power law index $\gamma$ can take any value between 0 and 1, and hence we adopt the same prior as Equation (\ref{eq:powerlawprior}).
-
 \subsection{Sampling method}
 \label{sec:sampling_method}
 
 Armed with our priors, we can now perform a Bayesian analysis. 
-Our full parameter space is $\Theta =(\boldsymbol{k},f,\theta)$, which has 6 (SPL) or 7 (EPL and TF) dimensions. 
+Our full parameter space is $\Theta =(\boldsymbol{k},f,\theta)$, which has 6 (SPL) or 7 (EPL) dimensions. 
 Bayes' theorem for our problem can be written in the following way
 %
 \begin{gather}
@@ -564,19 +544,13 @@ We also experimented with a stricter colour cut of $0.2 \leq (g-r)_0 \leq 0.35$,
 Later, when we compare our model to the data, we remove the bona-fide galaxy contaminant from the sample, but retain the other 10 objects.
 
 
-Figures \ref{fig:EPL_posterior} and \ref{fig:TF_posterior} show the results of the EPL and TF analyses. 
-We removed the global parameters from the figures because the results were essentially identical to those found for the SPL model, without any interesting additional degeneracies. 
+Figure \ref{fig:EPL_posterior} shows the results of the EPL analysis. 
+We removed the global parameters from the figure because the results were essentially identical to those found for the SPL model, without any interesting additional degeneracies. 
 The addition of a halo axis ratio, $q$, leads to the conclusion that the escape speed falls at the same rate in all directions from the Galactic centre, with $q = 1.03^{+0.63}_{-0.32}$. 
 This in turn implies that the Galactic potential is likely spherical, although our uncertainties are large: the data are compatible with $q=0.7 - 1.6$. 
 Since $q$ corresponds to the flattening of the potential, this corresponds to a relatively wide range of flattenings in the dark matter halo. 
 Hopefully, with more data, the method will provide a more useful constraint on the symmetries of the Galactic potential. 
 The other two parameters of the EPL model are the same as those in the SPL model, and the inferred values and uncertainties are indistinguishable.
-
-Our inference on the TF model suggests an inner rotation curve with amplitude $v_0 = 220^{+40}_{-31}\kms$, which starts to fall as $\gamma/2 = 0.22^{+0.07}_{-0.06}$ over a scale $r_s = 16^{+7}_{-7}\kms$. 
-The posterior on the scale radius is no different from our prior, and so is uninteresting. 
-However, having assumed similar inference on the scale radius as \citet{Gi14}, the amplitude and power law index are entirely consistent with their result, which we will discuss further in Section \ref{sec:mass}. 
-When translated into an escape speed profile, the inference appears virtually identical to Figure \ref{fig:vesc_posterior}. 
-This suggests that our inference is relatively robust against different parameterisations of the escape speed.
 
 \subsection{The mass and rotation curve of the Milky Way}
 \label{sec:mass}
@@ -588,29 +562,24 @@ The results are very similar to the SPL model, and the extra parameter $q$ is fo
 \label{fig:EPL_posterior}
 \end{figure}
 
-\begin{figure}
-\includegraphics[width=\columnwidth]{plots/corner_TF}\\
-\caption{Posterior for the TF model when the prior based on the inference of \citet{Gi14} is used for $r_s$. 
-We infer a rotation curve amplitude of $220\kms$ and a power law decline of $\gamma \simeq 0.4$, both of which are entirely consistent with the results of \citet{Gi14}.}
-\label{fig:TF_posterior}
-\end{figure}
-
 Having mapped the escape speed across the Galaxy, we are now able to convert this measurement into a mass profile $M(r)$ and rotation curve $v_c(r)$ for the Galaxy. 
 S07 and P14 both converted their measurements of the escape speed into a virial mass for the Galaxy, although they had to make educated guesses for an appropriate value of $r_\text{max}$ in Equation (\ref{eq:vesc_def}), which could have introduced systematic biases into their mass estimates.
-Fortunately, by mapping the escape speed, we remove this issue.
+Indeed, P14 showed that setting $r_\text{max}=3\,R_\text{vir}$ instead of $r_\text{max}=\infty$ introduced a 20\% difference in the inferred virial mass.
+By {\it mapping} the escape speed, we no longer need to make contact with $r_\text{max}$.
 The mass enclosed at radius $r$ in a spherical Galaxy is
 %
 \begin{equation}
 M(r) = \dfrac{r^2}{G}\dfrac{\mathrm{d}\Phi}{\mathrm{d}r}.
 \end{equation}
 %
-Eliminating $\Phi(r)$ in place of $\vesc(r)$ via $\vesc(r) = \sqrt{-2\left[\Phi(r) - \Phi(r_\text{max})\right]}$, we find
+Eliminating $\Phi(r)$ using Equation (\ref{eq:vesc_def}) gives
 %
 \begin{equation}
 M(r) = \dfrac{-r^2\,\vesc}{G}\dfrac{\mathrm{d}\vesc}{\mathrm{d}r},
 \end{equation}
 %
-and the dependence on $r_\text{max}$ is removed.
+so that the dependence on $r_\text{max}$ is removed.
+We infer $\vesc$ {\it and its derivative} from the data, whereas previous authors measured $\vesc(R_0)$ only, so that they had to interact directly with Equation (\ref{eq:vesc_def}) and hence $r_\text{max}$. 
 The same reasoning applies to the rotation curve because $v_c^2(r) = GM(r)/r$.
 Consequently, the mass and circular speed profiles for the Galaxy that we infer are reliable over the range for which we have mapped $\vesc(r)$: $6 \lesssim r/\kpc \lesssim 50$.
 For example, the local circular speed implied by our method is $v_c(R_0) = 223^{+40}_{-34}\kms$, which is pleasingly consistent with a multitude of other methods.
@@ -636,8 +605,6 @@ Their preferred mass of $M(50\kpc)=54^{+2}_{-36}\times 10^{10}\mathrm{M}_\odot$,
 The final study to which we compare is that of \citet[][G14]{Gi14}, who modelled the disruption of the Sagittarius stream. 
 They exploited the fact that the apocentric precession of the stream should be sensitive to the details of the gravitational potential. 
 Their inference produces very similar results to our work, with $M(50\kpc)=29\pm5\times 10^{10}\mathrm{M}_\odot$. 
-We can make this comparison even more explicit because we have also estimated the parameters of the model they used in their analysis (TF). 
-When we use the TF model, the mass enclosed is $M(50\kpc)=33^{+8}_{-6}\times 10^{10}\mathrm{M}_\odot$. 
 The two analyses, though very different in detail, produce near identical results.
 
 \subsection{The orbits of Milky Way dwarf galaxies}
@@ -827,7 +794,7 @@ We find that the local escape speed is $521^{+46}_{-30}\kms$ in good agreement w
 
 Our sample extends out to Galactocentric radii $\sim 50$ kpc, so we can track the gradient in the escape speed with radius for the first time. 
 At $50\kpc$, the escape speed has fallen to a value of $379^{+34}_{-28}\kms$, indicative of a rapid power law decline ($\alpha = 0.37\pm0.09$).
-This suggests that the total mass contained within $50\kpc$ is $29^{+7}_{-5}\times10^{10}\Msun$, implying a relatively light dark halo for the Milky Way. 
+This suggests that the total mass contained within $50\kpc$ is $30^{+7}_{-5}\times10^{10}\Msun$, implying a relatively light dark halo for the Milky Way. 
 Our mass is pleasingly consistent with the work of \citet{Gi14}, who modelled the disruption of the Sagittarius dwarf galaxy, and therefore made very different assumptions in the analysis.
 
 Perhaps the most striking thing about this method is its simplicity. 

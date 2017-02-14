@@ -152,7 +152,7 @@ def posterior_predictive_checks():
     return None
 
 
-def mass_enclosed(chain,model,burnin=200,cmap="Blues",thin_by=1,**kwargs):
+def plot_mass_enclosed(chain,model,burnin=200,cmap="Blues",thin_by=1,**kwargs):
 
     """
     Plot the mass enclosed implied by a spherically symmetric model given 
@@ -390,7 +390,7 @@ def halo_distribution(chain,model,burnin=200):
 
     pl.posterior_1D(samples,r,vesc,cmap="Blues",ax=ax,tickfontsize="small",fontsize=mpl.rcParams['font.size'])
     pl.posterior_1D(samples,r,m_vesc,cmap="Blues",ax=ax,tickfontsize="small",fontsize=mpl.rcParams['font.size'])
-    ax.plot(r_halo,v_halo,'o',ms=5,c='0.3',mec='none')
+    ax.plot(r_halo,v_halo,'o',ms=5,c='0.3',mec='none',rasterized=True)
     ax.set_ylabel("$v_{||}/\\mathrm{kms^{-1}}$")
     ax.set_xlabel("$r/\\mathrm{kpc}$")
     ax.set_ylim((-600.,600.))
