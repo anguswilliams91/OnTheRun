@@ -42,11 +42,11 @@
 \label{firstpage}
 
 \begin{abstract}
-We measure the variation of the escape speed of the Galaxy across a range of $\sim 40\kpc$ in Galactocentric radius. 
+We measure the variation of the escape speed of the Milky Way across a range of $\sim 40\kpc$ in Galactocentric radius. 
 The local escape speed is found to be $521^{+46}_{-30}\kms$, in good agreement with other studies. 
 We find that this has already fallen to $379^{+34}_{-28}\kms$ at a radius of $50\kpc$. 
 Through measuring the escape speed and its variation, we obtain constraints on the Galactic mass profile and rotation curve. 
-The gradient in the escape speed with radius suggests that the total mass contained within $50\kpc$ is $30^{+7}_{-5}\times10^{10}\Msun$, implying a relatively light dark halo for the Milky Way. 
+The gradient in the escape speed suggests that the total mass contained within $50\kpc$ is $30^{+7}_{-5}\times10^{10}\Msun$, implying a relatively light dark halo for the Milky Way. 
 The local circular speed is found to be $v_c(R_0) = 223^{+40}_{-34}\kms$ and falls with radius as a power law with index $-0.19\pm0.05$. 
 Our method represents a novel way of estimating the mass of the Galaxy, and has very different systematics to more commonly used models of tracers, which are more sensitive to the central parts of the halo velocity distributions. 
 Using our inference on the escape speed, we then investigate the orbits of high--speed Milky Way dwarf galaxies. 
@@ -99,8 +99,8 @@ Although the MSTOs are located at heliocentric distances within $\sim 3$ kpc, th
 Section~\ref{sec:method} describes the likelihood function and models for the tail of the velocity distribution, primarily following the formalism established by \citet{Le90}. 
 We discuss our tracers and distance estimators in Section~\ref{sec:samples}. 
 This includes the cuts used to build the samples of MSTOs, BHBs and K giants, as well as to extract the high velocity stars. 
-The choice of potential is given in Section \ref{sec:pot} and enables us to broaden the discussion of escape speed into enclosed mass and circular speed. 
-Priors and numerical implementation are described in Section~\ref{sec:pannm}, whilst Section~\ref{sec:res} presents our results, and discusses their implications for three fast moving Galactic satellite galaxies (Bootes III, Triangulum II and Hercules).
+Our chosen parameterisations of $\vesc$ are given in Section \ref{sec:pot}, and our analysis methods are described in Section~\ref{sec:pannm}.
+Section~\ref{sec:res} presents our results and their implications for the mass profile and rotation curve of the Galaxy, and discusses the possible orbits of three fast moving Galactic satellite galaxies (Bootes III, Triangulum II and Hercules).
 
 \section{Method}
 
@@ -108,15 +108,14 @@ Priors and numerical implementation are described in Section~\ref{sec:pannm}, wh
 
 A star travelling at the Galactic escape speed $\vesc(\pos)$ possesses just enough energy to free itself from the Milky Way's potential well.
 Consequently, a measurement of the escape speed is linked to a measurement of the potential, $\Phi(\pos)$.
-In a spherical potential, the two quantities are related through the energy equation
+In a spherical galaxy, the two quantities are related through the energy equation
 %
 \begin{equation}
 \frac{1}{2}\vesc^2(r) + \Phi(r) = \Phi(r_\text{max}),
 \label{eq:vesc_def}
 \end{equation}
 %
-so that a star travelling at speed $\vesc(r)$ at radius $r$ will be stationary at radius $r_\text{max}$.
-$r_\text{max}$ is the radius beyond which stars are no longer bound to the Milky Way.
+so that a star travelling at speed $\vesc(r)$ at radius $r$ will be stationary at $r_\text{max}$, the radius beyond which stars are no longer bound to the Milky Way.
 If the Galaxy existed in isolation then $r_\text{max}=\infty$, but in practice $r_\text{max}$ quantifies the distance a star must reach from the Galactic centre before it falls into another potential well.
 \footnote{Andromeda is $\sim 800\kpc$ from the Milky Way, so a rough estimate for $r_\text{max}$ is 400 kpc.}
 A measurement of $\vesc(r)$ therefore amounts to quantifying $\sqrt{-2\left[\Phi(r) - \Phi(r_\text{max})\right]}$.
@@ -133,7 +132,7 @@ A measurement of $\vesc(r)$ therefore amounts to quantifying $\sqrt{-2\left[\Phi
 %
 where $\vmin$ is a cut-off such that $p(v < \vmin)$ begins to deviate from a power law. 
 Since the model depends only on the speed $v$, the full velocity distribution function is implicitly isotropic. 
-An obvious yet important assumption of this model is that stellar velocities really do extend to $\vesc$, instead of at some smaller value.
+An obvious yet important assumption of this model is that stellar velocity distribution really does extend to $\vesc$, instead of truncating at some smaller value.
 Cosmological simulations provide some reassurance that this is likely the case: S07 showed that star particles are seen with speeds $\gtrsim 0.9\,\vesc$, so that premature truncations in the stellar velocity distribution may only cause small biases.  
 Reasoning that line of sight velocities are measured far more precisely than transverse velocities, it is useful to marginalise the above model over proper motion.
 This gives
@@ -146,7 +145,7 @@ This gives
 \end{equation}
 %
 where $\vlos$ is the line of sight velocity from the perspective of an observer who is stationary with respect to the Galactic centre at the location of the Sun (hereafter `Galactocentric line of sight velocity', or simply `line of sight velocity'). 
-Since we are only interested in the absolute value of $\vlos$ in this work, we shall now refer to $|\vlos|$ as $\vlos$ for brevity.
+Since we are only interested in the absolute value of $\vlos$ in this work, we shall refer to $|\vlos|$ as $\vlos$ for brevity.
 
 This model has been applied to data several times, most notably by S07 and P14 using data from the {\sc RAVE} survey \citep{Ko13}. 
 Both studies used small samples of stars ($<100$) close to the sun and found $\vesc \sim 530\kms$. 
@@ -258,7 +257,7 @@ M_r = M_{r0} + \delta M_r.
 % 
 Using these formulae, we compute a point estimate of the distance to each star and remove objects with implied heliocentric distances $>$ 15 kpc in order to remove objects with spurious absolute magnitude estimates.
 This finally leaves us with a mother sample of 22071 MSTO tracers. 
-In order to draw samples from $p(s' \,|\, s)$ (Equation \ref{eq:crux}), we take the quoted uncertainties on $g$, $r$, $i$ and $\lbrack \mathrm{Fe/H} \rbrack$ from the SDSS pipelines and assume that they are normally distributed and uncorrelated. 
+In order to draw samples from $p(s' \,|\, s)$ (Equation \ref{eq:crux}), we take the quoted uncertainties in $g$, $r$, $i$ and $\lbrack \mathrm{Fe/H} \rbrack$ from the SDSS pipelines and assume that they are normally distributed and uncorrelated. 
 We then draw Monte-Carlo samples from each of these distributions and compute the distance for each sample.
 
 \subsection{BHB sample}
@@ -447,7 +446,7 @@ Since we do not seek to compare the evidence for our three models, we do not exp
 In order to constrain the model parameters, we use an MCMC approach.
 
 In order to compute the likelihood, we evaluate the integral in Equation (\ref{eq:crux}) using 200 Monte-Carlo samples from the distance uncertainties of each star. 
-We draw these samples once, and then use the same set for each posterior evaluation, thus avoiding random noise in the posterior \citep{Mc13}.
+We draw these samples once, and then use the same set for each likelihood evaluation, thus avoiding random noise in the posterior \citep{Mc13}.
 We then use the {\sc emcee} code \citep{emcee} to Monte-Carlo sample the posterior distribution. 
 {\sc emcee} is a {\sc python} implementation of the affine--invariant ensemble sampling approach suggested by \citet{Go10}, where an ensemble of $N$ `walkers' is used, and the proposal distribution for a given walker is based on the current positions of $N/2$ of the remaining walkers. 
 Here, we choose $N=80$.
@@ -565,7 +564,7 @@ The results are very similar to the SPL model, and the extra parameter $q$ is fo
 Having mapped the escape speed across the Galaxy, we are now able to convert this measurement into a mass profile $M(r)$ and rotation curve $v_c(r)$ for the Galaxy. 
 S07 and P14 both converted their measurements of the escape speed into a virial mass for the Galaxy, although they had to make educated guesses for an appropriate value of $r_\text{max}$ in Equation (\ref{eq:vesc_def}), which could have introduced systematic biases into their mass estimates.
 Indeed, P14 showed that setting $r_\text{max}=3\,R_\text{vir}$ instead of $r_\text{max}=\infty$ introduced a 20\% difference in the inferred virial mass.
-By {\it mapping} the escape speed, we no longer need to make contact with $r_\text{max}$.
+By {\it mapping} the escape speed, we do not need to make contact with $r_\text{max}$ in order to infer the enclosed mass.
 The mass enclosed at radius $r$ in a spherical Galaxy is
 %
 \begin{equation}
@@ -578,10 +577,9 @@ Eliminating $\Phi(r)$ using Equation (\ref{eq:vesc_def}) gives
 M(r) = \dfrac{-r^2\,\vesc}{G}\dfrac{\mathrm{d}\vesc}{\mathrm{d}r},
 \end{equation}
 %
-so that the dependence on $r_\text{max}$ is removed.
-We infer $\vesc$ {\it and its derivative} from the data, whereas previous authors measured $\vesc(R_0)$ only, so that they had to interact directly with Equation (\ref{eq:vesc_def}) and hence $r_\text{max}$. 
+We infer $\vesc$ {\it and} $\dfrac{\mathrm{d}\vesc}{\mathrm{d}r}$ from the data, so that the mass enclosed at radius $r$ can be inferred without considering the Galactic mass profile exterior to $r$. 
 The same reasoning applies to the rotation curve because $v_c^2(r) = GM(r)/r$.
-Consequently, the mass and circular speed profiles for the Galaxy that we infer are reliable over the range for which we have mapped $\vesc(r)$: $6 \lesssim r/\kpc \lesssim 50$.
+Consequently, the mass and circular speed profiles for the Galaxy can be inferred over the range for which we have mapped $\vesc(r)$: $6 \lesssim r/\kpc \lesssim 50$.
 For example, the local circular speed implied by our method is $v_c(R_0) = 223^{+40}_{-34}\kms$, which is pleasingly consistent with a multitude of other methods.
 
 It is worth noting that our method clearly possesses very different systematic uncertainties when compared to more common approaches in the literature.
@@ -625,11 +623,16 @@ However, some of the dwarfs seem likely unbound based on our estimate of the esc
 On the other hand, $\Lambda$CDM simulations predict that 99.9\% of subhalos should be bound to their hosts \citep{Bo13}. 
 A reconciliation of these two statements is to conclude that the $\sqrt{3}\vlos$ approximation for the total speed of these dwarfs is likely unrealistic in these cases. 
 Given our inference on the escape speed, the assumption that these objects are bound allows us to place constraints on their orbits. 
-The red points in Figure \ref{fig:sats} are Bootes III \citep{Gr09}, Triangulum II \citep{La15} and Hercules \citep{Be07}, all of which are likely associated with the Milky Way and have large line of sight velocities. 
+The red points in Figure \ref{fig:sats} are Bootes III \citep{Gr09,Ca09}, Triangulum II \citep{La15} and Hercules \citep{Be07}, all of which are likely associated with the Milky Way and have large line of sight velocities. 
 They are also at radii where our inference on the escape speed is trustworthy (although Hercules is a somewhat marginal case).  
 The two yellow points are Tucana 2 and Grus 1 \citep{Ko15,Be15}, which are probably dwarfs of the Magellanic clouds \citep{Je16}. 
 We do not seek to constrain the orbital properties of these dwarfs because of their more complex orbital histories. 
-For the three Milky Way dwarfs, we would like to characterise their orbits through their pericentre radii $\rp$, apocentre radii $\ra$ and orbital eccentricities $\ecc$.
+For the three Milky Way dwarfs, we would like to characterise their orbits through their pericentre radii $\rp$, apocentre radii $\ra$ and orbital eccentricities
+%
+\begin{equation}
+\ecc = \dfrac{\ra - \rp}{\ra + \rp}.
+\end{equation}
+%
 
 In order to compute posterior distributions on $\rp$, $\ra$ and $\ecc$, we first write:
 %
@@ -663,28 +666,12 @@ We make this assumption for simplicity, although \citet{Er16} note that the velo
 Measured velocity dispersions for Milky Way halo stars tend to be somewhat smaller than this, at $\sim 100-150\kms$ \citep{Ev16}.
 Hence, for a given radial velocity, larger tangential velocities could be more probable than the estimate of Equation (\ref{eq:dwarfvT}), which in turn means that the orbit of the dwarf may be more eccentric than our simple calculation suggests.
 
-Since $f_X$ is not analytic, we must solve for $\rp$, $\ra$ and $\ecc$ numerically. 
-We do this by solving the equation 
-%
-\begin{equation}
-E - \dfrac{L^2}{2r^2} - \Phi(r) = 0,
-\label{eq:rperirapoeq}
-\end{equation}
-%
-where $\Phi(r)$ is the gravitational potential implied by our model of the escape speed, $E$ is the orbital energy and $L$ is the total angular momentum.
-This equation has two roots: $\rp$ and $\ra$. 
-$\ecc$ is then given by
-%
-\begin{equation}
-\ecc = \dfrac{\ra - \rp}{\ra + \rp}.
-\end{equation}
-%
+Since $f_X$ is not analytic, we must solve for $\rp$, $\ra$ and $\ecc$ numerically by solving the energy equation in the potential $\Phi(r)$ implied by our model of the escape speed.
 In practice, we sample $p(X\,|\,v_r,r)$ in the following way. 
 Given a set of parameters in our posterior samples for the SPL model, we first draw a tangential velocity from Equation (\ref{eq:dwarfvT}). 
 For $k$, we use $k_\mathrm{MSTO}$, and we normalise the speed distribution between $v_r$ and $\vesc(r)$. 
-Then, we solve Equation (\ref{eq:rperirapoeq}) for $\rp$, $\ra$ and $\ecc$ and store the result. 
-This process is repeated for every set of model parameters in our posterior samples. 
-The resulting histograms in $\rp$, $\ra$ and $\ecc$ are then faithful representations of $p(X\,|\,v_r,r)$.
+Then, we solve for $\rp$, $\ra$ and $\ecc$ and store the result. 
+This process is repeated for every set of model parameters in our posterior samples, and the resulting histograms in $\rp$, $\ra$ and $\ecc$ are then faithful representations of $p(X\,|\,v_r,r)$.
 
 The results of this procedure are shown in Figure \ref{fig:bootriherc}. 
 All three dwarfs are expected to be on very eccentric orbits. 
@@ -703,7 +690,9 @@ Therefore, it is plausible that Triangulum II is on first infall and is about to
 \includegraphics[width=2\columnwidth]{plots/spherical_powerlaw_massenclosed}\\
 \caption{Left: cumulative mass distribution within spherical shells, predicted by the SPL model. 
 The 68\% (94\%) credible interval is shown as a dark (light) blue band around our median result. 
-We predict a relatively light Milky Way within $50\kpc$, with $M(50\kpc)=29.8^{+6.9}_{-5.2} \times 10^{10}\mathrm{M}_\odot$. 
+We predict a relatively light Milky Way within $50\kpc$, with $M(50\kpc)=29.8^{+6.9}_{-5.2} \times 10^{10}\mathrm{M}_\odot$.
+Right: the rotation curve, also from the SPL model. 
+The local circular speed is $v_c(R_0) = 223^{+40}_{-34}\kms$, and the rotation curve falls with radius as a power law with index $-0.19\pm0.05$.
 In both panels are the results from various other studies, see text for discussion.}
 \label{fig:mass}
 \end{figure*}
@@ -736,8 +725,8 @@ p(\vlos\,|\,\mathrm{data}) = \int p(\vlos\,|\,\Theta)\,p(\Theta\,|\,\mathrm{data
 \end{equation}
 %
 which is the predicted distribution of $\vlos$ given the knowledge we have gained by analysing our SDSS sample.  
-To sample this distribution, we draw a sample from Equation (\ref{eq:ppc}) that is the same size as the data at each draw from the posterior in our MCMC chain \citep{Ge13}, producing many replicated data sets.
-In order to sample from Equation (\ref{eq:ppc}), we use inverse transform sampling, where we numerically compute the CDF
+To sample from this distribution, we draw from Equation (\ref{eq:ppc}) a mock data set that is the same size as the SDSS data for each set of parameters in our MCMC chain \citep{Ge13}, producing many replicated data sets.
+In order to draw from Equation (\ref{eq:ppc}), we use inverse transform sampling, where we numerically compute the CDF
 %
 \begin{equation}
 F(\vlos \,|\, \Theta) = \int\limits_{v_\mathrm{min}}^{\vlos} p(\vlos'\,|\,\Theta)\,\intd \vlos'
@@ -763,7 +752,7 @@ The same is true for the rest of the model parameters.
 We chose $\vmin=200\kms$ because we were not particularly concerned about contamination from disc stars. 
 In order to check the sensitivity of our work to this value, we re--ran the analysis with $\vmin = 250\kms$. 
 This results in a significantly smaller sample of 644 stars (539 MSTO, 99 K-giants, 6 BHBs). 
-We thus expect much larger uncertainties on all of our model parameters. 
+We thus expect much larger uncertainties in all of our model parameters. 
 This is indeed the case, and we find that the values of $k$ for each of the tracers are poorly constrained compared to our full analysis, leading to a worse determination of the local escape speed. 
 This is because the degeneracy between $k$ and $\vesc(R_0)$ is not broken as effectively by these data, which pushes up our estimates of $k$ and $\vesc(R_0)$, as predicted by S07. 
 Specifically, we find $\vesc(R_0) = 617^{+77}_{-84}\kms$.  
@@ -807,6 +796,13 @@ The advent of the second Gaia release in 2017 and the first results from the WEA
 The computational challenges of modelling such data sets are severe. 
 We suggest that analysis of the high velocity tails may be the optimum method to quickly extract information on the potential of the Galaxy.  
 Current data sets preclude a stringent measurement on the shape of the halo using the variation in escape speed with position, but we anticipate that this too will become possible in the very near future.
+
+Although our model provides a counterpoint to other methods in the literature, it comes with some caveats.
+It is not known whether the velocity distributions of halo stars extend to $\vesc$, and it may be the case that they truncate at a smaller value.
+If this is the case, then our work provides a lower limit on the escape speed.
+Cosmological simulations analysed by S07 and P14 are indicative that stars are indeed found at such high speeds, with particles consistently found with speeds in excess of $0.9\,\vesc$, which provides some reassurance that this systematic bias is unlikely to be large.
+Another caviat is that the periods of orbits with speeds approaching $\vesc$ are long, so that the DF may not be phase mixed at very high speeds. 
+Although S07 and P14 showed that the model is effective in recovering the escape speeds and virial masses of simulated haloes, this may not be the case for the Galaxy.  
 
 As an application, we have used our model of the escape speed to study the orbital properties of the extreme Galactic satellites, Hercules, Bootes III and Triangulum II. 
 All three must have highly eccentric orbits, with Bootes III and Triangulum II possessing an eccentricity $e \simeq 0.95$, and Hercules
