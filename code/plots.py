@@ -3,7 +3,7 @@ from __future__ import division, print_function
 import numpy as np, matplotlib.pyplot as plt, pandas as pd
 
 import plotting as pl, gus_utils as gu, models as m, fits as f, corner_plot as  cp,\
-        matplotlib as mpl, dwarf as d, matplotlib.ticker as ticker
+        matplotlib as mpl, dwarf as d, matplotlib.ticker as ticker,matplotlib.gridspec as gridspec
 
 from scipy.special import gammaincinv
 from palettable.colorbrewer.qualitative import Set1_6
@@ -267,7 +267,7 @@ def plot_tracers(mark_outliers=False,**kwargs):
     m.compute_galactocentric_radii(bhb,"bhb",append_dataframe=True)
     kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
     m.compute_galactocentric_radii(kgiant,"kgiant",append_dataframe=True)
-    msto = pd.read_csv("/data/aamw3/SDSS/main_sequence.csv")
+    msto = pd.read_csv("/data/aamw3/SDSS/main_sequence_paper.csv")
     m.compute_galactocentric_radii(msto,"main_sequence",append_dataframe=True)
     bhb = bhb[(np.abs(bhb.vgsr)>200.)].reset_index(drop=True)
     kgiant = kgiant[(np.abs(kgiant.vgsr)>200.)].reset_index(drop=True)
@@ -276,7 +276,10 @@ def plot_tracers(mark_outliers=False,**kwargs):
     tracer_title = ["MSTO","K-giant","BHB"]
     colors = ["darkorange","crimson","royalblue"]
     width,height = plt.rcParams.get('figure.figsize')
-    fig,ax = plt.subplots(1,3,figsize=(3*width,height),sharey=True,sharex=True)
+    fig = plt.figure(figsize=(2*width,2*height))
+    gs = gridspec.GridSpec(2,4)
+    ax = [fig.add_subplot(gs[0,:2]),fig.add_subplot(gs[0,2:]),fig.add_subplot(gs[1,1:3])]
+    # fig,ax = plt.subplots(1,3,figsize=(3*width,height),sharey=True,sharex=True)
 
     for i,tracer in enumerate(data):
 
@@ -284,15 +287,16 @@ def plot_tracers(mark_outliers=False,**kwargs):
                                                         edgecolors='none',**kwargs)
         
         ax[i].set_xlim((0.,50.))
+        ax[i].set_ylim((200.,550.))
         xmin,xmax = ax[i].get_xlim()
         ymin,ymax = ax[i].get_ylim()
-        ax[i].set_ylim((200.,ymax))
         ax[i].text(xmin+.65*(xmax-xmin),200.+.8*(ymax-200.),tracer_title[i]+"\n $N={}$".format(len(tracer)),fontsize=30)
         ax[i].tick_params(labelsize=20)
+        ax[i].set_xlabel("$r/\\mathrm{kpc}$",fontsize=25)
 
-    
-    ax[1].set_xlabel("$r/\\mathrm{kpc}$",fontsize=25)
+    ax[1].tick_params(labelleft='off')
     ax[0].set_ylabel("$v_{||}/\\mathrm{kms^{-1}}$",fontsize=25)
+    ax[2].set_ylabel("$v_{||}/\\mathrm{kms^{-1}}$",fontsize=25)
     fig.subplots_adjust(bottom=0.3,left=0.2)
 
     if mark_outliers:
