@@ -478,10 +478,15 @@ def dwarf_posteriors(chain,burnin=200):
     data = pd.read_csv("/data/aamw3/satellites/r_vgsr_dwarfs.csv")
     names = ["BootesIII","TriangulumII","Hercules"]
     plot_names = ["Bootes III", "Triangulum II", "Hercules"]
-    fig,ax = plt.subplots(1,3,figsize=(15,5))
+    #fig,ax = plt.subplots(1,3,figsize=(15,5))
+    width,height = plt.rcParams.get('figure.figsize')
+    fig = plt.figure(figsize=(2*width,2*height))
+    gs = gridspec.GridSpec(2,4)
+    ax = [fig.add_subplot(gs[0,:2]),fig.add_subplot(gs[0,2:]),fig.add_subplot(gs[1,1:3])]
 
-    for a in ax.ravel():
+    for a in ax:
         a.yaxis.set_visible(False)
+        a.tick_params(labelsize=20)
 
     for i,name in enumerate(names):
         r = data.r[data.name==name].values[0]
@@ -494,9 +499,9 @@ def dwarf_posteriors(chain,burnin=200):
     ax[0].set_xlim((0.,100.))
     ax[1].set_xlim((0.,800.))
     ax[2].set_xlim((0.5,1.))
-    ax[0].set_xlabel("$r_\\mathrm{peri}/\\mathrm{kpc}$",fontsize=20)
-    ax[1].set_xlabel("$r_\\mathrm{apo}/\\mathrm{kpc}$",fontsize=20)
-    ax[2].set_xlabel("$\\epsilon$",fontsize=20)
+    ax[0].set_xlabel("$r_\\mathrm{peri}/\\mathrm{kpc}$",fontsize=25)
+    ax[1].set_xlabel("$r_\\mathrm{apo}/\\mathrm{kpc}$",fontsize=25)
+    ax[2].set_xlabel("$e$",fontsize=25)
     ax[2].legend(loc='upper left',fontsize=25)
 
     return fig,ax
