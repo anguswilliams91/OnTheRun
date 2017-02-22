@@ -120,6 +120,28 @@ If the Galaxy existed in isolation then $r_\text{max}=\infty$, but in practice $
 \footnote{Andromeda is $\sim 800\kpc$ from the Milky Way, so a rough estimate for $r_\text{max}$ is 400 kpc.}
 A measurement of $\vesc(r)$ therefore amounts to quantifying $\sqrt{-2\left[\Phi(r) - \Phi(r_\text{max})\right]}$.
 
+Importantly, if one {\it maps} the escape speed across some range in radius, then the mass enclosed within this range may be inferred directly from the escape speed and its derivative.
+The mass of a spherically symmetric system is given by 
+%
+\begin{equation}
+M(r) = \dfrac{r^2}{G}\dfrac{\mathrm{d}\Phi}{\mathrm{d}r}.
+\end{equation}
+%
+Eliminating $\Phi(r)$ using Equation (\ref{eq:vesc_def}) gives
+%
+\begin{equation}
+M(r) = \dfrac{-r^2\,\vesc}{G}\dfrac{\mathrm{d}\vesc}{\mathrm{d}r},
+\label{eq:mass_enclosed}
+\end{equation}
+%
+and so the mass within radius $r$ is directly related to $\vesc$ and $\mathrm{d}\vesc/\mathrm{d}r$.
+A direct parameterisation of the escape speed is preferable, because it reduces possible systematic biases that could arise from instead modelling the potential.
+First, if the potential is modelled, then a value for $r_\text{max}$ must be assumed or inferred.
+Second, the mass profile of the Galaxy must be assumed out to $r_\text{max}$. 
+Since $r_\text{max}$ is large, and lies far beyond where data are available, this extrapolation can introduce further systematic bias.
+Indeed, P14 showed that setting $r_\text{max}=3\,R_\text{vir}$ instead of $r_\text{max}=\infty$ (as was assumed by S07) introduced a 20\% difference in the inferred virial mass.
+In this work, we will therefore work with direct parameterisations of the escape speed itself, rather than models of the gravitational potential. 
+
 \cite{Le90} proposed that the velocity distribution of high-speed stars is a power law of the form
 %
 \begin{equation}
@@ -561,32 +583,9 @@ The results are very similar to the SPL model, and the extra parameter $q$ is fo
 \label{fig:EPL_posterior}
 \end{figure}
 
-Having mapped the escape speed across the Galaxy, we are now able to convert this measurement into a mass profile $M(r)$ and rotation curve $v_c(r)$ for the Galaxy. 
-S07 and P14 both converted their measurements of the escape speed into a virial mass for the Galaxy, although they had to make educated guesses for an appropriate value of $r_\text{max}$ in Equation (\ref{eq:vesc_def}), which could have introduced systematic biases into their mass estimates.
-Indeed, P14 showed that setting $r_\text{max}=3\,R_\text{vir}$ instead of $r_\text{max}=\infty$ introduced a 20\% difference in the inferred virial mass.
-By {\it mapping} the escape speed, we do not need to make contact with $r_\text{max}$ in order to infer the enclosed mass.
-The mass enclosed at radius $r$ in a spherical Galaxy is
-%
-\begin{equation}
-M(r) = \dfrac{r^2}{G}\dfrac{\mathrm{d}\Phi}{\mathrm{d}r}.
-\end{equation}
-%
-Eliminating $\Phi(r)$ using Equation (\ref{eq:vesc_def}) gives
-%
-\begin{equation}
-M(r) = \dfrac{-r^2\,\vesc}{G}\dfrac{\mathrm{d}\vesc}{\mathrm{d}r},
-\end{equation}
-%
-We infer $\vesc$ {\it and} $\dfrac{\mathrm{d}\vesc}{\mathrm{d}r}$ from the data, so that the mass enclosed at radius $r$ can be inferred without considering the Galactic mass profile exterior to $r$. 
-The same reasoning applies to the rotation curve because $v_c^2(r) = GM(r)/r$.
-Consequently, the mass and circular speed profiles for the Galaxy can be inferred over the range for which we have mapped $\vesc(r)$: $6 \lesssim r/\kpc \lesssim 50$.
+Having mapped the escape speed across the Galaxy, we are now able to convert this measurement into a mass profile $M(r)$ and rotation curve $v_c(r)$ for the Galaxy using Equation (\ref{eq:mass_enclosed}) and $v_c^2(r) = G\,M(r)/r$. 
+The mass and circular speed profiles for the Galaxy can be inferred over the range for which we have mapped $\vesc(r)$: $6 \lesssim r/\kpc \lesssim 50$.
 For example, the local circular speed implied by our method is $v_c(R_0) = 223^{+40}_{-34}\kms$, which is pleasingly consistent with a multitude of other methods.
-
-It is worth noting that our method clearly possesses very different systematic uncertainties when compared to more common approaches in the literature.
-Most dynamical models of halo tracers, like distribution function and Jeans analyses, are most sensitive to the central parts of the velocity distributions.
-This is particularly true of Jeans analyses, which generally only model the first and second moments of the velocity distributions. 
-Distribution functions satisfy the full collisionless Boltzmann equation, and therefore the entire infinite hierarchy of Jeans equations, but this generally comes at the cost of large systematic uncertainties that arise from the chosen form of the model \citep{Wa15}.  
-Our approach moves the focus to the tail of the velocity distribution, and is therefore complimentary to other approaches.
 
 Figure \ref{fig:mass} shows the mass and circular speed profiles implied by the SPL model, along with associated 68\% and 94\% credible regions. 
 Our model predicts $M(50\kpc)=29.8^{+6.9}_{-5.2} \times 10^{10}\mathrm{M}_\odot$. 
@@ -604,6 +603,12 @@ The final study to which we compare is that of \citet[][G14]{Gi14}, who modelled
 They exploited the fact that the apocentric precession of the stream should be sensitive to the details of the gravitational potential. 
 Their inference produces very similar results to our work, with $M(50\kpc)=29\pm5\times 10^{10}\mathrm{M}_\odot$. 
 The two analyses, though very different in detail, produce near identical results.
+
+It is worth noting that our method clearly possesses very different systematic uncertainties when compared to more common approaches in the literature.
+Most dynamical models of halo tracers, like distribution function and Jeans analyses, are most sensitive to the central parts of the velocity distributions.
+This is particularly true of Jeans analyses, which generally only model the first and second moments of the velocity distributions. 
+Distribution functions satisfy the full collisionless Boltzmann equation, and therefore the entire infinite hierarchy of Jeans equations, but this generally comes at the cost of large systematic uncertainties that arise from the chosen form of the model \citep{Wa15}.  
+Our approach moves the focus to the tail of the velocity distribution, and is therefore complimentary to other approaches.
 
 \subsection{The orbits of Milky Way dwarf galaxies}
 
@@ -652,7 +657,7 @@ p(X\,|\,v_r,r,\,&\Theta) = \int p(X\,|\,v_r,v_T,r,\Theta)\,p(v_T\,|\,v_r,r,\Thet
 \end{align}
 %
 where $v_T$ is the transverse speed. 
-In a spherical potential, the two velocities $(v_T,v_r)$ and radius $r$ completely specify the orbit, and hence $\rp$, $\ra$ and $\ecc$. 
+In a spherical potential, $v_T$ ,$v_r$ and $r$ completely specify the orbit, and hence $\rp$, $\ra$ and $\ecc$. 
 This gives rise to the delta--function in Equation (\ref{eq:deltafun}), where $f_X$ represents the relation between $(v_r,v_T,r)$ and $X$. 
 Finally, we need to specify $p(v_T\,|\,v_r,r,\Theta)$. 
 To do this, we assume that the high speed dwarfs follow the same distribution function as the high speed stars, given by Equation (\ref{eq:lt90})
