@@ -24,13 +24,12 @@
 \def\ra{{r_\mathrm{apo}}}
 \def\ecc{{e}}
 
-\newcommand{\edit}[1]{\textcolor{red}{#1}}
-
 \title[Fast moving stars in SDSS] {On the Run: mapping the escape speed across the Galaxy with SDSS}
-\author[Williams, Belokurov, Casey \& Evans]{Angus A. Williams$^1$,
-  Vasily Belokurov$^1$, Andrew R. Casey$^1$ \& N. Wyn Evans$^1$
+\author[Williams, Belokurov, Casey \& Evans]{Angus A. Williams$^1$\thanks{E-mail: aamw3@ast.cam.ac.uk (AAW), vasily@ast.cam.ac.uk (VB)},
+  Vasily Belokurov$^1$\footnotemark[1], Andrew R. Casey$^{1,2}$ \& N. Wyn Evans$^1$
   \medskip
-  \\$^1$Institute of Astronomy, University of Cambridge, Madingley Road, Cambridge, CB3 0HA, UK}
+  \\$^1$Institute of Astronomy, University of Cambridge, Madingley Road, Cambridge, CB3 0HA, UK
+  \\$^2$Monash University, Wellington Rd, Clayton VIC 3800, Australia}
 \begin{document}
 
 \date{Accepted  Received ; in original form }
@@ -391,7 +390,7 @@ If the escape speed falls off more rapidly with height above the Galactic plane 
 \label{sec:pannm}
 
 Having constructed our likelihood function and gathered our data, we now need to choose explicit priors on each of our model parameters. 
-We split these parameters into two groups: global parameters, which are the model parameters that are independent of our choice for $\vesc(\pos)$, and potential parameters, which concern our explicit model of the escape speed.
+We split these parameters into two groups: global parameters, which are the model parameters that are independent of our choice for $\vesc(\pos)$, and $\vesc(\pos)$ parameters, which concern our explicit model of the escape speed.
 
 \subsection{Global priors}
 We allow a different power law slope in the velocity distribution of each tracer $\boldsymbol{k} = (k_\mathrm{MSTO},k_\mathrm{K-giant},k_\mathrm{BHB})$, and we fit for the outlier fraction, $f$.
@@ -406,7 +405,7 @@ Given our much larger sample of stars, we opt for a much less informative prior 
 This loose prior will allow us to critically assess the similarity between cosmological simulations and the Galaxy. 
 Our prior on $f$ is flat in the permissible range $0 \leq f \leq 1$.
 
-\subsection{Potential priors}
+\subsection{$\vesc(\pos)$ priors}
 
 \begin{figure*}
 \includegraphics[width=2\columnwidth]{plots/big_corner_spherical_powerlaw}\\
