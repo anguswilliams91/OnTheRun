@@ -5,21 +5,16 @@ LATEXMK=latexmk
 LATEXMKOPT=-pdf
 
 MAIN = ontherun
-REVISED = revised
 SOURCES = $(MAIN).tex Makefile journal_defs.tex
-REVISED_SOURCES = $(REVISED).tex Makefile journal_defs.tex 
 FIGURES := $(shell find plots/* -type f)
 
-all:    $(MAIN).pdf $(REVISED).pdf
+all:    $(MAIN).pdf
 
 .refresh:
 	touch .refresh
 
 $(MAIN).pdf: $(MAIN).tex .refresh $(SOURCES) $(FIGURES)
 		$(LATEXMK) $(LATEXMKOPT) $(MAIN)
-
-$(REVISED).pdf: $(REVISED).tex .refresh $(REVISED_SOURCES) $(FIGURES)
-		$(LATEXMK) $(LATEXMKOPT) $(REVISED)
 
 force:
 		touch .refresh
@@ -28,7 +23,6 @@ force:
 
 clean:
 		$(LATEXMK) -C $(MAIN)
-		$(LATEXMK) -C $(REVISED)
 		rm -rf *~ *.tmp
 		rm -f *.bbl *.blg *.aux *.end *.fls *.log *.out *.fdb_latexmk
 
