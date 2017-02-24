@@ -9,6 +9,7 @@ plots/*
 *.fdb_latexmk
 article/.refresh
 article/*.pdf
+article/ref_response.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

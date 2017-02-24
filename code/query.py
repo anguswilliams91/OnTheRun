@@ -21,11 +21,12 @@ def main_sequence_query():
     WHERE spp.specobjid=spa.specobjid \
     AND spp.scienceprimary=1 \
     AND spa.class='STAR' \
+    AND spa.TYPE=6\
     AND spa.extinction_r<0.3\
-    AND spa.dered_g-spa.dered_r BETWEEN 0.2 AND 0.6 \
+    AND spa.dered_g-spa.dered_r BETWEEN 0.2 AND 0.35 \
     AND spa.dered_r BETWEEN 14.5 AND 20. \
     AND spp.fehadop BETWEEN -4. AND -0.9 \
-    AND spp.loggadop BETWEEN 3.5 AND 4. \
+    AND spp.loggadop between 3.5 and 4.\
     AND spp.teffadop BETWEEN 4500. AND 8000.\
     AND spa.psfmagerr_g BETWEEN 0. AND 0.04 \
     AND spa.psfmagerr_r BETWEEN 0. AND 0.04 \

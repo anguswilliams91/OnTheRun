@@ -82,7 +82,7 @@ def sample_distances_multiple_tracers(n_samples=200,vmin=200.):
 
     bhb = pd.read_csv("/data/aamw3/SDSS/bhb.csv")
     kgiant = pd.read_csv("/data/aamw3/SDSS/kgiant.csv")
-    ms = pd.read_csv("/data/aamw3/SDSS/main_sequence_nogal.csv")
+    ms = pd.read_csv("/data/aamw3/SDSS/main_sequence_paper.csv")
 
     #ms = ms[np.abs(ms.vgsr)<np.max(np.abs(ms.vgsr))].reset_index(drop=True) #get rid of the galaxy
 
@@ -94,6 +94,8 @@ def sample_distances_multiple_tracers(n_samples=200,vmin=200.):
     bhb = bhb[np.abs(bhb.vgsr)>vmin].reset_index(drop=True)
     kgiant = kgiant[(np.abs(kgiant.vgsr)>vmin)].reset_index(drop=True)
     ms = ms[np.abs(ms.vgsr)>vmin].reset_index(drop=True)
+
+    print(len(ms))
 
 
     bhb_s = sample_distances(bhb,n_samples=n_samples,tracer='bhb')
@@ -302,7 +304,7 @@ def vesc_model(x,y,z,params,model):
     elif model == "TF":
 
         r = np.sqrt(x**2.+y**2.+z**2.)
-        return np.sqrt(-2.*TFpotential(r,params))
+        return np.sqrt(-2.*(TFpotential(r,params)-TFpotential(400.,params)))
 
     else: 
 
@@ -437,7 +439,8 @@ def log_priors_model(params,vmin,model):
             return -np.inf 
         else:
             return -np.log(v0) \
-                    -.5*(rs-15.)**2./7**2.
+                    -np.log(rs)
+                    #-.5*(rs-15.)**2./7**2.
 
     else: 
 

@@ -5,7 +5,7 @@ LATEXMK=latexmk
 LATEXMKOPT=-pdf
 
 MAIN = ontherun
-SOURCES = $(MAIN).tex Makefile journal_defs.tex 
+SOURCES = $(MAIN).tex Makefile journal_defs.tex
 FIGURES := $(shell find plots/* -type f)
 
 all:    $(MAIN).pdf
